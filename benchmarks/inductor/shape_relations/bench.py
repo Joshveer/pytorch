@@ -1,11 +1,9 @@
-"""Paired baseline/fixed MPS timings on the same native PyTorch build."""
+"""Paired baseline/fixed GPU timings on the same native PyTorch build."""
 
 import argparse
 import ast
-import contextlib
 import hashlib
 import json
-import platform
 import random
 import statistics
 import subprocess
@@ -14,6 +12,14 @@ import types
 from pathlib import Path
 from unittest.mock import patch
 
+from runtime import (
+    empty_cache,
+    environment,
+    kernel_count,
+    load_baseline,
+    profile_cuda,
+    sync,
+)
 from workloads import (
     layernorm_split,
     no_split,
@@ -122,34 +128,37 @@ def specs():
     return result
 
 
-def make_inputs(spec):
+def make_inputs(spec, device="mps", dtype=torch.float32):
     batches = []
     for shape in spec["shapes"]:
         if spec["kind"] == "equality":
             m, a, b = shape
-            inputs = (torch.randn(m, a, device="mps"), torch.randn(m, b, device="mps"))
+            inputs = (
+                torch.randn(m, a, device=device, dtype=dtype),
+                torch.randn(m, b, device=device, dtype=dtype),
+            )
             for t in inputs:
                 torch._dynamo.mark_dynamic(t, 0)
                 torch._dynamo.mark_dynamic(t, 1)
         else:
-            inputs = (torch.randn(*shape, device="mps"),)
+            inputs = (torch.randn(*shape, device=device, dtype=dtype),)
             torch._dynamo.mark_dynamic(inputs[0], 1)
             torch._dynamo.mark_dynamic(inputs[0], 2)
             if spec["kind"] == "rmsnorm":
-                inputs += (torch.randn(shape[-1] // 8, device="mps"),)
+                inputs += (torch.randn(shape[-1] // 8, device=device, dtype=dtype),)
         batches.append(inputs)
     return batches
 
 
-def timed(compiled, batches, repeats, sync_each=False):
-    torch.mps.synchronize()
+def timed(compiled, batches, repeats, sync_each=False, device="mps"):
+    sync(device)
     start = time.perf_counter_ns()
     for _ in range(repeats):
         for inputs in batches:
             output = compiled(*inputs)
             if sync_each:
-                torch.mps.synchronize()
-    torch.mps.synchronize()
+                sync(device)
+    sync(device)
     elapsed = time.perf_counter_ns() - start
     # Keep the last result alive until synchronization, like a real caller.
     del output
@@ -157,12 +166,13 @@ def timed(compiled, batches, repeats, sync_each=False):
 
 
 def run_case(spec, args, original, rng):
+    device = args.device
     torch._dynamo.reset()
-    torch.mps.empty_cache()
+    empty_cache(device)
     torch.manual_seed(12)
-    inputs = make_inputs(spec)
+    inputs = make_inputs(spec, device, getattr(torch, args.dtype))
     refs = [spec["fn"](*i) for i in inputs]
-    torch.mps.synchronize()
+    sync(device)
     records, compiled = {}, {}
     compile_order = ["baseline", "fixed"]
     rng.shuffle(compile_order)
@@ -177,17 +187,7 @@ def run_case(spec, args, original, rng):
 
         def backend(gm, example_inputs, mode=mode, record=record):
             record["graphs"] += 1
-            with contextlib.ExitStack() as stack:
-                stack.enter_context(
-                    config.patch(
-                        guarded_shape_fusion=(mode == "fixed"),
-                        force_disable_caches=True,
-                    )
-                )
-                if mode == "baseline":
-                    stack.enter_context(
-                        patch.object(sizevars.SizeVarAllocator, "simplify", original)
-                    )
+            with original.use(mode):
                 return torch._inductor.compile(gm, example_inputs)
 
         compiled[mode] = torch.compile(
@@ -198,16 +198,18 @@ def run_case(spec, args, original, rng):
         )
         for i, ref in zip(inputs, refs):
             codes = []
-            torch.mps.synchronize()
+            sync(device)
             start = time.perf_counter()
             with patch.object(GraphLowering, "save_output_code", codes.append):
                 actual = compiled[mode](*i)
-                torch.mps.synchronize()
+                sync(device)
             record["setup_calls_s"].append(time.perf_counter() - start)
-            torch.testing.assert_close(actual, ref, rtol=1e-4, atol=1e-4)
+            torch.testing.assert_close(
+                actual, ref, rtol=args.tolerance, atol=args.tolerance
+            )
             for j, code in enumerate(codes):
                 record["kernel_definitions_by_compile"].append(
-                    code.count("= async_compile.metal(")
+                    kernel_count(code, device)
                 )
                 record["code_sha256"].append(hashlib.sha256(code.encode()).hexdigest())
                 (
@@ -219,8 +221,8 @@ def run_case(spec, args, original, rng):
         for mode in compile_order:
             for i in inputs:
                 compiled[mode](*i)
-    torch.mps.synchronize()
-    pilots = [timed(compiled[m], inputs, 8) for m in compile_order]
+    sync(device)
+    pilots = [timed(compiled[m], inputs, 8, device=device) for m in compile_order]
     largest = max(r.numel() * r.element_size() for r in refs)
     repeats = max(
         8,
@@ -238,14 +240,29 @@ def run_case(spec, args, original, rng):
         pair = {"order": order}
         for mode in order:
             pair[mode] = {
-                "queued_us": timed(compiled[mode], inputs, repeats),
-                "sync_per_call_us": timed(compiled[mode], inputs, 8, True),
+                "queued_us": timed(compiled[mode], inputs, repeats, device=device),
+                "sync_per_call_us": timed(
+                    compiled[mode], inputs, 8, True, device=device
+                ),
             }
         pairs.append(pair)
     for mode, record in records.items():
         if record["graphs"] != counts_before[mode]:
             raise RuntimeError("Recompilation inside timed region")
         record["correctness"] = "passed"
+    if args.profile and device == "cuda":
+        for mode in compile_order:
+            try:
+                records[mode]["cuda_device_events"] = profile_cuda(
+                    lambda: [compiled[mode](*i) for i in inputs],
+                    args.output.parent / f"{spec['id']}-{mode}-trace.json",
+                )
+            except RuntimeError as exc:
+                records[mode]["profile_error"] = str(exc)
+            if records[mode]["graphs"] != counts_before[mode]:
+                raise RuntimeError(
+                    "Profiling triggered a recompilation; discard the trace"
+                )
     result = {k: v for k, v in spec.items() if k != "fn"}
     result.update(
         {
@@ -280,6 +297,13 @@ def main():
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--rounds", type=int, default=16)
     ap.add_argument("--only", default="")
+    ap.add_argument("--device", choices=("mps", "cuda"), default="mps")
+    ap.add_argument("--dtype", choices=("float32", "bfloat16"), default="float32")
+    ap.add_argument(
+        "--profile",
+        action="store_true",
+        help="Save separate warm CUDA traces outside timing",
+    )
     ap.add_argument("--baseline-commit", default=BASELINE_COMMIT)
     ap.add_argument(
         "--expected-build-commit",
@@ -289,17 +313,16 @@ def main():
     args = ap.parse_args()
     if args.rounds < 2 or args.rounds % 2:
         raise ValueError("Use a positive even number of rounds (at least 2)")
-    if not torch.backends.mps.is_available():
-        raise RuntimeError("Real MPS required")
-    if torch.version.git_version != args.expected_build_commit:
-        raise RuntimeError(
-            f"Expected build {args.expected_build_commit}, got {torch.version.git_version}; use --expected-build-commit to select another build explicitly"
-        )
+    device = args.device
+    dtype = getattr(torch, args.dtype)
+    args.tolerance = 0.02 if args.dtype == "bfloat16" else 1e-4
+    info = environment(device, args.expected_build_commit, args.dtype)
     if args.output.exists():
         raise FileExistsError(f"Choose a new output path: {args.output}")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     (args.output.parent / "code").mkdir(exist_ok=True)
-    original, original_hash = original_simplifier(args.baseline_commit)
+    original = load_baseline(args.baseline_commit)
+    original_hash = original.method_sha256["simplify"]
     rng = random.Random(args.seed)
     report = {
         "torch": torch.__version__,
@@ -307,25 +330,26 @@ def main():
         "parent": subprocess.check_output(
             ["git", "rev-parse", args.baseline_commit], cwd=ROOT, text=True
         ).strip(),
-        "platform": platform.platform(),
-        "cpu": subprocess.check_output(
-            ["sysctl", "-n", "machdep.cpu.brand_string"], text=True
-        ).strip(),
-        "battery": subprocess.check_output(["pmset", "-g", "batt"], text=True),
-        "baseline": "parent simplify method + equality pass disabled; same native 2.16 build",
+        "platform": info["platform"],
+        "cpu": info["cpu"],
+        "battery": info["battery"],
+        "device": device,
+        "environment": info,
+        "baseline_metadata": original.metadata(),
+        "baseline": "all modified SizeVarAllocator methods restored + equality pass disabled; same native build",
         "original_simplify_sha256": original_hash,
-        "dtype": "float32",
+        "dtype": args.dtype,
         "mode": "inference",
         "seed": args.seed,
         "rounds": args.rounds,
-        "timer": "perf_counter_ns, MPS synchronization around every block",
+        "timer": f"perf_counter_ns, {device} synchronization around every block",
         "cases": [],
     }
-    with config.patch(force_disable_caches=True):
+    with config.patch(force_disable_caches=True, **{"triton.cudagraphs": False}):
         # Remove one-time backend initialization from per-case setup measurements.
         warm = torch.compile(lambda x: x.sin() + 1, fullgraph=True)
-        warm(torch.randn(128, device="mps"))
-        torch.mps.synchronize()
+        warm(torch.randn(128, device=device, dtype=dtype))
+        sync(device)
         cases = specs()
         if args.only:
             requested = args.only.split(",")
@@ -341,6 +365,12 @@ def main():
                 report["cases"].append(run_case(case, args, original, rng))
                 args.output.write_text(json.dumps(report, indent=2) + "\n")
     print("DONE", len(report["cases"]), flush=True)
+    if any(
+        "profile_error" in record
+        for case in report["cases"]
+        for record in case["records"].values()
+    ):
+        raise SystemExit(2)
 
 
 if __name__ == "__main__":

@@ -157,6 +157,13 @@ env -u PYTHONPATH TORCHINDUCTOR_COMPILE_THREADS=1 \
 The full command in the build-and-test section also runs the minimal regression
 tests and the symbolic proof/cache checks. CUDA/Triton has not been validated.
 
+## CUDA/Triton handoff
+
+The [GPU validation scripts and instructions](../../benchmarks/inductor/shape_relations/CUDA.md)
+cover the full XSA reproductions, minimal cases, original compiler ablation,
+unequal widths, outputs/gradients, generated code and paired timings. These
+scripts require real CUDA/Triton and do not treat MPS checks as CUDA validation.
+
 ## MPS performance
 
 The measurements below are from the earlier `6345ea6` implementation and the

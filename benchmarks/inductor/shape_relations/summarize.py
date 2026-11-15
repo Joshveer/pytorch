@@ -28,6 +28,32 @@ for key in (
 ):
     if runs[0][key] != runs[1][key]:
         raise ValueError(f"Runs differ in {key}")
+# Historical MPS records predate the device/environment fields.
+if runs[0].get("device", "mps") != runs[1].get("device", "mps"):
+    raise ValueError("Cannot combine different devices")
+if runs[0].get("baseline_metadata") != runs[1].get("baseline_metadata"):
+    raise ValueError("Baseline implementations differ")
+for key in (
+    "cuda_runtime",
+    "triton",
+    "driver_version",
+    "gpu_name",
+    "gpu_uuid",
+    "capability",
+    "total_memory",
+    "compiler_source_sha256",
+    "native_extension_sha256",
+    "build_config",
+    "cuda_arch_list",
+    "cudagraphs",
+    "deterministic_algorithms",
+    "tf32_matmul",
+    "tf32_cudnn",
+):
+    if runs[0].get("environment", {}).get(key) != runs[1].get("environment", {}).get(
+        key
+    ):
+        raise ValueError(f"Environments differ in {key}")
 for run in runs:
     for case in run["cases"]:
         if len(case["pairs"]) != run["rounds"]:
@@ -70,6 +96,12 @@ def quantile(values, q):
 
 for name in sorted(indexed[0]):
     cases = [r[name] for r in indexed]
+    if cases[0]["shapes"] != cases[1]["shapes"]:
+        raise ValueError(f"Shapes differ for {name}")
+    for mode in ("baseline", "fixed"):
+        for key in ("graphs", "kernel_definitions_by_compile"):
+            if cases[0]["records"][mode][key] != cases[1]["records"][mode][key]:
+                raise ValueError(f"Compilation counts differ for {name}/{mode}/{key}")
     pairs = [p for c in cases for p in c["pairs"]]
     result = {
         "id": name,
@@ -123,6 +155,9 @@ for name in sorted(indexed[0]):
         for m in ("baseline", "fixed")
     }
     summary["cases"].append(result)
+if "environment" in runs[0]:
+    summary["device_environment"] = runs[0]["environment"]
+    summary["baseline_metadata"] = runs[0]["baseline_metadata"]
 (ROOT / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
 for c in summary["cases"]:
     a = c["timings"]["queued_us"]

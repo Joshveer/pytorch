@@ -1,6 +1,9 @@
 # Shape-relation fusion benchmarks
 
-Paired MPS measurements of the divisibility and guarded-equality fixes. The
+Portable GPU runners for the divisibility and guarded-equality fixes. See the
+[CUDA/Triton handoff](CUDA.md) for native build, full XSA, baseline and benchmark
+commands. CUDA execution is not yet validated; the recorded measurements below
+are MPS results. The
 recorded runs use the actual native PyTorch 2.16 build, FP32 contiguous inputs,
 and inference. Workload functions in `workloads.py` are copied unchanged from
 [Cyrus's reproductions](https://github.com/CyrusD123/inductor-dynamic-fusion/tree/275f764ee84812a8db53ff93e915577f9b97b2bc).
@@ -33,10 +36,12 @@ its observed setup totals are about 0.14s versus 0.07s.
 
 ## Method and evidence limits
 
-Both sides use the same native build. Baseline compilation restores the exact
+Both sides use the same native build. The recorded MPS baseline restored the
 `SizeVarAllocator.simplify` method from
 `c79633996ebc2114482ae5a4ff3cb409d79a8a9c` and disables the equality pass.
-Fixed compilation enables both changes. There were no native-code changes
+The current portable runner additionally restores every other modified
+`SizeVarAllocator` method, covering the subsequent XSA repairs. Fixed compilation
+enables the changes in the current checkout. There were no native-code changes
 between these revisions. This isolates compiler behavior; the baseline is not a
 second independent installation. The baseline revision is pinned explicitly,
 so adding result/documentation commits does not silently change the comparison.
