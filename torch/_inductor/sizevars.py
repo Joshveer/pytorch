@@ -320,7 +320,35 @@ class SizeVarAllocator:
         self._simplify_loops = self.make_simplify_loops_cache()
 
     def simplify(self, expr: Expr):
-        return sympy.expand(expr).xreplace(self.replacements)
+        expr = sympy.expand(expr).xreplace(self.replacements)
+        if not self.shape_env.divisible or not expr.has(FloorDiv):
+            return expr
+
+        def cancel_divisible_factor(product):
+            coefficient, factors = product.as_coeff_mul()
+            factors = list(factors)
+            for i, factor in enumerate(factors):
+                if not isinstance(factor, FloorDiv):
+                    continue
+                base, divisor = factor.args
+                # Only cancel a constant divisor already proved by ShapeEnv.
+                # Do not infer divisibility from an example size or add guards.
+                if (
+                    isinstance(divisor, sympy.Integer)
+                    and divisor > 0
+                    and coefficient % divisor == 0
+                    and self.shape_env.replace(Mod(base, divisor))
+                    in self.shape_env.divisible
+                ):
+                    coefficient /= divisor
+                    factors[i] = base
+            return sympy.Mul(coefficient, *factors)
+
+        # Keep grouping, tiling and index normalization in the same form:
+        # e.g. 16*T*(C//8) -> 2*T*C when Mod(C, 8) == 0 is known.
+        return sympy.expand(
+            expr.replace(lambda node: node.is_Mul, cancel_divisible_factor)
+        )
 
     def make_simplify_with_ranges_cache(self) -> Callable[[Expr, VarRanges], Expr]:
         """
