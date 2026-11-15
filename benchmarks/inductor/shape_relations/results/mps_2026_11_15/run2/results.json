@@ -1,0 +1,4647 @@
+{
+  "torch": "2.16.0a0+git6345ea6",
+  "commit": "6345ea65549d76751f09501580074b700b7c56c6",
+  "parent": "c79633996ebc2114482ae5a4ff3cb409d79a8a9c",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "cpu": "Apple M5",
+  "battery": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=36241507)\t100%; charged; 0:00 remaining present: true\n",
+  "baseline": "parent simplify method + equality pass disabled; same native 2.16 build",
+  "original_simplify_sha256": "aa7dae6aaea48480c0cac11ee499303dbc2f935905c88cde960c8a698301842f",
+  "dtype": "float32",
+  "mode": "inference",
+  "seed": 20261116,
+  "rounds": 16,
+  "timer": "perf_counter_ns, MPS synchronization around every block",
+  "cases": [
+    {
+      "id": "rmsnorm-small",
+      "kind": "rmsnorm",
+      "shapes": [
+        [
+          2,
+          32,
+          128
+        ]
+      ],
+      "scale": "small",
+      "compile_order": [
+        "baseline",
+        "fixed"
+      ],
+      "repeats_per_queued_block": 916,
+      "records": {
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.23050658300053328
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "9dbed3ed6089eb4f53c74d80ab1ee67691cc37c898cf3a7e2833d8b98e36ea74"
+          ],
+          "correctness": "passed"
+        },
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.11609533300361363
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "588829abf33bcb7d61069591c0e436a1581074eca49bbdc4a08d721f5d8b4df1"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 11.930039301310044,
+            "sync_per_call_us": 257.6355
+          },
+          "baseline": {
+            "queued_us": 14.486034934497816,
+            "sync_per_call_us": 173.828125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.2078788209607,
+            "sync_per_call_us": 175.515625
+          },
+          "fixed": {
+            "queued_us": 11.347889737991267,
+            "sync_per_call_us": 204.7135
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 11.317093886462882,
+            "sync_per_call_us": 172.166625
+          },
+          "baseline": {
+            "queued_us": 14.55240174672489,
+            "sync_per_call_us": 181.09375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 11.584379912663755,
+            "sync_per_call_us": 172.22925
+          },
+          "baseline": {
+            "queued_us": 13.807815502183406,
+            "sync_per_call_us": 178.166625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.166394104803494,
+            "sync_per_call_us": 212.401
+          },
+          "fixed": {
+            "queued_us": 11.0625,
+            "sync_per_call_us": 179.020875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.997771834061135,
+            "sync_per_call_us": 165.72925
+          },
+          "baseline": {
+            "queued_us": 13.77251637554585,
+            "sync_per_call_us": 163.526
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 15.576873362445415,
+            "sync_per_call_us": 179.89575
+          },
+          "fixed": {
+            "queued_us": 11.179039301310043,
+            "sync_per_call_us": 172.265625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.491721615720524,
+            "sync_per_call_us": 182.828125
+          },
+          "fixed": {
+            "queued_us": 10.937681222707424,
+            "sync_per_call_us": 159.729125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.932222707423582,
+            "sync_per_call_us": 162.974
+          },
+          "fixed": {
+            "queued_us": 11.258870087336245,
+            "sync_per_call_us": 170.21875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 13.059269650655022,
+            "sync_per_call_us": 178.317625
+          },
+          "baseline": {
+            "queued_us": 14.746042576419214,
+            "sync_per_call_us": 185.9115
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 13.254503275109169,
+            "sync_per_call_us": 173.7605
+          },
+          "baseline": {
+            "queued_us": 14.793350436681223,
+            "sync_per_call_us": 176.265625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.503456331877729,
+            "sync_per_call_us": 176.56775
+          },
+          "fixed": {
+            "queued_us": 11.900336244541483,
+            "sync_per_call_us": 222.948
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 11.865082969432315,
+            "sync_per_call_us": 179.6615
+          },
+          "baseline": {
+            "queued_us": 14.764828602620087,
+            "sync_per_call_us": 178.3385
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.684588427947597,
+            "sync_per_call_us": 254.020875
+          },
+          "fixed": {
+            "queued_us": 11.833015283842794,
+            "sync_per_call_us": 177.520875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.155475982532751,
+            "sync_per_call_us": 173.109375
+          },
+          "fixed": {
+            "queued_us": 11.881596069868996,
+            "sync_per_call_us": 178.958375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 12.087564410480349,
+            "sync_per_call_us": 175.43225
+          },
+          "baseline": {
+            "queued_us": 14.626683406113537,
+            "sync_per_call_us": 223.484375
+          }
+        }
+      ]
+    },
+    {
+      "id": "equality-equal-large",
+      "kind": "equality",
+      "shapes": [
+        [
+          4096,
+          2048,
+          2048
+        ]
+      ],
+      "scale": "large",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 32,
+      "records": {
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.0764857079993817
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "9110bbfdf0ddee516f3abac28ba5e12ae34263f1074ad295ae60cf1947dfe5fe"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.07446616599918343
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "d823c17fbd4311deca13e30059006b164268602f3b80198d63cba260dab666c1"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 1532.46353125,
+            "sync_per_call_us": 1720.8125
+          },
+          "fixed": {
+            "queued_us": 801.00128125,
+            "sync_per_call_us": 1055.53125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 1542.35546875,
+            "sync_per_call_us": 1701.50525
+          },
+          "fixed": {
+            "queued_us": 801.84115625,
+            "sync_per_call_us": 1019.38025
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 806.2890625,
+            "sync_per_call_us": 1015.552
+          },
+          "baseline": {
+            "queued_us": 1557.290375,
+            "sync_per_call_us": 1721.557375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 801.39584375,
+            "sync_per_call_us": 1016.026
+          },
+          "baseline": {
+            "queued_us": 1540.7955625,
+            "sync_per_call_us": 1712.927
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 1530.96484375,
+            "sync_per_call_us": 1733.75525
+          },
+          "fixed": {
+            "queued_us": 801.1236875,
+            "sync_per_call_us": 1014.645875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 1537.9375,
+            "sync_per_call_us": 1815.234375
+          },
+          "fixed": {
+            "queued_us": 801.13540625,
+            "sync_per_call_us": 1068.619875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 803.90234375,
+            "sync_per_call_us": 1017.088625
+          },
+          "baseline": {
+            "queued_us": 1540.01040625,
+            "sync_per_call_us": 1709.734375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 802.87240625,
+            "sync_per_call_us": 1016.046875
+          },
+          "baseline": {
+            "queued_us": 1540.97134375,
+            "sync_per_call_us": 1704.239625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 1532.54428125,
+            "sync_per_call_us": 1740.421875
+          },
+          "fixed": {
+            "queued_us": 800.984375,
+            "sync_per_call_us": 1083.75525
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 804.1861875,
+            "sync_per_call_us": 1023.177125
+          },
+          "baseline": {
+            "queued_us": 1540.29946875,
+            "sync_per_call_us": 1782.010375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 1532.23046875,
+            "sync_per_call_us": 1733.609375
+          },
+          "fixed": {
+            "queued_us": 800.4270625,
+            "sync_per_call_us": 1079.41675
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 803.13671875,
+            "sync_per_call_us": 1026.994875
+          },
+          "baseline": {
+            "queued_us": 1544.89190625,
+            "sync_per_call_us": 1700.229125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 1532.365875,
+            "sync_per_call_us": 1735.380125
+          },
+          "fixed": {
+            "queued_us": 803.07290625,
+            "sync_per_call_us": 1012.838625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 803.98175,
+            "sync_per_call_us": 1009.09375
+          },
+          "baseline": {
+            "queued_us": 1543.540375,
+            "sync_per_call_us": 1775.323
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 802.3125,
+            "sync_per_call_us": 1004.208375
+          },
+          "baseline": {
+            "queued_us": 1540.56509375,
+            "sync_per_call_us": 1722.489625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 1535.33725,
+            "sync_per_call_us": 1702.536375
+          },
+          "fixed": {
+            "queued_us": 803.59765625,
+            "sync_per_call_us": 1001.74475
+          }
+        }
+      ]
+    },
+    {
+      "id": "rmsnorm-large",
+      "kind": "rmsnorm",
+      "shapes": [
+        [
+          2,
+          2048,
+          2048
+        ]
+      ],
+      "scale": "large",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 15,
+      "records": {
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.12529899999935878
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "4fe639be61fc0b58ff17d3c5f5e86318d565a54823c08035a56b0975e82a2b0d"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.1002892089964007
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "3b879af6667eccb899055a6492119e936a45f5fe61ca909b86af9e7cd7ade937"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1118.8166666666668,
+            "sync_per_call_us": 1326.302125
+          },
+          "baseline": {
+            "queued_us": 5165.025,
+            "sync_per_call_us": 5394.71875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5164.705533333333,
+            "sync_per_call_us": 5331.020875
+          },
+          "fixed": {
+            "queued_us": 1117.5611333333334,
+            "sync_per_call_us": 1301.224
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5165.083333333333,
+            "sync_per_call_us": 5362.24475
+          },
+          "fixed": {
+            "queued_us": 1117.0888666666667,
+            "sync_per_call_us": 1291.760375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1116.175,
+            "sync_per_call_us": 1302.583375
+          },
+          "baseline": {
+            "queued_us": 5162.386066666666,
+            "sync_per_call_us": 5341.8385
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5166.661066666667,
+            "sync_per_call_us": 5331.734375
+          },
+          "fixed": {
+            "queued_us": 1117.5666666666668,
+            "sync_per_call_us": 1367.4375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1115.9666666666667,
+            "sync_per_call_us": 1315.71875
+          },
+          "baseline": {
+            "queued_us": 5164.125,
+            "sync_per_call_us": 5349.5625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1116.0972,
+            "sync_per_call_us": 1297.682375
+          },
+          "baseline": {
+            "queued_us": 5169.4,
+            "sync_per_call_us": 5446.1355
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1116.3361333333332,
+            "sync_per_call_us": 1301.34375
+          },
+          "baseline": {
+            "queued_us": 5163.4944000000005,
+            "sync_per_call_us": 5381.958375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5166.686133333334,
+            "sync_per_call_us": 5328.703125
+          },
+          "fixed": {
+            "queued_us": 1114.9388666666666,
+            "sync_per_call_us": 1366.55725
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5161.391666666667,
+            "sync_per_call_us": 5398.984375
+          },
+          "fixed": {
+            "queued_us": 1118.0138666666667,
+            "sync_per_call_us": 1341.864625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5165.463933333333,
+            "sync_per_call_us": 5422.020875
+          },
+          "fixed": {
+            "queued_us": 1116.5278,
+            "sync_per_call_us": 1298.65625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1115.7222,
+            "sync_per_call_us": 1356.099
+          },
+          "baseline": {
+            "queued_us": 5171.6806,
+            "sync_per_call_us": 5357.234375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5168.691666666667,
+            "sync_per_call_us": 5338.848875
+          },
+          "fixed": {
+            "queued_us": 1117.3055333333334,
+            "sync_per_call_us": 1316.036375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1115.0610666666666,
+            "sync_per_call_us": 1296.80725
+          },
+          "baseline": {
+            "queued_us": 5168.158333333333,
+            "sync_per_call_us": 5327.005125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1115.75,
+            "sync_per_call_us": 1301.119875
+          },
+          "baseline": {
+            "queued_us": 5165.436133333334,
+            "sync_per_call_us": 5335.375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5162.786066666667,
+            "sync_per_call_us": 5355.625
+          },
+          "fixed": {
+            "queued_us": 1115.2472,
+            "sync_per_call_us": 1362.911375
+          }
+        }
+      ]
+    },
+    {
+      "id": "layernorm-small",
+      "kind": "layernorm",
+      "shapes": [
+        [
+          2,
+          32,
+          128
+        ]
+      ],
+      "scale": "small",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 1024,
+      "records": {
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.10256612500234041
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "aa669de72039e7f818ec21efe323529f10bb170be395881507e2dd4a7c1e460a"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.09628895799687598
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "d412fe5699d9d6e1c19b942aa28d81f13c49e6e7cbcd3a7420dd16e8ca3fac88"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.4422197265625,
+            "sync_per_call_us": 353.692625
+          },
+          "fixed": {
+            "queued_us": 10.324177734375,
+            "sync_per_call_us": 183.869875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.6046142578125,
+            "sync_per_call_us": 226.84375
+          },
+          "fixed": {
+            "queued_us": 10.2239580078125,
+            "sync_per_call_us": 182.20825
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.22880078125,
+            "sync_per_call_us": 176.015625
+          },
+          "baseline": {
+            "queued_us": 13.7491865234375,
+            "sync_per_call_us": 179.00525
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.171833984375,
+            "sync_per_call_us": 179.41675
+          },
+          "baseline": {
+            "queued_us": 13.3851318359375,
+            "sync_per_call_us": 258.770875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.2637119140625,
+            "sync_per_call_us": 201.0
+          },
+          "fixed": {
+            "queued_us": 10.0348310546875,
+            "sync_per_call_us": 196.349
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.223470703125,
+            "sync_per_call_us": 196.81775
+          },
+          "baseline": {
+            "queued_us": 13.8114013671875,
+            "sync_per_call_us": 201.8125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.6089267578125,
+            "sync_per_call_us": 184.36975
+          },
+          "baseline": {
+            "queued_us": 13.745646484375,
+            "sync_per_call_us": 215.78125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.7380771484375,
+            "sync_per_call_us": 197.724
+          },
+          "fixed": {
+            "queued_us": 10.3706875,
+            "sync_per_call_us": 195.947875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.7881669921875,
+            "sync_per_call_us": 197.739625
+          },
+          "fixed": {
+            "queued_us": 10.205525390625,
+            "sync_per_call_us": 198.479125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.3626298828125,
+            "sync_per_call_us": 192.86975
+          },
+          "baseline": {
+            "queued_us": 13.7303466796875,
+            "sync_per_call_us": 261.8645
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.7742509765625,
+            "sync_per_call_us": 233.458375
+          },
+          "fixed": {
+            "queued_us": 10.284953125,
+            "sync_per_call_us": 191.765625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.1787109375,
+            "sync_per_call_us": 191.03125
+          },
+          "baseline": {
+            "queued_us": 13.8719072265625,
+            "sync_per_call_us": 197.807375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.266560546875,
+            "sync_per_call_us": 191.708375
+          },
+          "baseline": {
+            "queued_us": 13.7071533203125,
+            "sync_per_call_us": 227.416625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.20947265625,
+            "sync_per_call_us": 190.135375
+          },
+          "baseline": {
+            "queued_us": 13.826498046875,
+            "sync_per_call_us": 197.083375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.7230224609375,
+            "sync_per_call_us": 200.60425
+          },
+          "fixed": {
+            "queued_us": 10.2080078125,
+            "sync_per_call_us": 199.416625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.7428798828125,
+            "sync_per_call_us": 197.0365
+          },
+          "fixed": {
+            "queued_us": 11.43505859375,
+            "sync_per_call_us": 189.380125
+          }
+        }
+      ]
+    },
+    {
+      "id": "rmsnorm-original",
+      "kind": "rmsnorm",
+      "shapes": [
+        [
+          2,
+          512,
+          512
+        ]
+      ],
+      "scale": "original",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 230,
+      "records": {
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.11513020800339291
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "bde99b03a6c71148036a33bf38c6b5e2af4959b468ba297ecc12deeba10c0ffe"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.09974858400528319
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "9d0ea8edaa8b977e00b64a2a5a135d8f64c2a0d1842dd2aafd71a34810cb8280"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 291.6436608695652,
+            "sync_per_call_us": 509.010375
+          },
+          "fixed": {
+            "queued_us": 78.63949130434783,
+            "sync_per_call_us": 263.25
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 291.62282608695654,
+            "sync_per_call_us": 547.80725
+          },
+          "fixed": {
+            "queued_us": 78.61865652173913,
+            "sync_per_call_us": 249.848875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 78.56703043478261,
+            "sync_per_call_us": 315.947875
+          },
+          "baseline": {
+            "queued_us": 291.49402173913046,
+            "sync_per_call_us": 489.6145
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 78.55887826086956,
+            "sync_per_call_us": 328.0885
+          },
+          "baseline": {
+            "queued_us": 291.4471,
+            "sync_per_call_us": 488.239625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 291.5822478260869,
+            "sync_per_call_us": 522.93225
+          },
+          "fixed": {
+            "queued_us": 78.59365652173913,
+            "sync_per_call_us": 251.583375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 78.56974347826088,
+            "sync_per_call_us": 289.677125
+          },
+          "baseline": {
+            "queued_us": 291.3009043478261,
+            "sync_per_call_us": 485.979125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 78.53876521739132,
+            "sync_per_call_us": 306.296875
+          },
+          "baseline": {
+            "queued_us": 291.6420304347826,
+            "sync_per_call_us": 483.807375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 291.62300434782605,
+            "sync_per_call_us": 504.140625
+          },
+          "fixed": {
+            "queued_us": 78.75307826086956,
+            "sync_per_call_us": 261.234375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 315.50344347826086,
+            "sync_per_call_us": 505.21875
+          },
+          "fixed": {
+            "queued_us": 86.80760869565218,
+            "sync_per_call_us": 270.90625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 312.41648695652174,
+            "sync_per_call_us": 561.97925
+          },
+          "fixed": {
+            "queued_us": 83.7420304347826,
+            "sync_per_call_us": 324.29175
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 83.85905652173912,
+            "sync_per_call_us": 271.849
+          },
+          "baseline": {
+            "queued_us": 302.9612347826087,
+            "sync_per_call_us": 495.473875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 83.4137695652174,
+            "sync_per_call_us": 339.020875
+          },
+          "baseline": {
+            "queued_us": 312.2903956521739,
+            "sync_per_call_us": 562.703125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 83.99419999999999,
+            "sync_per_call_us": 262.583375
+          },
+          "baseline": {
+            "queued_us": 314.7367782608695,
+            "sync_per_call_us": 492.59375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 315.56123478260866,
+            "sync_per_call_us": 564.90625
+          },
+          "fixed": {
+            "queued_us": 84.22952608695653,
+            "sync_per_call_us": 261.598875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 86.80688695652174,
+            "sync_per_call_us": 252.2135
+          },
+          "baseline": {
+            "queued_us": 316.6378608695652,
+            "sync_per_call_us": 483.7865
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 316.2132260869565,
+            "sync_per_call_us": 486.703125
+          },
+          "fixed": {
+            "queued_us": 86.7041652173913,
+            "sync_per_call_us": 260.8855
+          }
+        }
+      ]
+    },
+    {
+      "id": "equality-equal-original",
+      "kind": "equality",
+      "shapes": [
+        [
+          4096,
+          512,
+          512
+        ]
+      ],
+      "scale": "original",
+      "compile_order": [
+        "baseline",
+        "fixed"
+      ],
+      "repeats_per_queued_block": 128,
+      "records": {
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.0736678329994902
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "111696fd8f7c5f2fbb4718ca24c65e6ba334b164d648797b8bdbb068d72c3d1f"
+          ],
+          "correctness": "passed"
+        },
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.0632610000029672
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "e1de0b049c680c6d4f57abcb4ecf63a428bceedfce5f04074bb212e07fbddf16"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 193.933921875,
+            "sync_per_call_us": 396.349
+          },
+          "baseline": {
+            "queued_us": 427.2919921875,
+            "sync_per_call_us": 616.765625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 436.73665625,
+            "sync_per_call_us": 660.4115
+          },
+          "fixed": {
+            "queued_us": 221.5732421875,
+            "sync_per_call_us": 479.796875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 409.95703125,
+            "sync_per_call_us": 604.416625
+          },
+          "fixed": {
+            "queued_us": 192.9873046875,
+            "sync_per_call_us": 395.7605
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 192.0208359375,
+            "sync_per_call_us": 396.583375
+          },
+          "baseline": {
+            "queued_us": 420.4215546875,
+            "sync_per_call_us": 597.96875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 223.6767578125,
+            "sync_per_call_us": 394.322875
+          },
+          "baseline": {
+            "queued_us": 398.8837890625,
+            "sync_per_call_us": 587.635375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 192.4619140625,
+            "sync_per_call_us": 396.9895
+          },
+          "baseline": {
+            "queued_us": 395.8186875,
+            "sync_per_call_us": 599.28125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 395.76009375,
+            "sync_per_call_us": 585.2135
+          },
+          "fixed": {
+            "queued_us": 191.4173125,
+            "sync_per_call_us": 398.9635
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 194.7955703125,
+            "sync_per_call_us": 395.3645
+          },
+          "baseline": {
+            "queued_us": 396.836265625,
+            "sync_per_call_us": 585.39575
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 396.3932265625,
+            "sync_per_call_us": 588.239625
+          },
+          "fixed": {
+            "queued_us": 191.6696015625,
+            "sync_per_call_us": 409.84375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 395.993484375,
+            "sync_per_call_us": 585.60425
+          },
+          "fixed": {
+            "queued_us": 191.3408203125,
+            "sync_per_call_us": 395.53125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 191.4856796875,
+            "sync_per_call_us": 400.724
+          },
+          "baseline": {
+            "queued_us": 409.41340625,
+            "sync_per_call_us": 600.973875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 405.3994140625,
+            "sync_per_call_us": 589.026125
+          },
+          "fixed": {
+            "queued_us": 198.924484375,
+            "sync_per_call_us": 407.5885
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 202.716796875,
+            "sync_per_call_us": 399.5885
+          },
+          "baseline": {
+            "queued_us": 409.199875,
+            "sync_per_call_us": 597.776125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 401.8082734375,
+            "sync_per_call_us": 597.359375
+          },
+          "fixed": {
+            "queued_us": 197.4111328125,
+            "sync_per_call_us": 413.947875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 397.984703125,
+            "sync_per_call_us": 603.901
+          },
+          "fixed": {
+            "queued_us": 196.2958984375,
+            "sync_per_call_us": 413.151
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 197.8759765625,
+            "sync_per_call_us": 421.208375
+          },
+          "baseline": {
+            "queued_us": 397.2340546875,
+            "sync_per_call_us": 609.541625
+          }
+        }
+      ]
+    },
+    {
+      "id": "equality-equal-small",
+      "kind": "equality",
+      "shapes": [
+        [
+          128,
+          128,
+          128
+        ]
+      ],
+      "scale": "small",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 1024,
+      "records": {
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.061796709000191186
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "452146984e14ce49913f6588cf8bf86c37fbe67cdd329501177aa475e699378b"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.06430570899829036
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "4790515ecec0476793f0606feca90829561ab83b279d5023e86be044b2219ec9"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.59521484375,
+            "sync_per_call_us": 186.09375
+          },
+          "fixed": {
+            "queued_us": 10.8280439453125,
+            "sync_per_call_us": 184.447875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.4921875,
+            "sync_per_call_us": 189.849
+          },
+          "fixed": {
+            "queued_us": 10.5399169921875,
+            "sync_per_call_us": 188.3385
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.0219326171875,
+            "sync_per_call_us": 186.599
+          },
+          "fixed": {
+            "queued_us": 10.382365234375,
+            "sync_per_call_us": 184.0885
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.9248447265625,
+            "sync_per_call_us": 173.28125
+          },
+          "fixed": {
+            "queued_us": 10.5537919921875,
+            "sync_per_call_us": 177.4895
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.9925537109375,
+            "sync_per_call_us": 184.838625
+          },
+          "fixed": {
+            "queued_us": 10.352091796875,
+            "sync_per_call_us": 176.135375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.3962001953125,
+            "sync_per_call_us": 173.276125
+          },
+          "baseline": {
+            "queued_us": 12.5077724609375,
+            "sync_per_call_us": 178.369875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.287515625,
+            "sync_per_call_us": 179.54175
+          },
+          "baseline": {
+            "queued_us": 12.9115400390625,
+            "sync_per_call_us": 183.35425
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.3291416015625,
+            "sync_per_call_us": 171.072875
+          },
+          "baseline": {
+            "queued_us": 12.971923828125,
+            "sync_per_call_us": 169.828125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.4365234375,
+            "sync_per_call_us": 177.609375
+          },
+          "baseline": {
+            "queued_us": 13.590087890625,
+            "sync_per_call_us": 181.677125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.1955166015625,
+            "sync_per_call_us": 175.65625
+          },
+          "baseline": {
+            "queued_us": 13.142984375,
+            "sync_per_call_us": 176.41675
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.6595458984375,
+            "sync_per_call_us": 177.34375
+          },
+          "fixed": {
+            "queued_us": 10.081013671875,
+            "sync_per_call_us": 175.958375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.1177978515625,
+            "sync_per_call_us": 175.08325
+          },
+          "baseline": {
+            "queued_us": 12.25773046875,
+            "sync_per_call_us": 264.96875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.1966962890625,
+            "sync_per_call_us": 164.7605
+          },
+          "baseline": {
+            "queued_us": 12.5473232421875,
+            "sync_per_call_us": 174.83325
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.388630859375,
+            "sync_per_call_us": 180.609375
+          },
+          "fixed": {
+            "queued_us": 10.0461015625,
+            "sync_per_call_us": 171.145875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.515869140625,
+            "sync_per_call_us": 245.046875
+          },
+          "fixed": {
+            "queued_us": 10.2228193359375,
+            "sync_per_call_us": 176.229125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.0877275390625,
+            "sync_per_call_us": 174.328125
+          },
+          "baseline": {
+            "queued_us": 12.425537109375,
+            "sync_per_call_us": 179.119875
+          }
+        }
+      ]
+    },
+    {
+      "id": "softmax-original",
+      "kind": "softmax",
+      "shapes": [
+        [
+          2,
+          512,
+          512
+        ]
+      ],
+      "scale": "original",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 192,
+      "records": {
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.11653525000292575
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "eaf639207d8e7d359f3f1e322c62fb207e389ae72c76ec8df93280d2e62a3514"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.10930041700339643
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "69b563b87bfd6f0165c2ec7718c8524176118c0331af78b8e117ebb9601fedcc"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 331.170140625,
+            "sync_per_call_us": 576.026125
+          },
+          "fixed": {
+            "queued_us": 99.14192708333333,
+            "sync_per_call_us": 355.698
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 98.912328125,
+            "sync_per_call_us": 279.947875
+          },
+          "baseline": {
+            "queued_us": 333.609375,
+            "sync_per_call_us": 494.364625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 323.091578125,
+            "sync_per_call_us": 498.0105
+          },
+          "fixed": {
+            "queued_us": 92.041015625,
+            "sync_per_call_us": 276.390625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 92.07378645833333,
+            "sync_per_call_us": 277.270875
+          },
+          "baseline": {
+            "queued_us": 310.325953125,
+            "sync_per_call_us": 491.34375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 330.4780833333333,
+            "sync_per_call_us": 569.43225
+          },
+          "fixed": {
+            "queued_us": 98.91319791666668,
+            "sync_per_call_us": 278.052
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 331.579859375,
+            "sync_per_call_us": 518.697875
+          },
+          "fixed": {
+            "queued_us": 101.92295833333333,
+            "sync_per_call_us": 269.645875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 333.1812083333333,
+            "sync_per_call_us": 486.822875
+          },
+          "fixed": {
+            "queued_us": 102.0546875,
+            "sync_per_call_us": 279.47925
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 330.1723072916667,
+            "sync_per_call_us": 544.625
+          },
+          "fixed": {
+            "queued_us": 98.76128645833333,
+            "sync_per_call_us": 348.64575
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 98.930125,
+            "sync_per_call_us": 265.026
+          },
+          "baseline": {
+            "queued_us": 333.3552552083333,
+            "sync_per_call_us": 508.15625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 101.98133854166667,
+            "sync_per_call_us": 275.8385
+          },
+          "baseline": {
+            "queued_us": 331.7975260416667,
+            "sync_per_call_us": 494.729125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 96.92101041666668,
+            "sync_per_call_us": 331.604125
+          },
+          "baseline": {
+            "queued_us": 323.3172760416667,
+            "sync_per_call_us": 484.96875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 100.04361979166667,
+            "sync_per_call_us": 253.739625
+          },
+          "baseline": {
+            "queued_us": 323.0418854166667,
+            "sync_per_call_us": 476.385375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 95.32682291666667,
+            "sync_per_call_us": 282.177
+          },
+          "baseline": {
+            "queued_us": 316.2782135416667,
+            "sync_per_call_us": 489.109375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 93.82790625,
+            "sync_per_call_us": 274.1875
+          },
+          "baseline": {
+            "queued_us": 310.2769114583333,
+            "sync_per_call_us": 487.484375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 307.09028125,
+            "sync_per_call_us": 503.54175
+          },
+          "fixed": {
+            "queued_us": 92.14149479166667,
+            "sync_per_call_us": 278.651
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 307.352,
+            "sync_per_call_us": 503.203125
+          },
+          "fixed": {
+            "queued_us": 92.20160416666667,
+            "sync_per_call_us": 274.390625
+          }
+        }
+      ]
+    },
+    {
+      "id": "softmax-small",
+      "kind": "softmax",
+      "shapes": [
+        [
+          2,
+          32,
+          128
+        ]
+      ],
+      "scale": "small",
+      "compile_order": [
+        "baseline",
+        "fixed"
+      ],
+      "repeats_per_queued_block": 1024,
+      "records": {
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.10375141700205859
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "746c4872815cce74afc07f6da18f9c1342ffd6cc09c2a3051a52d99f728af9d4"
+          ],
+          "correctness": "passed"
+        },
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.09723516699887114
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "8a6eb5bab5ec9f23a59ecab4ba44b9890813ed96e85ff646e173da3f7344f9cb"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 11.5948486328125,
+            "sync_per_call_us": 221.58325
+          },
+          "baseline": {
+            "queued_us": 13.82958984375,
+            "sync_per_call_us": 186.5
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.53975390625,
+            "sync_per_call_us": 186.572875
+          },
+          "fixed": {
+            "queued_us": 10.660970703125,
+            "sync_per_call_us": 180.109375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.1316318359375,
+            "sync_per_call_us": 184.557375
+          },
+          "fixed": {
+            "queued_us": 10.415283203125,
+            "sync_per_call_us": 175.421875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.96748828125,
+            "sync_per_call_us": 182.30725
+          },
+          "fixed": {
+            "queued_us": 10.30908203125,
+            "sync_per_call_us": 191.0885
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 13.09773828125,
+            "sync_per_call_us": 199.953125
+          },
+          "fixed": {
+            "queued_us": 10.08622265625,
+            "sync_per_call_us": 180.96875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.1009931640625,
+            "sync_per_call_us": 174.208375
+          },
+          "baseline": {
+            "queued_us": 13.14481640625,
+            "sync_per_call_us": 175.203125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.0250244140625,
+            "sync_per_call_us": 254.11975
+          },
+          "baseline": {
+            "queued_us": 13.3459873046875,
+            "sync_per_call_us": 173.447875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 9.988078125,
+            "sync_per_call_us": 184.265625
+          },
+          "baseline": {
+            "queued_us": 13.5523271484375,
+            "sync_per_call_us": 257.3855
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.2141513671875,
+            "sync_per_call_us": 178.3385
+          },
+          "baseline": {
+            "queued_us": 13.437052734375,
+            "sync_per_call_us": 179.8855
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.0482177734375,
+            "sync_per_call_us": 183.0
+          },
+          "baseline": {
+            "queued_us": 13.3999833984375,
+            "sync_per_call_us": 178.171875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.02665234375,
+            "sync_per_call_us": 242.864625
+          },
+          "baseline": {
+            "queued_us": 12.83016015625,
+            "sync_per_call_us": 187.06775
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.7981767578125,
+            "sync_per_call_us": 181.286375
+          },
+          "fixed": {
+            "queued_us": 10.257080078125,
+            "sync_per_call_us": 178.99475
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.1910810546875,
+            "sync_per_call_us": 189.177
+          },
+          "fixed": {
+            "queued_us": 10.3096923828125,
+            "sync_per_call_us": 182.864625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.0105791015625,
+            "sync_per_call_us": 185.875
+          },
+          "fixed": {
+            "queued_us": 10.2279052734375,
+            "sync_per_call_us": 264.03125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 10.3985595703125,
+            "sync_per_call_us": 174.59375
+          },
+          "baseline": {
+            "queued_us": 13.7920732421875,
+            "sync_per_call_us": 191.0
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.06844140625,
+            "sync_per_call_us": 181.729125
+          },
+          "fixed": {
+            "queued_us": 10.3912763671875,
+            "sync_per_call_us": 187.53125
+          }
+        }
+      ]
+    },
+    {
+      "id": "equality-unequal-original",
+      "kind": "equality",
+      "shapes": [
+        [
+          4096,
+          512,
+          768
+        ]
+      ],
+      "scale": "original",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 85,
+      "records": {
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.0742158749999362
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "25a47b4d9ebc7c974fce3aa8632c1187deeb0cc045a0f937a0ee696aa712a9fa"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.06411429199943086
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "b4fb6e4078c1804225cb054ea402210a21273c9b1fa30484b0daee65a6c9fda2"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 622.975,
+            "sync_per_call_us": 832.333375
+          },
+          "baseline": {
+            "queued_us": 625.5661764705882,
+            "sync_per_call_us": 853.291625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 612.6446,
+            "sync_per_call_us": 854.651
+          },
+          "baseline": {
+            "queued_us": 607.9112705882353,
+            "sync_per_call_us": 814.635375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 607.4892117647058,
+            "sync_per_call_us": 847.692625
+          },
+          "fixed": {
+            "queued_us": 583.3637176470588,
+            "sync_per_call_us": 800.942625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 590.3705882352941,
+            "sync_per_call_us": 765.974
+          },
+          "fixed": {
+            "queued_us": 575.3411764705882,
+            "sync_per_call_us": 841.8855
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 570.4303882352941,
+            "sync_per_call_us": 782.5625
+          },
+          "fixed": {
+            "queued_us": 570.0333294117647,
+            "sync_per_call_us": 771.119875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 569.9857882352942,
+            "sync_per_call_us": 797.71875
+          },
+          "baseline": {
+            "queued_us": 570.195588235294,
+            "sync_per_call_us": 785.276
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 569.9607882352942,
+            "sync_per_call_us": 780.458375
+          },
+          "baseline": {
+            "queued_us": 570.2441176470588,
+            "sync_per_call_us": 772.859375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 569.7730352941177,
+            "sync_per_call_us": 776.375
+          },
+          "baseline": {
+            "queued_us": 570.2112823529412,
+            "sync_per_call_us": 777.166625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 570.4612705882354,
+            "sync_per_call_us": 771.96875
+          },
+          "fixed": {
+            "queued_us": 580.0450941176471,
+            "sync_per_call_us": 778.849
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 587.4627529411765,
+            "sync_per_call_us": 811.401125
+          },
+          "baseline": {
+            "queued_us": 583.075494117647,
+            "sync_per_call_us": 769.573
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 580.3553882352942,
+            "sync_per_call_us": 775.84375
+          },
+          "fixed": {
+            "queued_us": 581.1416588235294,
+            "sync_per_call_us": 799.984375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 570.3161764705882,
+            "sync_per_call_us": 781.046875
+          },
+          "fixed": {
+            "queued_us": 570.0794117647059,
+            "sync_per_call_us": 790.34375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 570.3352941176471,
+            "sync_per_call_us": 779.026125
+          },
+          "fixed": {
+            "queued_us": 569.9784352941176,
+            "sync_per_call_us": 787.52075
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 570.4519529411765,
+            "sync_per_call_us": 757.572875
+          },
+          "fixed": {
+            "queued_us": 570.4254941176471,
+            "sync_per_call_us": 774.7135
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 570.2563647058823,
+            "sync_per_call_us": 771.68225
+          },
+          "baseline": {
+            "queued_us": 570.8019529411765,
+            "sync_per_call_us": 786.828125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 570.7387294117647,
+            "sync_per_call_us": 793.7395
+          },
+          "baseline": {
+            "queued_us": 570.4225411764705,
+            "sync_per_call_us": 777.401
+          }
+        }
+      ]
+    },
+    {
+      "id": "equality-unequal-large",
+      "kind": "equality",
+      "shapes": [
+        [
+          4096,
+          2048,
+          3072
+        ]
+      ],
+      "scale": "large",
+      "compile_order": [
+        "baseline",
+        "fixed"
+      ],
+      "repeats_per_queued_block": 21,
+      "records": {
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.07470337500126334
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "f261019bdb503b9cf5cf4bd24c674703888099145ed34e1b01fff2e802b5868d"
+          ],
+          "correctness": "passed"
+        },
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.07269391699810512
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "af9c4ec8f9c00333054ddf36ff68a7bf2973ee6ddcb5bd0945f75aaf5f4cc626"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 2223.202380952381,
+            "sync_per_call_us": 2405.489625
+          },
+          "baseline": {
+            "queued_us": 2224.7400952380954,
+            "sync_per_call_us": 2408.474
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 2227.4761904761904,
+            "sync_per_call_us": 2421.99475
+          },
+          "fixed": {
+            "queued_us": 2237.8928571428573,
+            "sync_per_call_us": 2407.19275
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 2224.861095238095,
+            "sync_per_call_us": 2423.734375
+          },
+          "baseline": {
+            "queued_us": 2246.1428571428573,
+            "sync_per_call_us": 2444.104125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 2249.988095238095,
+            "sync_per_call_us": 2429.645875
+          },
+          "fixed": {
+            "queued_us": 2234.5991904761904,
+            "sync_per_call_us": 2417.28125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 2230.587285714286,
+            "sync_per_call_us": 2417.755125
+          },
+          "baseline": {
+            "queued_us": 2231.043619047619,
+            "sync_per_call_us": 2406.760375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 2231.3988095238096,
+            "sync_per_call_us": 2416.479125
+          },
+          "baseline": {
+            "queued_us": 2233.785714285714,
+            "sync_per_call_us": 2443.375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 2228.4146666666666,
+            "sync_per_call_us": 2413.39575
+          },
+          "fixed": {
+            "queued_us": 2223.779761904762,
+            "sync_per_call_us": 2414.05725
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 2222.1071428571427,
+            "sync_per_call_us": 2416.10425
+          },
+          "fixed": {
+            "queued_us": 2222.121,
+            "sync_per_call_us": 2420.609375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 2223.6170476190478,
+            "sync_per_call_us": 2397.604125
+          },
+          "fixed": {
+            "queued_us": 2221.8333333333335,
+            "sync_per_call_us": 2432.197875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 2222.9126666666666,
+            "sync_per_call_us": 2417.8385
+          },
+          "baseline": {
+            "queued_us": 2226.5416666666665,
+            "sync_per_call_us": 2412.25
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 2224.527761904762,
+            "sync_per_call_us": 2404.390625
+          },
+          "fixed": {
+            "queued_us": 2227.3690476190477,
+            "sync_per_call_us": 2412.364625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 2224.045619047619,
+            "sync_per_call_us": 2413.651
+          },
+          "fixed": {
+            "queued_us": 2225.9940476190477,
+            "sync_per_call_us": 2392.213625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 2227.097238095238,
+            "sync_per_call_us": 2416.864625
+          },
+          "baseline": {
+            "queued_us": 2224.787714285714,
+            "sync_per_call_us": 2427.65625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 2222.2698571428573,
+            "sync_per_call_us": 2408.75525
+          },
+          "baseline": {
+            "queued_us": 2233.127,
+            "sync_per_call_us": 2537.203125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 2285.6488095238096,
+            "sync_per_call_us": 2444.354125
+          },
+          "baseline": {
+            "queued_us": 2260.0099047619046,
+            "sync_per_call_us": 2447.390625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 2247.220238095238,
+            "sync_per_call_us": 2449.328125
+          },
+          "fixed": {
+            "queued_us": 2260.081380952381,
+            "sync_per_call_us": 2406.901
+          }
+        }
+      ]
+    },
+    {
+      "id": "layernorm-large",
+      "kind": "layernorm",
+      "shapes": [
+        [
+          2,
+          2048,
+          2048
+        ]
+      ],
+      "scale": "large",
+      "compile_order": [
+        "baseline",
+        "fixed"
+      ],
+      "repeats_per_queued_block": 14,
+      "records": {
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.12044841700117104
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "2a81dda4e2b9d213d1b79412949475f3c530cc424a24215a714dc4eee2b2ed7b"
+          ],
+          "correctness": "passed"
+        },
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.11025066600268474
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "447b4e2dc0cb23bfeec6a2f88ac7e713b697881356f926d3d3c55680b852ce6a"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1507.1130714285714,
+            "sync_per_call_us": 1712.75
+          },
+          "baseline": {
+            "queued_us": 5546.3155,
+            "sync_per_call_us": 5726.729125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1506.5059285714287,
+            "sync_per_call_us": 1710.385375
+          },
+          "baseline": {
+            "queued_us": 5546.035714285715,
+            "sync_per_call_us": 5721.416625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1506.476142857143,
+            "sync_per_call_us": 1698.395875
+          },
+          "baseline": {
+            "queued_us": 5545.330357142857,
+            "sync_per_call_us": 5712.828125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1506.4077142857143,
+            "sync_per_call_us": 1712.72925
+          },
+          "baseline": {
+            "queued_us": 5546.4405,
+            "sync_per_call_us": 5735.05725
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5548.247071428572,
+            "sync_per_call_us": 5737.15625
+          },
+          "fixed": {
+            "queued_us": 1507.4285714285713,
+            "sync_per_call_us": 1708.0
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5547.119,
+            "sync_per_call_us": 5714.09375
+          },
+          "fixed": {
+            "queued_us": 1507.0565714285713,
+            "sync_per_call_us": 1707.666625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5545.75,
+            "sync_per_call_us": 5710.203125
+          },
+          "fixed": {
+            "queued_us": 1506.205357142857,
+            "sync_per_call_us": 1707.411375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1505.110142857143,
+            "sync_per_call_us": 1704.0
+          },
+          "baseline": {
+            "queued_us": 5546.595214285715,
+            "sync_per_call_us": 5722.349
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5546.726214285714,
+            "sync_per_call_us": 5721.625
+          },
+          "fixed": {
+            "queued_us": 1505.5625,
+            "sync_per_call_us": 1695.734375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5544.967214285714,
+            "sync_per_call_us": 5714.645875
+          },
+          "fixed": {
+            "queued_us": 1505.958357142857,
+            "sync_per_call_us": 1707.140625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1505.4225714285715,
+            "sync_per_call_us": 1715.005125
+          },
+          "baseline": {
+            "queued_us": 5545.886928571428,
+            "sync_per_call_us": 5720.713625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1507.0892857142858,
+            "sync_per_call_us": 1712.895875
+          },
+          "baseline": {
+            "queued_us": 5546.455357142857,
+            "sync_per_call_us": 5749.598875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5548.5208571428575,
+            "sync_per_call_us": 5746.0105
+          },
+          "fixed": {
+            "queued_us": 1508.1875,
+            "sync_per_call_us": 1691.328125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5547.836357142857,
+            "sync_per_call_us": 5756.317625
+          },
+          "fixed": {
+            "queued_us": 1507.4702857142856,
+            "sync_per_call_us": 1694.6355
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1507.1399285714285,
+            "sync_per_call_us": 1686.796875
+          },
+          "baseline": {
+            "queued_us": 5547.866071428572,
+            "sync_per_call_us": 5760.75
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5548.089285714285,
+            "sync_per_call_us": 5811.635375
+          },
+          "fixed": {
+            "queued_us": 1508.479142857143,
+            "sync_per_call_us": 1688.515625
+          }
+        }
+      ]
+    },
+    {
+      "id": "layernorm-original",
+      "kind": "layernorm",
+      "shapes": [
+        [
+          2,
+          512,
+          512
+        ]
+      ],
+      "scale": "original",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 214,
+      "records": {
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.10768745800305624
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "e7b9c2c7c8d58cfe68f08dd83f1750860e5635b5c1a65c76d748be5218b2bd82"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.10555995900358539
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "8a5b42794b0e40b69d0794756b67fc4f5b3500e30d90e3a7f01882ba8ecbf39d"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 124.52589252336449,
+            "sync_per_call_us": 317.0
+          },
+          "baseline": {
+            "queued_us": 341.3526074766355,
+            "sync_per_call_us": 532.40625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 124.59988317757009,
+            "sync_per_call_us": 318.515625
+          },
+          "baseline": {
+            "queued_us": 341.43944859813087,
+            "sync_per_call_us": 535.354125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 341.15381308411213,
+            "sync_per_call_us": 530.35425
+          },
+          "fixed": {
+            "queued_us": 124.6606308411215,
+            "sync_per_call_us": 309.93225
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 341.08508411214956,
+            "sync_per_call_us": 523.380125
+          },
+          "fixed": {
+            "queued_us": 124.52102803738318,
+            "sync_per_call_us": 313.4115
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 341.20346261682243,
+            "sync_per_call_us": 532.06775
+          },
+          "fixed": {
+            "queued_us": 124.53076635514019,
+            "sync_per_call_us": 305.38025
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 124.50700934579439,
+            "sync_per_call_us": 313.19275
+          },
+          "baseline": {
+            "queued_us": 341.2098925233645,
+            "sync_per_call_us": 548.03125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 341.30335046728976,
+            "sync_per_call_us": 544.026
+          },
+          "fixed": {
+            "queued_us": 124.52122429906542,
+            "sync_per_call_us": 309.244875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 124.49221495327103,
+            "sync_per_call_us": 314.28125
+          },
+          "baseline": {
+            "queued_us": 341.23189252336454,
+            "sync_per_call_us": 550.057375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 341.2394859813084,
+            "sync_per_call_us": 540.0
+          },
+          "fixed": {
+            "queued_us": 124.46962616822431,
+            "sync_per_call_us": 308.11975
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 124.48033644859812,
+            "sync_per_call_us": 309.85425
+          },
+          "baseline": {
+            "queued_us": 341.2387056074766,
+            "sync_per_call_us": 537.651
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 124.59559813084113,
+            "sync_per_call_us": 309.776
+          },
+          "baseline": {
+            "queued_us": 341.22254672897196,
+            "sync_per_call_us": 548.85425
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 124.61818224299066,
+            "sync_per_call_us": 304.6875
+          },
+          "baseline": {
+            "queued_us": 341.2387056074766,
+            "sync_per_call_us": 544.5
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 124.5453691588785,
+            "sync_per_call_us": 313.458375
+          },
+          "baseline": {
+            "queued_us": 341.22196261682245,
+            "sync_per_call_us": 544.322875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 341.2484392523364,
+            "sync_per_call_us": 539.06775
+          },
+          "fixed": {
+            "queued_us": 124.5101261682243,
+            "sync_per_call_us": 309.49475
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 341.26869158878503,
+            "sync_per_call_us": 549.79175
+          },
+          "fixed": {
+            "queued_us": 124.54808878504673,
+            "sync_per_call_us": 314.135375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 341.18107476635515,
+            "sync_per_call_us": 533.21875
+          },
+          "fixed": {
+            "queued_us": 124.5233644859813,
+            "sync_per_call_us": 309.59375
+          }
+        }
+      ]
+    },
+    {
+      "id": "no-split-control",
+      "kind": "control",
+      "shapes": [
+        [
+          2,
+          512,
+          512
+        ]
+      ],
+      "scale": "original",
+      "compile_order": [
+        "baseline",
+        "fixed"
+      ],
+      "repeats_per_queued_block": 512,
+      "records": {
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.08198820899997372
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "c76299da22a54baa79a2a630ae02235a6d2e31911d93332e065ce08221253689"
+          ],
+          "correctness": "passed"
+        },
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.06587037500139559
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "ea4d17056e49aa17bae87e2263965b960fc2375e4ccb8e6b87b541d8fc36bc65"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 50.88875390625,
+            "sync_per_call_us": 232.151125
+          },
+          "baseline": {
+            "queued_us": 44.268962890625,
+            "sync_per_call_us": 223.078125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 44.274251953125,
+            "sync_per_call_us": 226.380125
+          },
+          "fixed": {
+            "queued_us": 44.394123046875,
+            "sync_per_call_us": 229.130125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 44.424642578125,
+            "sync_per_call_us": 229.375
+          },
+          "baseline": {
+            "queued_us": 44.276611328125,
+            "sync_per_call_us": 238.760375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 44.418619140625,
+            "sync_per_call_us": 230.807375
+          },
+          "baseline": {
+            "queued_us": 45.2791328125,
+            "sync_per_call_us": 323.323
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 45.28369140625,
+            "sync_per_call_us": 270.484375
+          },
+          "fixed": {
+            "queued_us": 44.679037109375,
+            "sync_per_call_us": 266.911375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 44.663330078125,
+            "sync_per_call_us": 281.953125
+          },
+          "baseline": {
+            "queued_us": 45.442138671875,
+            "sync_per_call_us": 236.890625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 45.46565625,
+            "sync_per_call_us": 234.50525
+          },
+          "fixed": {
+            "queued_us": 44.8232421875,
+            "sync_per_call_us": 233.494875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 45.083251953125,
+            "sync_per_call_us": 234.75
+          },
+          "fixed": {
+            "queued_us": 44.683349609375,
+            "sync_per_call_us": 287.36975
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 44.61767578125,
+            "sync_per_call_us": 301.760375
+          },
+          "fixed": {
+            "queued_us": 44.840087890625,
+            "sync_per_call_us": 242.463625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 45.164876953125,
+            "sync_per_call_us": 240.177125
+          },
+          "fixed": {
+            "queued_us": 45.325927734375,
+            "sync_per_call_us": 243.135375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 45.3306484375,
+            "sync_per_call_us": 230.869875
+          },
+          "fixed": {
+            "queued_us": 44.58504296875,
+            "sync_per_call_us": 227.442625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 44.79972265625,
+            "sync_per_call_us": 236.453125
+          },
+          "baseline": {
+            "queued_us": 44.851318359375,
+            "sync_per_call_us": 237.18225
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 45.032388671875,
+            "sync_per_call_us": 217.947875
+          },
+          "fixed": {
+            "queued_us": 44.70499609375,
+            "sync_per_call_us": 293.135375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 45.10383984375,
+            "sync_per_call_us": 229.06775
+          },
+          "baseline": {
+            "queued_us": 45.139322265625,
+            "sync_per_call_us": 234.078125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 44.67293359375,
+            "sync_per_call_us": 305.0
+          },
+          "baseline": {
+            "queued_us": 44.71834375,
+            "sync_per_call_us": 231.11975
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 45.194986328125,
+            "sync_per_call_us": 230.833375
+          },
+          "baseline": {
+            "queued_us": 44.55224609375,
+            "sync_per_call_us": 276.74475
+          }
+        }
+      ]
+    },
+    {
+      "id": "equality-unequal-small",
+      "kind": "equality",
+      "shapes": [
+        [
+          128,
+          128,
+          192
+        ]
+      ],
+      "scale": "small",
+      "compile_order": [
+        "baseline",
+        "fixed"
+      ],
+      "repeats_per_queued_block": 1024,
+      "records": {
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.07444570799998473
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "845c19a5c01f02f05d1d968ba75b6aa21e6ae81ca86e4e3c947752e46c48876f"
+          ],
+          "correctness": "passed"
+        },
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.06433895800000755
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "b5406c4bacb773fcf07e5827b3706cc784d5221fc789f152cfb84685eb3eaad2"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.98233984375,
+            "sync_per_call_us": 279.96875
+          },
+          "fixed": {
+            "queued_us": 12.807046875,
+            "sync_per_call_us": 180.734375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.628376953125,
+            "sync_per_call_us": 173.0885
+          },
+          "fixed": {
+            "queued_us": 12.7509765625,
+            "sync_per_call_us": 229.114625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.6422119140625,
+            "sync_per_call_us": 178.53125
+          },
+          "fixed": {
+            "queued_us": 12.683064453125,
+            "sync_per_call_us": 180.0365
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.649373046875,
+            "sync_per_call_us": 182.953125
+          },
+          "fixed": {
+            "queued_us": 13.042806640625,
+            "sync_per_call_us": 218.869875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 12.666951171875,
+            "sync_per_call_us": 179.724
+          },
+          "baseline": {
+            "queued_us": 13.097453125,
+            "sync_per_call_us": 184.458375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 12.9937744140625,
+            "sync_per_call_us": 176.041625
+          },
+          "baseline": {
+            "queued_us": 12.80908203125,
+            "sync_per_call_us": 214.671875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 12.4310302734375,
+            "sync_per_call_us": 176.59375
+          },
+          "baseline": {
+            "queued_us": 12.9951982421875,
+            "sync_per_call_us": 174.49475
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.7906083984375,
+            "sync_per_call_us": 178.125
+          },
+          "fixed": {
+            "queued_us": 12.7365322265625,
+            "sync_per_call_us": 234.427125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 12.9098310546875,
+            "sync_per_call_us": 181.026
+          },
+          "baseline": {
+            "queued_us": 12.77294921875,
+            "sync_per_call_us": 176.229125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 12.7078447265625,
+            "sync_per_call_us": 175.8645
+          },
+          "fixed": {
+            "queued_us": 12.784912109375,
+            "sync_per_call_us": 177.046875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 15.353759765625,
+            "sync_per_call_us": 214.36975
+          },
+          "baseline": {
+            "queued_us": 15.299763671875,
+            "sync_per_call_us": 165.927125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 14.84033203125,
+            "sync_per_call_us": 167.625
+          },
+          "baseline": {
+            "queued_us": 14.5147705078125,
+            "sync_per_call_us": 215.171875
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.576701171875,
+            "sync_per_call_us": 214.833375
+          },
+          "fixed": {
+            "queued_us": 15.14453125,
+            "sync_per_call_us": 186.927125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 14.0242099609375,
+            "sync_per_call_us": 210.21875
+          },
+          "fixed": {
+            "queued_us": 13.7906904296875,
+            "sync_per_call_us": 217.05725
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 13.667521484375,
+            "sync_per_call_us": 170.734375
+          },
+          "baseline": {
+            "queued_us": 13.620890625,
+            "sync_per_call_us": 179.385375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 14.1893310546875,
+            "sync_per_call_us": 169.0625
+          },
+          "baseline": {
+            "queued_us": 13.734375,
+            "sync_per_call_us": 178.7605
+          }
+        }
+      ]
+    },
+    {
+      "id": "equality-mixed-original",
+      "kind": "equality",
+      "shapes": [
+        [
+          4096,
+          512,
+          512
+        ],
+        [
+          4096,
+          512,
+          768
+        ],
+        [
+          4096,
+          256,
+          256
+        ],
+        [
+          4096,
+          512,
+          768
+        ]
+      ],
+      "scale": "original",
+      "compile_order": [
+        "fixed",
+        "baseline"
+      ],
+      "repeats_per_queued_block": 21,
+      "records": {
+        "fixed": {
+          "graphs": 2,
+          "setup_calls_s": [
+            0.06713012500404147,
+            0.06903512500139186,
+            0.0006789999970351346,
+            0.0031458340017707087
+          ],
+          "kernel_definitions_by_compile": [
+            1,
+            2
+          ],
+          "code_sha256": [
+            "11c537734af896e07db5873f8e00e712a73122343fcd5184776f327fd3859381",
+            "f6ed9bd11a5d1f7e558ec298ccd0dc956622f751b65e6f8c4b85904b3befcc28"
+          ],
+          "correctness": "passed"
+        },
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.06584920800378313,
+            0.0029881660011596978,
+            0.0005737499959650449,
+            0.0013996249981573783
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "8da3b8d3a8a1207c4f1d9eaa831b47d3c6c049b92dae9f9878d266461ee52e43"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 442.6587261904762,
+            "sync_per_call_us": 643.19140625
+          },
+          "fixed": {
+            "queued_us": 367.2906785714286,
+            "sync_per_call_us": 574.5
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 442.30604761904766,
+            "sync_per_call_us": 653.83853125
+          },
+          "fixed": {
+            "queued_us": 367.764380952381,
+            "sync_per_call_us": 601.64584375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 439.4305476190476,
+            "sync_per_call_us": 629.565125
+          },
+          "fixed": {
+            "queued_us": 363.2792619047619,
+            "sync_per_call_us": 550.602875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 362.40476190476187,
+            "sync_per_call_us": 554.21484375
+          },
+          "baseline": {
+            "queued_us": 437.63392857142856,
+            "sync_per_call_us": 630.0625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 438.32044047619047,
+            "sync_per_call_us": 627.5208125
+          },
+          "fixed": {
+            "queued_us": 362.9642857142857,
+            "sync_per_call_us": 552.40234375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 437.9717261904762,
+            "sync_per_call_us": 635.51040625
+          },
+          "fixed": {
+            "queued_us": 361.9355119047619,
+            "sync_per_call_us": 550.9375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 362.423119047619,
+            "sync_per_call_us": 555.30728125
+          },
+          "baseline": {
+            "queued_us": 437.73660714285717,
+            "sync_per_call_us": 629.5390625
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 437.99603571428577,
+            "sync_per_call_us": 635.10675
+          },
+          "fixed": {
+            "queued_us": 362.1666666666667,
+            "sync_per_call_us": 553.41796875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 362.5406785714286,
+            "sync_per_call_us": 551.02603125
+          },
+          "baseline": {
+            "queued_us": 438.17113095238096,
+            "sync_per_call_us": 636.46353125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 438.80108333333334,
+            "sync_per_call_us": 627.21353125
+          },
+          "fixed": {
+            "queued_us": 359.7157738095238,
+            "sync_per_call_us": 547.6354375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 359.6592261904762,
+            "sync_per_call_us": 547.897125
+          },
+          "baseline": {
+            "queued_us": 435.05604761904766,
+            "sync_per_call_us": 627.85546875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 359.641869047619,
+            "sync_per_call_us": 551.14321875
+          },
+          "baseline": {
+            "queued_us": 434.92211904761905,
+            "sync_per_call_us": 629.046875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 359.8020833333333,
+            "sync_per_call_us": 551.6315
+          },
+          "baseline": {
+            "queued_us": 434.89136904761904,
+            "sync_per_call_us": 629.4296875
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 363.1557619047619,
+            "sync_per_call_us": 575.609375
+          },
+          "baseline": {
+            "queued_us": 440.1552619047619,
+            "sync_per_call_us": 631.9544375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 362.62648809523813,
+            "sync_per_call_us": 548.096375
+          },
+          "baseline": {
+            "queued_us": 437.27579761904764,
+            "sync_per_call_us": 630.77603125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 437.2157738095238,
+            "sync_per_call_us": 626.11065625
+          },
+          "fixed": {
+            "queued_us": 361.99603571428577,
+            "sync_per_call_us": 553.38934375
+          }
+        }
+      ]
+    },
+    {
+      "id": "softmax-large",
+      "kind": "softmax",
+      "shapes": [
+        [
+          2,
+          2048,
+          2048
+        ]
+      ],
+      "scale": "large",
+      "compile_order": [
+        "baseline",
+        "fixed"
+      ],
+      "repeats_per_queued_block": 15,
+      "records": {
+        "baseline": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.1380377499954193
+          ],
+          "kernel_definitions_by_compile": [
+            2
+          ],
+          "code_sha256": [
+            "8ae04dbff7fce0adbc29c763d5134fced2614b13d68c878d92965670afda2a0a"
+          ],
+          "correctness": "passed"
+        },
+        "fixed": {
+          "graphs": 1,
+          "setup_calls_s": [
+            0.11667020899767522
+          ],
+          "kernel_definitions_by_compile": [
+            1
+          ],
+          "code_sha256": [
+            "794d179c8fd7ecc25044639b8c791ba15f01a60ebd9a9bb1b0fc447f4479af95"
+          ],
+          "correctness": "passed"
+        }
+      },
+      "pairs": [
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1310.6110666666666,
+            "sync_per_call_us": 1500.09375
+          },
+          "baseline": {
+            "queued_us": 5281.358333333333,
+            "sync_per_call_us": 5487.53125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5282.6222,
+            "sync_per_call_us": 5488.447875
+          },
+          "fixed": {
+            "queued_us": 1309.7027333333333,
+            "sync_per_call_us": 1475.661375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5284.0472666666665,
+            "sync_per_call_us": 5488.708375
+          },
+          "fixed": {
+            "queued_us": 1308.9166666666667,
+            "sync_per_call_us": 1489.61975
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5280.811133333334,
+            "sync_per_call_us": 5476.02075
+          },
+          "fixed": {
+            "queued_us": 1307.5806,
+            "sync_per_call_us": 1484.526
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1306.6111333333333,
+            "sync_per_call_us": 1505.869875
+          },
+          "baseline": {
+            "queued_us": 5280.791666666667,
+            "sync_per_call_us": 5465.828125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5280.5722000000005,
+            "sync_per_call_us": 5461.723875
+          },
+          "fixed": {
+            "queued_us": 1308.5528,
+            "sync_per_call_us": 1490.427
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1305.7333333333333,
+            "sync_per_call_us": 1490.328125
+          },
+          "baseline": {
+            "queued_us": 5283.291666666667,
+            "sync_per_call_us": 5482.958375
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1306.0861333333332,
+            "sync_per_call_us": 1498.635375
+          },
+          "baseline": {
+            "queued_us": 5279.791666666667,
+            "sync_per_call_us": 5470.7865
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1308.9666666666667,
+            "sync_per_call_us": 1498.677125
+          },
+          "baseline": {
+            "queued_us": 5282.7972,
+            "sync_per_call_us": 5527.698
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5282.222266666667,
+            "sync_per_call_us": 5450.677125
+          },
+          "fixed": {
+            "queued_us": 1307.25,
+            "sync_per_call_us": 1502.979125
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1306.9388666666666,
+            "sync_per_call_us": 1503.619875
+          },
+          "baseline": {
+            "queued_us": 5279.891666666667,
+            "sync_per_call_us": 5461.177125
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5281.2722,
+            "sync_per_call_us": 5458.734375
+          },
+          "fixed": {
+            "queued_us": 1307.2278000000001,
+            "sync_per_call_us": 1499.974
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5278.3778,
+            "sync_per_call_us": 5460.546875
+          },
+          "fixed": {
+            "queued_us": 1307.95,
+            "sync_per_call_us": 1485.43225
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1308.2111333333332,
+            "sync_per_call_us": 1502.6875
+          },
+          "baseline": {
+            "queued_us": 5279.738866666667,
+            "sync_per_call_us": 5537.208375
+          }
+        },
+        {
+          "order": [
+            "baseline",
+            "fixed"
+          ],
+          "baseline": {
+            "queued_us": 5280.0,
+            "sync_per_call_us": 5444.541625
+          },
+          "fixed": {
+            "queued_us": 1306.8944666666666,
+            "sync_per_call_us": 1501.625
+          }
+        },
+        {
+          "order": [
+            "fixed",
+            "baseline"
+          ],
+          "fixed": {
+            "queued_us": 1304.8666666666668,
+            "sync_per_call_us": 1499.166625
+          },
+          "baseline": {
+            "queued_us": 5279.511066666666,
+            "sync_per_call_us": 5453.35425
+          }
+        }
+      ]
+    }
+  ]
+}

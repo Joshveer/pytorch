@@ -1,0 +1,190 @@
+"""Paired baseline/fixed MPS timings on the same native PyTorch build."""
+import argparse
+import ast
+import contextlib
+import hashlib
+import json
+import math
+import os
+import platform
+import random
+import statistics
+import subprocess
+import sys
+import time
+import types
+from pathlib import Path
+from unittest.mock import patch
+
+import torch
+from torch._inductor import config, sizevars
+from torch._inductor.graph import GraphLowering
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT.parent / 'team-repro'))
+from repro_split_heads import softmax_split, rmsnorm_split, layernorm_split, no_split
+from repro_dim_equality import stats_from_other
+
+
+def original_simplifier():
+    source = subprocess.check_output(['git', 'show', 'HEAD^:torch/_inductor/sizevars.py'], cwd=ROOT, text=True)
+    tree = ast.parse(source)
+    cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'SizeVarAllocator')
+    fn = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == 'simplify')
+    ns = dict(vars(sizevars))
+    exec(compile(ast.Module(body=[fn], type_ignores=[]), '<parent-sizevars>', 'exec'), ns)
+    return ns['simplify'], hashlib.sha256(ast.unparse(fn).encode()).hexdigest()
+
+
+def clone_fn(fn, label):
+    return types.FunctionType(fn.__code__.replace(co_filename=f'<bench-{label}>'), fn.__globals__, fn.__name__)
+
+
+def specs():
+    result = []
+    for scale, t, c in [('small',32,128), ('original',512,512), ('large',2048,2048)]:
+        for name, fn in [('softmax',softmax_split), ('rmsnorm',rmsnorm_split), ('layernorm',layernorm_split)]:
+            result.append({'id':f'{name}-{scale}','kind':name,'fn':fn,'shapes':[(2,t,c)],'scale':scale})
+    for scale, m, d in [('small',128,128), ('original',4096,512), ('large',4096,2048)]:
+        for unequal in (False,True):
+            result.append({'id':f'equality-{"unequal" if unequal else "equal"}-{scale}', 'kind':'equality',
+                           'fn':stats_from_other,'shapes':[(m,d,d*3//2 if unequal else d)],'scale':scale})
+    result.append({'id':'no-split-control','kind':'control','fn':no_split,'shapes':[(2,512,512)],'scale':'original'})
+    result.append({'id':'equality-mixed-original','kind':'equality','fn':stats_from_other,
+                   'shapes':[(4096,512,512),(4096,512,768),(4096,256,256),(4096,512,768)],'scale':'original'})
+    return result
+
+
+def make_inputs(spec):
+    batches = []
+    for shape in spec['shapes']:
+        if spec['kind'] == 'equality':
+            m, a, b = shape
+            inputs = (torch.randn(m,a,device='mps'), torch.randn(m,b,device='mps'))
+            for t in inputs:
+                torch._dynamo.mark_dynamic(t,0)
+                torch._dynamo.mark_dynamic(t,1)
+        else:
+            inputs = (torch.randn(*shape,device='mps'),)
+            torch._dynamo.mark_dynamic(inputs[0],1)
+            torch._dynamo.mark_dynamic(inputs[0],2)
+            if spec['kind'] == 'rmsnorm':
+                inputs += (torch.randn(shape[-1]//8,device='mps'),)
+        batches.append(inputs)
+    return batches
+
+
+def timed(compiled, batches, repeats, sync_each=False):
+    torch.mps.synchronize()
+    start = time.perf_counter_ns()
+    for _ in range(repeats):
+        for inputs in batches:
+            output = compiled(*inputs)
+            if sync_each:
+                torch.mps.synchronize()
+    torch.mps.synchronize()
+    elapsed = time.perf_counter_ns()-start
+    # Keep the last result alive until synchronization, like a real caller.
+    del output
+    return elapsed / (repeats * len(batches)) / 1000
+
+
+def run_case(spec, args, original, rng):
+    torch._dynamo.reset()
+    torch.mps.empty_cache()
+    torch.manual_seed(12)
+    inputs = make_inputs(spec)
+    refs = [spec['fn'](*i) for i in inputs]
+    torch.mps.synchronize()
+    records, compiled = {}, {}
+    compile_order = ['baseline','fixed']
+    rng.shuffle(compile_order)
+    for mode in compile_order:
+        record = {'graphs':0,'setup_calls_s':[], 'kernel_definitions_by_compile':[], 'code_sha256':[]}
+        records[mode] = record
+        def backend(gm, example_inputs, mode=mode, record=record):
+            record['graphs'] += 1
+            with contextlib.ExitStack() as stack:
+                stack.enter_context(config.patch(guarded_shape_fusion=(mode=='fixed'),force_disable_caches=True))
+                if mode == 'baseline':
+                    stack.enter_context(patch.object(sizevars.SizeVarAllocator,'simplify',original))
+                return torch._inductor.compile(gm,example_inputs)
+        compiled[mode] = torch.compile(clone_fn(spec['fn'],spec['id']+'-'+mode),backend=backend,fullgraph=True,dynamic=None)
+        for i,ref in zip(inputs,refs):
+            codes=[]
+            torch.mps.synchronize()
+            start=time.perf_counter()
+            with patch.object(GraphLowering,'save_output_code',codes.append):
+                actual=compiled[mode](*i)
+                torch.mps.synchronize()
+            record['setup_calls_s'].append(time.perf_counter()-start)
+            torch.testing.assert_close(actual,ref,rtol=1e-4,atol=1e-4)
+            for j,code in enumerate(codes):
+                record['kernel_definitions_by_compile'].append(code.count('= async_compile.metal('))
+                record['code_sha256'].append(hashlib.sha256(code.encode()).hexdigest())
+                (args.output.parent/'code'/f'{spec["id"]}-{mode}-{len(record["code_sha256"])}.py').write_text(code)
+    for _ in range(32):
+        for mode in compile_order:
+            for i in inputs: compiled[mode](*i)
+    torch.mps.synchronize()
+    pilots=[timed(compiled[m],inputs,8) for m in compile_order]
+    largest=max(r.numel()*r.element_size() for r in refs)
+    repeats=max(8,min(1024,int(80000/(max(pilots)*len(inputs))),max(8,1024**3//(largest*len(inputs)))))
+    orders=[['baseline','fixed'],['fixed','baseline']]*(args.rounds//2)
+    rng.shuffle(orders)
+    pairs=[]
+    counts_before={m:r['graphs'] for m,r in records.items()}
+    for order in orders:
+        pair={'order':order}
+        for mode in order:
+            pair[mode]={'queued_us':timed(compiled[mode],inputs,repeats),
+                        'sync_per_call_us':timed(compiled[mode],inputs,8,True)}
+        pairs.append(pair)
+    for mode, record in records.items():
+        if record['graphs'] != counts_before[mode]:
+            raise RuntimeError('Recompilation inside timed region')
+        record['correctness']='passed'
+    result={k:v for k,v in spec.items() if k!='fn'}
+    result.update({'compile_order':compile_order,'repeats_per_queued_block':repeats,'records':records,'pairs':pairs})
+    print(json.dumps({'case':spec['id'],'graphs':counts_before,
+                     'kernels':{m:r['kernel_definitions_by_compile'] for m,r in records.items()},
+                     'queued_us':{m:statistics.median(p[m]['queued_us'] for p in pairs) for m in records}}),flush=True)
+    return result
+
+
+def main():
+    ap=argparse.ArgumentParser()
+    ap.add_argument('--output',type=Path,required=True)
+    ap.add_argument('--seed',type=int,default=1)
+    ap.add_argument('--rounds',type=int,default=16)
+    ap.add_argument('--only',default='')
+    args=ap.parse_args()
+    if args.rounds%2: raise ValueError('Use even rounds for balanced AB/BA')
+    if not torch.backends.mps.is_available(): raise RuntimeError('Real MPS required')
+    if torch.version.git_version!='6345ea65549d76751f09501580074b700b7c56c6': raise RuntimeError('Unexpected build')
+    args.output.parent.mkdir(parents=True,exist_ok=True)
+    (args.output.parent/'code').mkdir(exist_ok=True)
+    original, original_hash=original_simplifier()
+    rng=random.Random(args.seed)
+    report={'torch':torch.__version__,'commit':torch.version.git_version,
+            'parent':subprocess.check_output(['git','rev-parse','HEAD^'],cwd=ROOT,text=True).strip(),
+            'platform':platform.platform(),'cpu':subprocess.check_output(['sysctl','-n','machdep.cpu.brand_string'],text=True).strip(),
+            'battery':subprocess.check_output(['pmset','-g','batt'],text=True),
+            'baseline':'parent simplify method + equality pass disabled; same native 2.16 build',
+            'original_simplify_sha256':original_hash,'dtype':'float32','mode':'inference','seed':args.seed,
+            'rounds':args.rounds,'timer':'perf_counter_ns, MPS synchronization around every block',
+            'cases':[]}
+    # Remove one-time backend initialization from per-case setup measurements.
+    warm=torch.compile(lambda x:x.sin()+1,fullgraph=True)
+    warm(torch.randn(128,device='mps'));torch.mps.synchronize()
+    cases=specs()
+    if args.only: cases=[c for c in cases if c['id'] in args.only.split(',')]
+    rng.shuffle(cases)
+    with torch.inference_mode():
+        for case in cases:
+            report['cases'].append(run_case(case,args,original,rng))
+            args.output.write_text(json.dumps(report,indent=2)+'\n')
+    print('DONE',len(report['cases']),flush=True)
+
+
+if __name__=='__main__': main()

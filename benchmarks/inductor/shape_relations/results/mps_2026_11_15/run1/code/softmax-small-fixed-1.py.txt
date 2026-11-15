@@ -1,0 +1,115 @@
+# AOT ID: ['32_inference']
+import torch
+from torch import device, empty_strided
+from torch._inductor.async_compile import AsyncCompile
+from torch._C._dynamo.guards import copy_if_misaligned
+
+assert_size_stride = torch._C._dynamo.guards.assert_size_stride
+async_compile = AsyncCompile()
+generated_kernel_0 = async_compile.metal('generated_kernel_0', '''
+
+    [[max_total_threads_per_threadgroup(1024)]]
+    kernel void generated_kernel_0(
+        device float* out_ptr2,
+        constant float* in_ptr0,
+        constant long& ks0,
+        constant long& ks1,
+        constant long& xnumel,
+        constant long& r0_numel,
+        uint2 thread_pos [[thread_position_in_grid]],
+        uint2 group_pos [[thread_position_in_threadgroup]]
+    ) {
+        auto xindex = thread_pos.x;
+        auto r0_index = thread_pos.y;
+        int x0 = xindex;
+        threadgroup float tmp_acc_0[32];
+        float tmp_acc_1 = ::c10::metal::MaxOp<float>::identity();
+        threadgroup float tmp_acc_2[32];
+        float tmp_acc_3 = 0;
+        for(auto r0__cnt = 0; r0__cnt < static_cast<int>(metal::floor(static_cast<float>(0.999023437500000 + 0.000976562500000000*r0_numel))); ++r0__cnt) {
+            int r0__linear_idx = 1024 * r0__cnt + r0_index;
+            if (r0__linear_idx >= r0_numel) break;
+            int r0_1 = r0__linear_idx;
+            auto tmp0 = in_ptr0[r0_1 + ks0*x0];
+            tmp_acc_1 = ::c10::metal::max(tmp_acc_1, static_cast<float>(tmp0));
+        }
+        auto tmp1 = c10::metal::threadgroup_max(tmp_acc_0, tmp_acc_1, r0_index * 1, metal::min(static_cast<decltype(1024+r0_numel)>(1024), static_cast<decltype(1024+r0_numel)>(r0_numel)));
+        for(auto r0__cnt = 0; r0__cnt < static_cast<int>(metal::floor(static_cast<float>(0.999023437500000 + 0.000976562500000000*r0_numel))); ++r0__cnt) {
+            int r0__linear_idx = 1024 * r0__cnt + r0_index;
+            if (r0__linear_idx >= r0_numel) break;
+            int r0_1 = r0__linear_idx;
+            auto tmp2 = in_ptr0[r0_1 + ks0*x0];
+            auto tmp3 = tmp2 - tmp1;
+            auto tmp4 = metal::precise::exp(tmp3);
+            tmp_acc_3 += tmp4;
+        }
+        auto tmp5 = c10::metal::threadgroup_sum(tmp_acc_2, tmp_acc_3, r0_index * 1, metal::min(static_cast<decltype(1024+r0_numel)>(1024), static_cast<decltype(1024+r0_numel)>(r0_numel)));
+        for(auto r0__cnt = 0; r0__cnt < static_cast<int>(metal::floor(static_cast<float>(0.999023437500000 + 0.000976562500000000*r0_numel))); ++r0__cnt) {
+            int r0__linear_idx = 1024 * r0__cnt + r0_index;
+            if (r0__linear_idx >= r0_numel) break;
+            int r0_1 = r0__linear_idx;
+            int r0_2 = (r0__linear_idx) % (ks1);
+            int r0_3 = c10::metal::floor_divide(r0__linear_idx, ks1);
+            auto tmp6 = in_ptr0[r0_1 + ks0*x0];
+            auto tmp7 = tmp6 - tmp1;
+            auto tmp8 = metal::precise::exp(tmp7);
+            auto tmp9 = tmp8 / tmp5;
+            auto tmp10 = 2.0;
+            auto tmp11 = tmp9 * tmp10;
+            out_ptr2[r0_2 + r0_3*metal::max(static_cast<decltype(1+c10::metal::floor_divide(ks0, 8))>(1), static_cast<decltype(1+c10::metal::floor_divide(ks0, 8))>(c10::metal::floor_divide(ks0, 8))) + 8*x0*metal::max(static_cast<decltype(1+c10::metal::floor_divide(ks0, 8))>(1), static_cast<decltype(1+c10::metal::floor_divide(ks0, 8))>(c10::metal::floor_divide(ks0, 8)))] = static_cast<float>(tmp11);
+        }
+    }
+
+''', ['reduction_utils', 'utils'])
+
+
+async_compile.wait(globals())
+del async_compile
+
+class Runner:
+    def __init__(self, partitions):
+        self.partitions = partitions
+
+    def recursively_apply_fns(self, fns):
+        new_callables = []
+        for fn, c in zip(fns, self.partitions):
+            new_callables.append(fn(c))
+        self.partitions = new_callables
+
+    def call(self, args):
+        arg0_1, arg1_1, arg2_1 = args
+        args.clear()
+        s27 = arg0_1
+        s53 = arg1_1
+        assert_size_stride(arg2_1, (2, s27, s53), (s27*s53, s53, 1), 'input')
+        arg2_1 = copy_if_misaligned(arg2_1)
+        buf2 = empty_strided((2, s27, 8, s53 // 8), (8*s27*max(1, s53 // 8), 8*max(1, s53 // 8), max(1, s53 // 8), 1), device='mps', dtype=torch.float32)
+        ps0 = s53 // 8
+        generated_kernel_0_xnumel = 2*s27
+        generated_kernel_0(buf2, arg2_1, s53, ps0, generated_kernel_0_xnumel, s53, threads=[2*s27, min(1024, s53)], group_size=[1, min(1024, s53)])
+        del arg2_1
+        return (buf2, )
+
+runner = Runner(partitions=[])
+call = runner.call
+recursively_apply_fns = runner.recursively_apply_fns
+
+
+def get_args():
+    from torch._dynamo.testing import rand_strided
+    arg0_1 = 32
+    arg1_1 = 128
+    arg2_1 = rand_strided((2, 32, 128), (4096, 128, 1), device='mps:0', dtype=torch.float32)
+    return [arg0_1, arg1_1, arg2_1]
+
+
+def benchmark_compiled_module(args, times=10, repeat=10):
+    from torch._inductor.utils import print_performance
+    fn = lambda: call(list(args))
+    return print_performance(fn, times=times, repeat=repeat, device='mps')
+
+
+if __name__ == "__main__":
+    from torch._inductor.wrapper_benchmark import compiled_module_main
+    args = get_args()
+    compiled_module_main('None', lambda times, repeat: benchmark_compiled_module(args, times=times, repeat=repeat))

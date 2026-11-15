@@ -1,0 +1,53 @@
+{
+  "commit": "6345ea65549d76751f09501580074b700b7c56c6",
+  "torch_version": "2.16.0a0+git6345ea6",
+  "native_build": true,
+  "source_overlay": false,
+  "backend": "inductor",
+  "build_settings": {
+    "type": "Release",
+    "cpu": true,
+    "mps": true,
+    "cuda": false,
+    "distributed": false,
+    "jobs": 6
+  },
+  "suite": {
+    "run": 51,
+    "passed": 50,
+    "skipped": 1,
+    "skip_reason": "CPU GPU-kernel-count assertion"
+  },
+  "coverage": [
+    "equal-first and unequal-first",
+    "unequal-width fallback",
+    "outputs and gradients",
+    "strided inputs",
+    "zero/singleton dimensions",
+    "graph reuse",
+    "Inductor disk cache hits",
+    "divisibility facts",
+    "unbacked and AOT guard refusal"
+  ],
+  "mps_forward_kernels": {
+    "dynamic_split_cases": 1,
+    "equal_widths": 1,
+    "unequal_widths": 2
+  },
+  "environment_fix": {
+    "description": "CPU JIT dylib loader path for existing OpenMP runtime",
+    "library": "<existing-conda-prefix>/lib/libomp.dylib",
+    "process_search_path": "<checkout>/agent_space/openmp-runtime",
+    "compiler_source_changes": false
+  },
+  "environment_report": "native-environment.json",
+  "build_log": "Native build succeeded; full local build log is not included.",
+  "tests_log": "native-tests.log",
+  "original_repro_logs": [],
+  "rerun_command": "From repository root with the native runtime: TORCHINDUCTOR_COMPILE_THREADS=1 python test/inductor/test_shape_relation_fusion.py -v",
+  "remaining": [
+    "CUDA/Triton validation",
+    "BF16 validation",
+    "training and whole-model performance measurements"
+  ]
+}

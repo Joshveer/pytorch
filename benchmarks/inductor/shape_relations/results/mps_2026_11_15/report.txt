@@ -1,0 +1,107 @@
+MPS BENCHMARK: DIVISIBILITY AND SYMBOLIC EQUALITY FIXES
+
+Environment: Apple M5 Mac, 24 GB RAM, AC power; macOS 27.2.1 arm64.
+Native PyTorch 2.16.0a0+git6345ea6; FP32, contiguous inputs, inference only.
+Commit: 6345ea65549d76751f09501580074b700b7c56c6
+Parent compiler source: c79633996ebc2114482ae5a4ff3cb409d79a8a9c
+
+Baseline: exact parent SizeVarAllocator.simplify method restored during compilation,
+with guarded_shape_fusion=False. Fixed: both changes enabled. Both variants use
+the same native 2.16 build; no native source differs between parent and fix.
+Original team workload functions are imported unchanged (no shape-check branch).
+Variants use separate callable code identities so both compiled graphs can stay
+cached while timing alternates. Compiler changes are applied only during compilation.
+
+METHOD
+Two separate Python processes, different randomized case/compilation orders.
+16 balanced, shuffled baseline-first/fixed-first pairs per case per process:
+32 paired blocks per case in the summary. Fixed inputs and random seed per case.
+Both variants are compiled and warmed before timing. MPS is synchronized before
+and after each timed block. No input generation or compilation is included in
+warm times, and graph counts are checked to reject recompilation in timed blocks.
+All outputs were checked against eager at rtol=atol=1e-4: 80 comparisons passed.
+
+Queued time: mean wall time per call in a repeated batch, then median over blocks.
+This measures steady-state throughput including Python dispatch and allocations.
+Repeats are calibrated and capped for memory; the same count is used for both sides.
+Single-call latency: synchronize after every forward call; eight repetitions per
+input sequence per block. It includes the synchronization/dispatch cost seen by
+a caller waiting for each result. Neither timing is a GPU-kernel-only measurement.
+
+95% intervals below resample paired timing blocks within each process (3000 draws).
+They describe observed timing variation, not uncertainty over other machines or models.
+Two fresh-process repeats agreed on the major improvements. No thermal or performance
+warning was reported by pmset after the runs; other desktop activity was not controlled.
+
+ALL RESULTS (microseconds per call; speedup = baseline / fixed)
+Case                            queued baseline -> fixed    speedup [95% interval]    single-call baseline -> fixed    speedup
+equality-equal-large              1541.1 ->    804.1    1.92x [1.91,1.92]          1733.2 ->   1022.9   1.69x
+equality-equal-original            399.3 ->    196.2    2.04x [2.03,2.04]           600.4 ->    406.2   1.48x
+equality-equal-small                12.4 ->     10.1    1.23x [1.21,1.24]           183.1 ->    176.6   1.04x
+equality-mixed-original            441.3 ->    365.4    1.21x [1.21,1.21]           643.7 ->    564.6   1.14x
+equality-unequal-large            2227.9 ->   2227.0    1.00x [1.00,1.00]          2416.3 ->   2416.7   1.00x
+equality-unequal-original          576.6 ->    576.2    1.00x [1.00,1.00]           783.4 ->    792.1   0.99x
+equality-unequal-small              12.6 ->     12.5    1.01x [0.99,1.02]           189.9 ->    195.5   0.97x
+layernorm-large                   5540.3 ->   1505.8    3.68x [3.68,3.68]          5714.4 ->   1706.5   3.35x
+layernorm-original                 342.0 ->    124.9    2.74x [2.74,2.74]           542.6 ->    309.8   1.75x
+layernorm-small                     13.7 ->     10.2    1.35x [1.34,1.35]           197.7 ->    193.1   1.02x
+no-split-control                    44.8 ->     44.7    1.00x [1.00,1.01]           233.3 ->    230.3   1.01x
+rmsnorm-large                     5166.0 ->   1116.1    4.63x [4.63,4.63]          5347.1 ->   1305.0   4.10x
+rmsnorm-original                   305.7 ->     83.5    3.66x [3.56,3.76]           491.1 ->    268.8   1.83x
+rmsnorm-small                       13.3 ->     10.8    1.24x [1.23,1.27]           181.3 ->    177.1   1.02x
+softmax-large                     5282.5 ->   1307.5    4.04x [4.04,4.04]          5467.9 ->   1498.9   3.65x
+softmax-original                   307.0 ->     92.0    3.34x [3.34,3.36]           499.8 ->    277.2   1.80x
+softmax-small                       13.8 ->     10.3    1.33x [1.31,1.36]           182.0 ->    180.4   1.01x
+
+SHAPES
+Split-head cases (B,T,C), H=8:
+  small=(2,32,128), original=(2,512,512), large=(2,2048,2048).
+Equality cases (M,Dx,Dy):
+  small equal=(128,128,128), original equal=(4096,512,512), large equal=(4096,2048,2048).
+  Unequal cases use Dy=1.5*Dx. No-split control uses (2,512,512).
+Mixed stream repeats: (4096,512,512), (4096,512,768), (4096,256,256), (4096,512,768).
+
+KERNELS AND GRAPH REUSE
+All split-head cases: baseline two generated kernels, fixed one.
+All equal-width cases: baseline two generated kernels, fixed one.
+Unequal-width cases: two on both sides. No-split control: one on both sides.
+Mixed stream: baseline one graph with two kernels; fixed two graphs, one with
+one kernel and one with two. Both graph variants were warmed before timing.
+These counts are generated kernel definitions, not profiler launch counts.
+
+SETUP COST (compile + first execution, after backend initialization)
+Inductor caches were disabled during compilation. These are descriptive first-call
+measurements with only two observations per variant; they are not cold-process
+or isolated compiler-time benchmarks. GPU driver caches were not cleared.
+equality-equal-original         baseline=0.058,0.074s fixed=0.061,0.063s
+equality-mixed-original         baseline=0.069,0.071s fixed=0.133,0.140s
+equality-unequal-original       baseline=0.066,0.064s fixed=0.059,0.074s
+layernorm-original              baseline=0.097,0.106s fixed=0.096,0.108s
+no-split-control                baseline=0.081,0.082s fixed=0.063,0.066s
+rmsnorm-original                baseline=0.215,0.100s fixed=0.221,0.115s
+softmax-original                baseline=0.095,0.109s fixed=0.090,0.117s
+
+INTERPRETATION
+At original sizes, split-head queued throughput improves 2.74-3.66x, while
+synchronized single-call latency improves 1.75-1.83x. Equal widths improve
+2.04x queued and 1.48x synchronized. Unequal widths are unchanged within noise.
+Large split cases improve 3.35-4.10x in synchronized latency; large equality improves 1.69x.
+Small-case synchronized gains are minor or noisy; do not generalize the large gains to tiny inputs.
+The mixed stream improves 1.21x queued and 1.14x synchronized, but requires a
+second graph: total setup is about 0.07s baseline versus 0.14s fixed here.
+The speedups measure the full compiler changes, including altered indexing and
+memory traffic. This experiment does not isolate kernel-launch count as the sole cause.
+No training, BF16, CUDA, whole-model or application-level speedup is established.
+
+ARTIFACTS
+bench.py: reproducible measurement harness. summarize.py/report.py: analysis.
+run1/results.json and run2/results.json: all raw timings and setup measurements.
+run1/code and run2/code: generated wrappers/kernels for every compiled graph.
+summary.json: medians, per-run speedups, paired bootstrap intervals.
+pilot results are excluded from the final analysis.
+
+RERUN FROM THE FORK ROOT
+env -u PYTHONPATH TORCHINDUCTOR_COMPILE_THREADS=1 .venv/bin/python agent_space/mps-benchmark/bench.py --output agent_space/mps-benchmark/run1/results.json --seed 20261115
+env -u PYTHONPATH TORCHINDUCTOR_COMPILE_THREADS=1 .venv/bin/python agent_space/mps-benchmark/bench.py --output agent_space/mps-benchmark/run2/results.json --seed 20261116
+.venv/bin/python -P agent_space/mps-benchmark/summarize.py
+.venv/bin/python -P agent_space/mps-benchmark/report.py

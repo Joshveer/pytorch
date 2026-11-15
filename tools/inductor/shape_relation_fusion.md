@@ -42,53 +42,96 @@ and AOTInductor compilation. AOT exports cannot rely on
 Dynamo's guard dispatcher. Singleton and zero dimensions retain normal compiler
 handling. Profitability beyond this bounded pattern has not been established.
 
-## Local validation
+## Native 2.16 validation
 
-Source base: `c79633996ebc2114482ae5a4ff3cb409d79a8a9c` (`2.16.0a0`).
-Executed runtime: PyTorch `2.15.0`, commit
-`d0f2af8b66b20da4baa50644c0cd3f887a2eae2e`, Python 3.12.12, macOS arm64.
-Numerical tests ran on CPU and actual MPS/Metal. CUDA/Triton testing is deferred.
+The modified fork was built from source at
+`6345ea65549d76751f09501580074b700b7c56c6` and installed as
+`2.16.0a0+git6345ea6`. This supersedes the initial 2.15 source-overlay checks.
+The native extension, embedded build commit and compiler source paths were
+verified before testing; the native tests did not use an overlay or monkey patch.
 
-The local runner overlays the edited simplifier, new pass, configuration entry
-and exact post-grad call site onto the installed runtime. It does not change
-installed files and does not establish that a complete 2.16 source build passes.
+Build: Python 3.12.12, macOS 27.2.1 arm64, Apple clang 21.0.0, Release,
+CPU and MPS enabled, CUDA/distributed disabled, six parallel compile jobs.
+The command-line-tools-only setup used the supported runtime Metal shader
+compilation fallback. Both CPU and MPS native smoke checks passed.
 
-| MPS forward case, FP32 | Before | After |
-| --- | ---: | ---: |
-| Six dynamic split-head variants | 2 | 1 |
-| Original dynamic equality workload, equal widths | 2 | 1 |
-| Original dynamic equality workload, unequal widths | 2 | 2 |
+The direct regression suite passed **50 tests, with one CPU kernel-count test
+skipped**. It covers outputs and random-weight gradients, equal-first and
+unequal-first sequences, strided inputs, zero/singleton dimensions, graph reuse,
+Inductor disk-cache hits, missing/unrelated divisibility facts, and refusal to
+specialize unbacked sizes or AOT/direct compilation without a guard dispatcher.
+The original team split-head and unchecked equality reproductions also passed
+on the native MPS build. Generated forward kernel counts were one for the split
+and equal-width cases, and two for unequal-width fallback.
 
-Counts are generated kernel definitions, not measured launches or speedups.
-The final local suite passed 50 tests, with one CPU kernel-count test skipped.
-The configured lintrunner checks passed, including Pyrefly.
-Tests cover:
+An initial CPU test run failed to load `libomp.dylib`. Inductor's generated CPU
+kernels used an existing Conda OpenMP library whose runtime search path was not
+resolved. A process-local `DYLD_LIBRARY_PATH` pointing to that runtime resolved
+all CPU failures. No compiler source changes were needed. This loader setting
+is specific to the local environment and was not needed for MPS benchmarking.
 
-- Outputs and random-weight gradients for both equal-first and unequal-first
-  sequences, contiguous and stride-2 inputs, with multiple width values.
-- Reuse of the two GPU specializations after the initial equal/unequal calls.
-- Correctness after Dynamo resets and verified Inductor disk-cache hits.
-- Zero rows, singleton rows and singleton widths; disabling the new pass.
-- Guard creation for backed widths and refusal for unbacked, frozen and AOT
-  cases; missing and unrelated divisibility facts; split-head forward/backward.
+Native evidence is in
+[the recorded results](../../benchmarks/inductor/shape_relations/results/mps_2026_11_15/native-build-summary.json).
+The source baseline before both fixes is
+`c79633996ebc2114482ae5a4ff3cb409d79a8a9c`.
 
-With a built version of this branch, run:
+### Build and test
+
+After installing the dependencies in `requirements.txt` into `.venv`, the build
+used the following settings from the repository root:
 
 ```sh
-python test/inductor/test_shape_relation_fusion.py -v
+PATH="$PWD/.venv/bin:$PATH" CMAKE_PREFIX_PATH="$PWD/.venv" \
+CMAKE_BUILD_TYPE=Release MAX_JOBS=6 USE_MPS=1 USE_CUDA=0 \
+USE_DISTRIBUTED=0 BUILD_TEST=0 \
+  .venv/bin/python -m pip install -e . -v --no-build-isolation
+
+env -u PYTHONPATH TORCHINDUCTOR_COMPILE_THREADS=1 \
+  .venv/bin/python test/inductor/test_shape_relation_fusion.py -v
 ```
 
-For the installed-runtime overlay used locally, use an environment containing
-the matching installed torch and its test dependencies (including expecttest):
+If CPU generated kernels need an OpenMP loader path, set `DYLD_LIBRARY_PATH`
+for that test process to the directory containing the installed `libomp.dylib`.
+`tools/inductor/shape_relation_local_test.py` remains an optional overlay helper
+for older installed runtimes; it is not how the native validation above ran.
 
-```sh
-TORCHINDUCTOR_COMPILE_THREADS=1 \
-  python tools/inductor/shape_relation_local_test.py -v
-```
+## MPS performance
 
-The runner prints the actual runtime path/version. If using `PYTHONPATH` to
-select a cached wheel, keep the source checkout out of the import search path.
-Do not report this overlay as a source build. A full fork build, CUDA execution,
-BF16 coverage and runtime/compilation-cost measurements remain outstanding.
+FP32 inference on an Apple M5 Mac with 24 GB RAM, on AC power. Both variants use
+the same native 2.16 build. Baseline restores the parent simplifier during
+compilation and disables the equality pass; fixed enables both changes. The
+workload functions are unchanged.
+
+| Original-size workload | Synchronized latency, original -> fixed | Latency speedup | Queued speedup |
+| --- | ---: | ---: | ---: |
+| Softmax -> split heads | 499.8 -> 277.2 us | 1.80x | 3.34x |
+| RMSNorm -> split heads | 491.1 -> 268.8 us | 1.83x | 3.66x |
+| LayerNorm -> split heads | 542.6 -> 309.8 us | 1.75x | 2.74x |
+| Equal-width normalization | 600.4 -> 406.2 us | 1.48x | 2.04x |
+| Unequal-width fallback | 783.4 -> 792.1 us | 0.99x (within noise) | 1.00x |
+
+Split shapes are `(2,512,512)` with eight heads. Equality inputs are
+`x=(4096,512)` and `y=(4096,512)` or `(4096,768)`.
+
+Two process runs each measured 16 alternating paired blocks per case across 17
+cases. Both variants were compiled and warmed first; all 80 eager-output
+comparisons passed, and no timed block recompiled. Synchronized latency waits
+for every call; queued time synchronizes around batches. Both include Python
+and allocation overhead, rather than measuring only GPU kernel duration.
+
+The no-split control and unequal-width cases stayed near baseline. Small-input
+single-call gains were minor or noisy. A mixed equal/unequal stream improved
+1.21x queued and 1.14x synchronized, but required two graphs and about 0.14s of
+observed setup versus one graph and 0.07s for baseline. Those setup measurements
+are descriptive first-call costs after backend initialization, not cold-start
+or isolated compiler-time measurements.
+
+See the [benchmark harness and reproduction instructions](../../benchmarks/inductor/shape_relations/README.md),
+[all timings and intervals](../../benchmarks/inductor/shape_relations/results/mps_2026_11_15/summary.json),
+and [full report](../../benchmarks/inductor/shape_relations/results/mps_2026_11_15/report.txt).
+The speedups cover the complete compiler fixes, including indexing and memory
+traffic changes; they do not isolate kernel-launch count as the sole cause.
+CUDA/Triton validation, BF16 coverage, training/whole-model performance and
+broader profitability evaluation remain outstanding.
 
 Prepared with an AI coding assistant for the project; not submitted upstream.
