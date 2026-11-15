@@ -1,0 +1,154 @@
+test_guard_policy_scenario_aot (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_aot) ... ok
+test_guard_policy_scenario_equal (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_equal) ... ok
+test_guard_policy_scenario_frozen (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_frozen) ... ok
+test_guard_policy_scenario_no_dispatcher (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_no_dispatcher) ... ok
+test_guard_policy_scenario_unbacked (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_unbacked) ... ok
+test_guard_policy_scenario_unequal (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_unequal) ... ok
+test_compiler_cache_preserves_equality_guards_cpu (__main__.TestGuardedShapeFusionCPU.test_compiler_cache_preserves_equality_guards_cpu) ... ok
+test_degenerate_dimensions_rows_0_left_8_right_8_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_0_left_8_right_8_cpu) ... ok
+test_degenerate_dimensions_rows_1_left_8_right_16_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_1_left_8_right_16_cpu) ... ok
+test_degenerate_dimensions_rows_3_left_1_right_1_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_3_left_1_right_1_cpu) ... ok
+test_degenerate_dimensions_rows_3_left_1_right_8_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_3_left_1_right_8_cpu) ... ok
+test_degenerate_dimensions_rows_3_left_8_right_1_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_3_left_8_right_1_cpu) ... ok
+test_disabled_cpu (__main__.TestGuardedShapeFusionCPU.test_disabled_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_False_unequal_first_False_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_False_strided_False_unequal_first_False_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_False_unequal_first_True_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_False_strided_False_unequal_first_True_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_True_unequal_first_False_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_False_strided_True_unequal_first_False_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_True_unequal_first_True_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_False_strided_True_unequal_first_True_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_False_unequal_first_False_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_True_strided_False_unequal_first_False_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_False_unequal_first_True_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_True_strided_False_unequal_first_True_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_True_unequal_first_False_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_True_strided_True_unequal_first_False_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_True_unequal_first_True_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_True_strided_True_unequal_first_True_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_compiler_cache_preserves_equality_guards_mps (__main__.TestGuardedShapeFusionMPS.test_compiler_cache_preserves_equality_guards_mps) ... V1114 23:47:11.238000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:150
+V1114 23:47:11.238000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:11.238000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: y.size()[1] == x.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+V1114 23:47:11.347000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:150
+V1114 23:47:11.347000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:11.347000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: y.size()[1] == x.size()[1]  # (_functorch/_aot_autograd/autograd_cache.py:1445 in evaluate_guards)
+ok
+test_degenerate_dimensions_rows_0_left_8_right_8_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_0_left_8_right_8_mps) ... ok
+test_degenerate_dimensions_rows_1_left_8_right_16_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_1_left_8_right_16_mps) ... ok
+test_degenerate_dimensions_rows_3_left_1_right_1_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_3_left_1_right_1_mps) ... ok
+test_degenerate_dimensions_rows_3_left_1_right_8_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_3_left_1_right_8_mps) ... ok
+test_degenerate_dimensions_rows_3_left_8_right_1_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_3_left_8_right_1_mps) ... ok
+test_disabled_mps (__main__.TestGuardedShapeFusionMPS.test_disabled_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_False_unequal_first_False_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_False_strided_False_unequal_first_False_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:11.627000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:175
+V1114 23:47:11.627000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:11.627000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: y.size()[1] == x.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+ok
+test_equal_and_unequal_widths_training_False_strided_False_unequal_first_True_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_False_strided_False_unequal_first_True_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:11.744000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:175
+V1114 23:47:11.744000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:11.744000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[1] != y.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+ok
+test_equal_and_unequal_widths_training_False_strided_True_unequal_first_False_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_False_strided_True_unequal_first_False_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:11.873000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:175
+V1114 23:47:11.873000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:11.873000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: y.size()[1] == x.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+ok
+test_equal_and_unequal_widths_training_False_strided_True_unequal_first_True_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_False_strided_True_unequal_first_True_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:12.014000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:175
+V1114 23:47:12.014000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:12.014000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[1] != y.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+ok
+test_equal_and_unequal_widths_training_True_strided_False_unequal_first_False_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_True_strided_False_unequal_first_False_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:12.253000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:175
+V1114 23:47:12.253000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:12.253000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: y.size()[1] == x.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+ok
+test_equal_and_unequal_widths_training_True_strided_False_unequal_first_True_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_True_strided_False_unequal_first_True_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:12.609000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:175
+V1114 23:47:12.609000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:12.609000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[1] != y.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+ok
+test_equal_and_unequal_widths_training_True_strided_True_unequal_first_False_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_True_strided_True_unequal_first_False_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:12.978000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:175
+V1114 23:47:12.978000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:12.978000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: y.size()[1] == x.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+ok
+test_equal_and_unequal_widths_training_True_strided_True_unequal_first_True_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_True_strided_True_unequal_first_True_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:13.419000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:175
+V1114 23:47:13.419000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:13.419000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[1] != y.size()[1]  # (_inductor/fx_passes/shape_relation_fusion.py:114 in guard_reduction_width_equality)
+ok
+test_do_not_cancel_partial_coefficient_or_unknown_symbol (__main__.TestShapeRelationSimplify.test_do_not_cancel_partial_coefficient_or_unknown_symbol) ... ok
+test_missing_or_unrelated_fact_does_not_cancel (__main__.TestShapeRelationSimplify.test_missing_or_unrelated_fact_does_not_cancel) ... ok
+test_nested_products_and_nonmultiples (__main__.TestShapeRelationSimplify.test_nested_products_and_nonmultiples) ... ok
+test_proven_divisibility_cancels_product_divisor_16 (__main__.TestShapeRelationSimplify.test_proven_divisibility_cancels_product_divisor_16) ... ok
+test_proven_divisibility_cancels_product_divisor_2 (__main__.TestShapeRelationSimplify.test_proven_divisibility_cancels_product_divisor_2) ... ok
+test_proven_divisibility_cancels_product_divisor_4 (__main__.TestShapeRelationSimplify.test_proven_divisibility_cancels_product_divisor_4) ... ok
+test_proven_divisibility_cancels_product_divisor_8 (__main__.TestShapeRelationSimplify.test_proven_divisibility_cancels_product_divisor_8) ... ok
+test_dynamic_split_forward_backward_kind_layernorm_cpu (__main__.TestSplitHeadFusionCPU.test_dynamic_split_forward_backward_kind_layernorm_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:14.679000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:98
+V1114 23:47:14.679000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:14.679000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[2] != 8  # return y.view(b, t, 8, c // 8) * 2  # test/inductor/test_shape_relation_fusion.py:106 in fn (_refs/__init__.py:4170 in _reshape_view_helper_core_alg)
+ok
+test_dynamic_split_forward_backward_kind_rmsnorm_cpu (__main__.TestSplitHeadFusionCPU.test_dynamic_split_forward_backward_kind_rmsnorm_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:16.247000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:98
+V1114 23:47:16.247000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:16.247000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[2] != 8  # return y.view(b, t, 8, c // 8) * 2  # test/inductor/test_shape_relation_fusion.py:106 in fn (_refs/__init__.py:4170 in _reshape_view_helper_core_alg)
+ok
+test_dynamic_split_forward_backward_kind_softmax_cpu (__main__.TestSplitHeadFusionCPU.test_dynamic_split_forward_backward_kind_softmax_cpu) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:17.728000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:98
+V1114 23:47:17.728000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:17.728000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[2] != 8  # return y.view(b, t, 8, c // 8) * 2  # test/inductor/test_shape_relation_fusion.py:106 in fn (_refs/__init__.py:4170 in _reshape_view_helper_core_alg)
+ok
+test_one_dynamic_softmax_split_kernel_cpu (__main__.TestSplitHeadFusionCPU.test_one_dynamic_softmax_split_kernel_cpu) ... skipped 'Kernel-count regression is for SIMD GPU backends'
+test_dynamic_split_forward_backward_kind_layernorm_mps (__main__.TestSplitHeadFusionMPS.test_dynamic_split_forward_backward_kind_layernorm_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:18.683000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:98
+V1114 23:47:18.683000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:18.683000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[2] != 8  # return y.view(b, t, 8, c // 8) * 2  # test/inductor/test_shape_relation_fusion.py:106 in fn (_refs/__init__.py:4170 in _reshape_view_helper_core_alg)
+ok
+test_dynamic_split_forward_backward_kind_rmsnorm_mps (__main__.TestSplitHeadFusionMPS.test_dynamic_split_forward_backward_kind_rmsnorm_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:19.153000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:98
+V1114 23:47:19.153000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:19.153000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[2] != 8  # return y.view(b, t, 8, c // 8) * 2  # test/inductor/test_shape_relation_fusion.py:106 in fn (_refs/__init__.py:4170 in _reshape_view_helper_core_alg)
+ok
+test_dynamic_split_forward_backward_kind_softmax_mps (__main__.TestSplitHeadFusionMPS.test_dynamic_split_forward_backward_kind_softmax_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+V1114 23:47:19.633000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles] Recompiling function fn in <checkout>/test/inductor/test_shape_relation_fusion.py:98
+V1114 23:47:19.633000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     triggered by the following guard failure(s):
+V1114 23:47:19.633000 88140 torch/_dynamo/guards.py:7339] [0/1] [__recompiles]     - 0/0: x.size()[2] != 8  # return y.view(b, t, 8, c // 8) * 2  # test/inductor/test_shape_relation_fusion.py:106 in fn (_refs/__init__.py:4170 in _reshape_view_helper_core_alg)
+ok
+test_one_dynamic_softmax_split_kernel_mps (__main__.TestSplitHeadFusionMPS.test_one_dynamic_softmax_split_kernel_mps) ... <checkout>/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+
+----------------------------------------------------------------------
+Ran 51 tests in 19.407s
+
+OK (skipped=1)
