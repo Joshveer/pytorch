@@ -95,7 +95,72 @@ for that test process to the directory containing the installed `libomp.dylib`.
 `tools/inductor/shape_relation_local_test.py` remains an optional overlay helper
 for older installed runtimes; it is not how the native validation above ran.
 
+## XSA reproduction repair
+
+The original minimal tests did not cover the full `xsa_unsqueeze` and
+`xsa_expand` functions in Cyrus's issue reproduction. Running those functions
+exposed a tiling/range-splitting regression in the first divisibility patch and
+a remaining fusion rejection in `expand`.
+
+The repair keeps equivalent shapes canonical throughout the analysis:
+
+- Equality queries use the same simplification as grouping and tiling, while
+  preserving CPU callers that compare tuples of reduction dimensions.
+- Scaled divisibility queries consume the existing modulo fact. For example,
+  `Mod(H,4)==0` also proves that `2048*H` is divisible by `8192`.
+- `Max(1,H//4)` simplifies only if existing bounds or positive exact-divisibility
+  facts prove that the quotient is at least one. Zero remains protected.
+- Merged loop extents are simplified before dependency comparison. This lets
+  `8192*(H//4)` and `2048*H` describe the same access rather than reporting
+  "no shared data". Different offsets still remain distinct dependencies.
+- Simplification caches invalidate when divisibility facts or bounds change.
+
+No new guards or workload changes are required for these repairs. Existing
+memory-dependency and tiling legality checks remain in place.
+
+On MPS, the unchanged reproductions now give the following generated kernel
+counts in both FP32 and BF16 (forward + backward). The reproduction is
+[`repro_xsa_issue.py` at `275f764`](https://github.com/CyrusD123/inductor-dynamic-fusion/blob/275f764ee84812a8db53ff93e915577f9b97b2bc/repro_xsa_issue.py),
+using `B=1`, `T=2048`, `HQ=32`, `HKV=4`, `D=64` and its original dynamic
+annotations. Matching the static reference does not mean combining the entire
+forward and backward computation into one kernel.
+
+| Function | Static reference | Dynamic, original compiler behavior | Dynamic, repaired |
+| --- | ---: | ---: | ---: |
+| `xsa_unsqueeze` | 2 + 4 | 3 + 4 | 2 + 4 |
+| `xsa_expand` | 1 + 2 | 2 + 2 | 1 + 2 |
+
+Inference-only counts also match static: two for unsqueeze and one for expand.
+The expanded regression suite passes 79 tests with one skip, including all
+previous minimal tests and XSA shape/stride/gradient checks. An additional
+indexing suite passes 26 tests with three skips. These run directly through
+the native 2.16 installation with the updated editable Python compiler source.
+
+FP32 outputs and gradients pass eager comparisons. BF16 outputs pass, and the
+repaired outputs and gradients match the corresponding pre-fix dynamic
+baseline bit-for-bit on the original seeded reproduction. BF16 gradients
+already differ from eager, and `expand` also has a pre-existing static/dynamic
+gradient discrepancy due to different intermediate precision. That numerical
+issue is not resolved here; the BF16 regression test compares against the
+unoptimized dynamic compiler rather than relaxing the tolerance. FP32 eager
+checks use `rtol=atol=2e-4`; BF16 output and baseline-gradient comparisons use
+`rtol=atol=0.02`. The bit-for-bit statement comes from the separate seeded
+reproduction comparison; it is not a claim of BF16 gradient agreement with eager.
+
+Run the targeted reproduction tests on an MPS machine with the native build:
+
+```sh
+env -u PYTHONPATH TORCHINDUCTOR_COMPILE_THREADS=1 \
+  .venv/bin/python test/inductor/test_shape_relation_fusion.py TestXSAShapeFusionMPS -v
+```
+
+The full command in the build-and-test section also runs the minimal regression
+tests and the symbolic proof/cache checks. CUDA/Triton has not been validated.
+
 ## MPS performance
+
+The measurements below are from the earlier `6345ea6` implementation and the
+minimal workloads. They are not new measurements of the XSA repair.
 
 FP32 inference on an Apple M5 Mac with 24 GB RAM, on AC power. Both variants use
 the same native 2.16 build. Baseline restores the parent simplifier during
@@ -131,7 +196,7 @@ See the [benchmark harness and reproduction instructions](../../benchmarks/induc
 and [full report](../../benchmarks/inductor/shape_relations/results/mps_2026_11_15/report.txt).
 The speedups cover the complete compiler fixes, including indexing and memory
 traffic changes; they do not isolate kernel-launch count as the sole cause.
-CUDA/Triton validation, BF16 coverage, training/whole-model performance and
+CUDA/Triton validation, broader BF16 numerical validation, training/whole-model performance and
 broader profitability evaluation remain outstanding.
 
 Prepared with an AI coding assistant for the project; not submitted upstream.

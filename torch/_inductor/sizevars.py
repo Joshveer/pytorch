@@ -3,6 +3,7 @@ import dataclasses
 import functools
 import itertools
 import logging
+import math
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any, cast
 
@@ -311,7 +312,7 @@ class SizeVarAllocator:
         # while lowering (on one model, 76k calls over 388 distinct
         # expressions) and each miss runs sympy substitution plus heuristics,
         # none of which sympy caches. _lru_cache drops the cache whenever
-        # replacements change.
+        # shape constraints change.
         self._optimization_hint_cache = self._lru_cache(
             self._optimization_hint_uncached
         )
@@ -321,7 +322,7 @@ class SizeVarAllocator:
 
     def simplify(self, expr: Expr):
         expr = sympy.expand(expr).xreplace(self.replacements)
-        if not self.shape_env.divisible or not expr.has(FloorDiv):
+        if not expr.has(FloorDiv, Max):
             return expr
 
         def cancel_divisible_factor(product):
@@ -346,23 +347,51 @@ class SizeVarAllocator:
 
         # Keep grouping, tiling and index normalization in the same form:
         # e.g. 16*T*(C//8) -> 2*T*C when Mod(C, 8) == 0 is known.
-        return sympy.expand(
-            expr.replace(lambda node: node.is_Mul, cancel_divisible_factor)
-        )
+        if self.shape_env.divisible and expr.has(FloorDiv):
+            expr = sympy.expand(
+                expr.replace(lambda node: node.is_Mul, cancel_divisible_factor)
+            )
+
+        def remove_proven_unit_max(node):
+            if len(node.args) != 2 or sympy.S.One not in node.args:
+                return node
+            other = next(arg for arg in node.args if arg != 1)
+            if self.statically_known_geq(other, 1):
+                return other
+            if isinstance(other, FloorDiv):
+                base, divisor = other.args
+                # A positive integer multiple has a quotient of at least one,
+                # even when interval bounds alone permit a zero quotient.
+                if (
+                    isinstance(divisor, sympy.Integer)
+                    and divisor > 0
+                    and self.statically_known_gt(base, 0)
+                    and self.statically_known_multiple_of(base, divisor)
+                ):
+                    return other
+            return node
+
+        if expr.has(Max):
+            result = expr.replace(
+                lambda node: isinstance(node, Max), remove_proven_unit_max
+            )
+            if result != expr:
+                return self.simplify(result)
+        return expr
 
     def make_simplify_with_ranges_cache(self) -> Callable[[Expr, VarRanges], Expr]:
         """
         self._simplify_with_ranges() can be expensive, cache its results
         """
         cache: dict[tuple[Any, ...], Expr] = {}
-        replacement_count = len(self.replacements)
+        shape_version = self.shape_env._get_key()
 
         def simplify_with_ranges(expr: Expr, var_ranges: VarRanges) -> Expr:
-            nonlocal replacement_count
-            if replacement_count != len(self.replacements):
-                # new replacements invalidates cached results
+            nonlocal shape_version
+            if shape_version != self.shape_env._get_key():
+                # Simplification also consumes divisibility facts and bounds.
                 cache.clear()
-                replacement_count = len(self.replacements)
+                shape_version = self.shape_env._get_key()
             key = (expr, *var_ranges.items())
             result = cache.get(key)
             if result is None:
@@ -379,14 +408,13 @@ class SizeVarAllocator:
         self._simplify_with_ranges() can be expensive, cache its results
         """
         cache: dict[tuple[Any, ...], Any] = {}
-        replacement_count = len(self.replacements)
+        shape_version = self.shape_env._get_key()
 
         def simplify_loops(index_vars, sizes, index_formulas):
-            nonlocal replacement_count
-            if replacement_count != len(self.replacements):
-                # new replacements invalidates cached results
+            nonlocal shape_version
+            if shape_version != self.shape_env._get_key():
                 cache.clear()
-                replacement_count = len(self.replacements)
+                shape_version = self.shape_env._get_key()
             key = (*index_vars, *sizes, *index_formulas)
             result = cache.get(key)
             if result is None:
@@ -590,7 +618,7 @@ class SizeVarAllocator:
                 )
             return [i for i, s in zip(index, sizes) if s is not None]
 
-        return [x for x in sizes if x is not None], reindex, prune
+        return [self.simplify(x) for x in sizes if x is not None], reindex, prune
 
     # Note - [On Statically Known]
     # The statically_known_* family of functions below NEVER guard, they could return True if the
@@ -608,6 +636,11 @@ class SizeVarAllocator:
         """
         Returns a bool indicating if it is sound to optimize as if left and right are equal.
         """
+        # CPU scheduler callers also compare tuples of reduction dimensions.
+        if isinstance(left, Expr):
+            left = self.simplify(left)
+        if isinstance(right, Expr):
+            right = self.simplify(right)
         return self.statically_known_true(sympy.Eq(left, right))  # type: ignore[arg-type]
 
     def statically_known_list_equals(
@@ -657,6 +690,15 @@ class SizeVarAllocator:
         # Rule 1 — concrete value
         if isinstance(numerator, (int, sympy.Integer)):
             return int(numerator) % denominator == 0
+
+        if denominator > 0 and self.shape_env.divisible:
+            # E.g. 2048*H is divisible by 8192 when Mod(H, 4) is known.
+            coefficient, rest = numerator.as_coeff_Mul()
+            if isinstance(coefficient, sympy.Integer):
+                reduced_divisor = denominator // math.gcd(int(coefficient), denominator)
+                fact = self.shape_env.replace(Mod(rest, reduced_divisor))
+                if fact in self.shape_env.divisible:
+                    return True
 
         # Rule 2 — product: any factor divisible → product divisible
         if isinstance(numerator, sympy.Mul):
@@ -1293,17 +1335,16 @@ class SizeVarAllocator:
 
     def _lru_cache(self, fn, maxsize=None):
         """
-        Wrapper around functools.lru_cache that clears when replacements
-        has been invalidated.
+        Clear cached simplifications when shape constraints change.
         """
         fn_cache = functools.lru_cache(maxsize)(fn)
-        prior_len = len(self.replacements)
+        prior_version = self.shape_env._get_key()
 
         @functools.wraps(fn)
         def wrapper(*args, **kwargs):
-            nonlocal prior_len
-            if prior_len != len(self.replacements):
-                prior_len = len(self.replacements)
+            nonlocal prior_version
+            if prior_version != self.shape_env._get_key():
+                prior_version = self.shape_env._get_key()
                 fn_cache.cache_clear()
             return fn_cache(*args, **kwargs)
 
