@@ -1,0 +1,2359 @@
+{
+  "baseline_commit": "01d544c8af54330e035a2eaf38554b7efef3a274",
+  "dtype": "float32",
+  "training": false,
+  "device": "mps",
+  "runs": 2,
+  "pairs_per_case": 32,
+  "aggregation": "Median pooled block means; ratio of baseline median to fixed median. Bootstrap resamples paired blocks within each process.",
+  "cases": [
+    {
+      "id": "amax-equal-large",
+      "kind": "amax",
+      "shapes": [
+        [
+          [
+            4096,
+            512
+          ],
+          [
+            4096,
+            512
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 413.022140625,
+          "fixed_median_us": 238.34831250000002,
+          "speedup": 1.7328511215073108,
+          "paired_bootstrap_95": [
+            1.692179129331106,
+            1.7728958722825143
+          ],
+          "per_run_speedup": [
+            1.7218288897515535,
+            1.7216923122178998
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 675.8150625,
+          "fixed_median_us": 471.5494375,
+          "speedup": 1.4331796599799782,
+          "paired_bootstrap_95": [
+            1.2519431573746589,
+            1.5222252133490597
+          ],
+          "per_run_speedup": [
+            1.3717511155549516,
+            1.3188327882562012
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05193970899563283,
+          0.055471207975642756
+        ],
+        "fixed": [
+          0.05107779201352969,
+          0.05300754198106006
+        ]
+      }
+    },
+    {
+      "id": "amax-equal-medium",
+      "kind": "amax",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 29.066390625,
+          "fixed_median_us": 16.18815625,
+          "speedup": 1.7955343509239974,
+          "paired_bootstrap_95": [
+            1.7786501735447473,
+            1.8027306704528308
+          ],
+          "per_run_speedup": [
+            1.8075499629903775,
+            1.7852731486844462
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 206.6484375,
+          "fixed_median_us": 185.88543750000002,
+          "speedup": 1.1116978300142526,
+          "paired_bootstrap_95": [
+            1.0985661626199754,
+            1.121983444042038
+          ],
+          "per_run_speedup": [
+            1.1154669483539883,
+            1.1064586296327281
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.04863799997838214,
+          0.05200312499073334
+        ],
+        "fixed": [
+          0.04817208298482001,
+          0.05074608401628211
+        ]
+      }
+    },
+    {
+      "id": "amax-equal-small",
+      "kind": "amax",
+      "shapes": [
+        [
+          [
+            17,
+            64
+          ],
+          [
+            17,
+            64
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 16.578765625000003,
+          "fixed_median_us": 15.760421874999999,
+          "speedup": 1.05192397490946,
+          "paired_bootstrap_95": [
+            1.0126376721886063,
+            1.0912028181073488
+          ],
+          "per_run_speedup": [
+            1.0573261390426159,
+            1.0048923503782714
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 180.6145625,
+          "fixed_median_us": 178.4530625,
+          "speedup": 1.0121124287233794,
+          "paired_bootstrap_95": [
+            0.9752580404143388,
+            1.3192626077983076
+          ],
+          "per_run_speedup": [
+            1.1298256393390511,
+            1.0139647169112098
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.06927191698923707,
+          0.05264158299542032
+        ],
+        "fixed": [
+          0.06589908400201239,
+          0.05105650000041351
+        ]
+      }
+    },
+    {
+      "id": "amax-equal-two-axis",
+      "kind": "amax",
+      "shapes": [
+        [
+          [
+            512,
+            8,
+            32
+          ],
+          [
+            512,
+            8,
+            32
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 29.68490625,
+          "fixed_median_us": 17.28515625,
+          "speedup": 1.7173640677966102,
+          "paired_bootstrap_95": [
+            1.682066531287941,
+            1.7267999937318654
+          ],
+          "per_run_speedup": [
+            1.7214692496398538,
+            1.6900336134453782
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 204.72393749999998,
+          "fixed_median_us": 185.260375,
+          "speedup": 1.1050605802778926,
+          "paired_bootstrap_95": [
+            1.0842321199556428,
+            1.1188446981738043
+          ],
+          "per_run_speedup": [
+            1.1084514575640863,
+            1.0900785946761242
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.057356542005436495,
+          0.06258237501606345
+        ],
+        "fixed": [
+          0.06193916601478122,
+          0.0617424999945797
+        ]
+      }
+    },
+    {
+      "id": "amax-unequal-large",
+      "kind": "amax",
+      "shapes": [
+        [
+          [
+            4096,
+            512
+          ],
+          [
+            4096,
+            768
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 545.721359375,
+          "fixed_median_us": 544.97396875,
+          "speedup": 1.0013714244493443,
+          "paired_bootstrap_95": [
+            0.9999198527828559,
+            1.0023159822139298
+          ],
+          "per_run_speedup": [
+            1.0017875331377837,
+            0.999965300167756
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 761.7109375,
+          "fixed_median_us": 756.1561875,
+          "speedup": 1.007346035239578,
+          "paired_bootstrap_95": [
+            0.9822558849565222,
+            1.0315438096262777
+          ],
+          "per_run_speedup": [
+            1.0091589033211033,
+            1.001801050915328
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.054295375011861324,
+          0.06695274999947287
+        ],
+        "fixed": [
+          0.060997124994173646,
+          0.06679650000296533
+        ]
+      }
+    },
+    {
+      "id": "amax-unequal-medium",
+      "kind": "amax",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 38.035796875,
+          "fixed_median_us": 37.82096875,
+          "speedup": 1.0056801327967042,
+          "paired_bootstrap_95": [
+            0.9951328192371065,
+            1.01177422246753
+          ],
+          "per_run_speedup": [
+            1.012827918428518,
+            1.0063269788583615
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 215.68487499999998,
+          "fixed_median_us": 215.010375,
+          "speedup": 1.0031370579210421,
+          "paired_bootstrap_95": [
+            0.9847068664045234,
+            1.0186512580456408
+          ],
+          "per_run_speedup": [
+            1.0041842500536442,
+            0.9927182796422702
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05138454199186526,
+          0.06218537501990795
+        ],
+        "fixed": [
+          0.04919854199397378,
+          0.055115750001277775
+        ]
+      }
+    },
+    {
+      "id": "amax-unequal-small",
+      "kind": "amax",
+      "shapes": [
+        [
+          [
+            17,
+            64
+          ],
+          [
+            17,
+            96
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 15.804046875000001,
+          "fixed_median_us": 15.660812499999999,
+          "speedup": 1.0091460372825485,
+          "paired_bootstrap_95": [
+            0.9926407673612082,
+            1.0227697323035347
+          ],
+          "per_run_speedup": [
+            1.0146307356797348,
+            1.0011992560446374
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 178.8463125,
+          "fixed_median_us": 177.2604375,
+          "speedup": 1.0089465817774483,
+          "paired_bootstrap_95": [
+            0.9829541983155767,
+            1.017497774300126
+          ],
+          "per_run_speedup": [
+            0.9961912269615805,
+            1.0025099220411056
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.050168749992735684,
+          0.05188774998532608
+        ],
+        "fixed": [
+          0.04998637500102632,
+          0.05250658301520161
+        ]
+      }
+    },
+    {
+      "id": "amax-unequal-two-axis",
+      "kind": "amax",
+      "shapes": [
+        [
+          [
+            512,
+            8,
+            32
+          ],
+          [
+            512,
+            16,
+            16
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 29.921875,
+          "fixed_median_us": 29.8795625,
+          "speedup": 1.0014161017250505,
+          "paired_bootstrap_95": [
+            0.995726191547845,
+            1.0025490511923119
+          ],
+          "per_run_speedup": [
+            0.9979952863853936,
+            1.000866110539827
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 201.6796875,
+          "fixed_median_us": 202.4844375,
+          "speedup": 0.9960256204875003,
+          "paired_bootstrap_95": [
+            0.9799293555041743,
+            1.0140754541786492
+          ],
+          "per_run_speedup": [
+            0.9826100010199501,
+            1.000595319317731
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.06050750002032146,
+          0.320860250008991
+        ],
+        "fixed": [
+          0.06124229199485853,
+          0.07321766699897125
+        ]
+      }
+    },
+    {
+      "id": "amin-equal-medium",
+      "kind": "amin",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 29.212890625,
+          "fixed_median_us": 16.27278125,
+          "speedup": 1.795199614386754,
+          "paired_bootstrap_95": [
+            1.787158430031327,
+            1.798938282891527
+          ],
+          "per_run_speedup": [
+            1.7959687257136994,
+            1.7917592452120006
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 206.2604375,
+          "fixed_median_us": 185.90106250000002,
+          "speedup": 1.1095172600210392,
+          "paired_bootstrap_95": [
+            1.0885652268745456,
+            1.1254211632764834
+          ],
+          "per_run_speedup": [
+            1.11050526520989,
+            1.113352922723207
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05098212501616217,
+          0.05225337500451133
+        ],
+        "fixed": [
+          0.051022958010435104,
+          0.05114587501157075
+        ]
+      }
+    },
+    {
+      "id": "amin-unequal-medium",
+      "kind": "amin",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 37.505859375,
+          "fixed_median_us": 37.596359375,
+          "speedup": 0.9975928520339611,
+          "paired_bootstrap_95": [
+            0.9903012794056955,
+            1.0013014382432996
+          ],
+          "per_run_speedup": [
+            1.003730456119984,
+            0.989397804010516
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 218.026,
+          "fixed_median_us": 219.0781875,
+          "speedup": 0.9951972055638811,
+          "paired_bootstrap_95": [
+            0.9876233949197597,
+            1.0046609743616186
+          ],
+          "per_run_speedup": [
+            0.993013864669034,
+            0.995375509485626
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.050301792012760416,
+          0.05279579199850559
+        ],
+        "fixed": [
+          0.051608917012345046,
+          0.052483208011835814
+        ]
+      }
+    },
+    {
+      "id": "max-equal-medium",
+      "kind": "max",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 29.595703125,
+          "fixed_median_us": 16.876296875,
+          "speedup": 1.7536846705299498,
+          "paired_bootstrap_95": [
+            1.7479045232842139,
+            1.7620675249335054
+          ],
+          "per_run_speedup": [
+            1.7661515685662428,
+            1.7511652103846949
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 198.5625,
+          "fixed_median_us": 185.059875,
+          "speedup": 1.072963547608578,
+          "paired_bootstrap_95": [
+            1.060378962465647,
+            1.0938902504614196
+          ],
+          "per_run_speedup": [
+            1.0797803275752593,
+            1.0677118613254184
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05539216598845087,
+          0.06707187497522682
+        ],
+        "fixed": [
+          0.05377470800885931,
+          0.058279290999053046
+        ]
+      }
+    },
+    {
+      "id": "max-unequal-medium",
+      "kind": "max",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 37.900390625,
+          "fixed_median_us": 37.906890625,
+          "speedup": 0.9998285272178005,
+          "paired_bootstrap_95": [
+            0.996491200682287,
+            1.001824478251277
+          ],
+          "per_run_speedup": [
+            1.0053272222305525,
+            0.9967518334273551
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 216.3176875,
+          "fixed_median_us": 215.6745,
+          "speedup": 1.0029822139381337,
+          "paired_bootstrap_95": [
+            0.9919686659165862,
+            1.0122392088514691
+          ],
+          "per_run_speedup": [
+            0.9996551838410063,
+            1.000060665989474
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05238941599964164,
+          0.05582775000948459
+        ],
+        "fixed": [
+          0.05179520798265003,
+          0.05530637499759905
+        ]
+      }
+    },
+    {
+      "id": "mean-control",
+      "kind": "mean",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 17.015625,
+          "fixed_median_us": 17.01953125,
+          "speedup": 0.999770484278173,
+          "paired_bootstrap_95": [
+            0.9951187001754045,
+            1.0054871086556167
+          ],
+          "per_run_speedup": [
+            1.001111417024478,
+            0.9998093492208981
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 184.515625,
+          "fixed_median_us": 182.6224375,
+          "speedup": 1.0103666752339784,
+          "paired_bootstrap_95": [
+            0.9920934519186234,
+            1.0282986105815912
+          ],
+          "per_run_speedup": [
+            1.010366497234188,
+            1.0034661494264727
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          1
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.054203584004426375,
+          0.055049584014341235
+        ],
+        "fixed": [
+          0.05406570801278576,
+          0.05458491700119339
+        ]
+      }
+    },
+    {
+      "id": "min-equal-medium",
+      "kind": "min",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 29.34375,
+          "fixed_median_us": 16.261078124999997,
+          "speedup": 1.8045390209943417,
+          "paired_bootstrap_95": [
+            1.7957665238986706,
+            1.8110045318844583
+          ],
+          "per_run_speedup": [
+            1.808863957167662,
+            1.7923199975419075
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 207.5026875,
+          "fixed_median_us": 186.2734375,
+          "speedup": 1.1139682086985698,
+          "paired_bootstrap_95": [
+            1.093469677549295,
+            1.1217829971060689
+          ],
+          "per_run_speedup": [
+            1.111533038486067,
+            1.0985588495826797
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.051461583003401756,
+          0.053679500008001924
+        ],
+        "fixed": [
+          0.05126995799946599,
+          0.051948541979072616
+        ]
+      }
+    },
+    {
+      "id": "min-unequal-medium",
+      "kind": "min",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 37.74153125,
+          "fixed_median_us": 37.548171875,
+          "speedup": 1.0051496348648798,
+          "paired_bootstrap_95": [
+            1.0013366179195882,
+            1.0084616303307044
+          ],
+          "per_run_speedup": [
+            0.9999654658203158,
+            1.0095369157037024
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 217.03125,
+          "fixed_median_us": 218.385375,
+          "speedup": 0.99379937873587,
+          "paired_bootstrap_95": [
+            0.9864957146814365,
+            1.0044129349634667
+          ],
+          "per_run_speedup": [
+            1.0005986435340468,
+            0.9863811355702786
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05133366701193154,
+          0.05339416701463051
+        ],
+        "fixed": [
+          0.05396512500010431,
+          0.059184999990975484
+        ]
+      }
+    },
+    {
+      "id": "norm-control",
+      "kind": "norm",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 16.54490625,
+          "fixed_median_us": 16.523421875,
+          "speedup": 1.0013002376361586,
+          "paired_bootstrap_95": [
+            0.9977130221427923,
+            1.0073778227516434
+          ],
+          "per_run_speedup": [
+            1.001724602792489,
+            1.0031027019794918
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 185.7213125,
+          "fixed_median_us": 186.947875,
+          "speedup": 0.9934390134148355,
+          "paired_bootstrap_95": [
+            0.9824307327858295,
+            1.006369590815085
+          ],
+          "per_run_speedup": [
+            0.9943252922724835,
+            0.9918362220547601
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          1
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05704854099894874,
+          0.062321415985934436
+        ],
+        "fixed": [
+          0.06010608401265927,
+          0.05997837500763126
+        ]
+      }
+    },
+    {
+      "id": "prod-equal-medium",
+      "kind": "prod",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 28.834,
+          "fixed_median_us": 16.1549375,
+          "speedup": 1.784841321732133,
+          "paired_bootstrap_95": [
+            1.7753535967266827,
+            1.7872167564869876
+          ],
+          "per_run_speedup": [
+            1.8166290100318871,
+            1.7769723781103322
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 203.403625,
+          "fixed_median_us": 185.6171875,
+          "speedup": 1.0958232248832023,
+          "paired_bootstrap_95": [
+            1.0861208502108823,
+            1.1134624982697734
+          ],
+          "per_run_speedup": [
+            1.105692203077774,
+            1.0813698559993101
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05260066699702293,
+          0.05328400002326816
+        ],
+        "fixed": [
+          0.049669875006657094,
+          0.053150791994994506
+        ]
+      }
+    },
+    {
+      "id": "prod-unequal-medium",
+      "kind": "prod",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 37.061828125,
+          "fixed_median_us": 37.025390625,
+          "speedup": 1.0009841219602258,
+          "paired_bootstrap_95": [
+            0.9963054290694489,
+            1.006508839516597
+          ],
+          "per_run_speedup": [
+            0.9985645297658368,
+            0.999999576293808
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 216.6015625,
+          "fixed_median_us": 216.7708125,
+          "speedup": 0.9992192214530726,
+          "paired_bootstrap_95": [
+            0.9890869722911119,
+            1.018171738011061
+          ],
+          "per_run_speedup": [
+            0.99746535295198,
+            1.0121607844550993
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.04954974999418482,
+          0.052690833021188155
+        ],
+        "fixed": [
+          0.0528724160103593,
+          0.05373337501077913
+        ]
+      }
+    },
+    {
+      "id": "std-equal-medium",
+      "kind": "std",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 42.493484374999994,
+          "fixed_median_us": 28.843109374999997,
+          "speedup": 1.4732629489604048,
+          "paired_bootstrap_95": [
+            1.4681114975604657,
+            1.4771540208125753
+          ],
+          "per_run_speedup": [
+            1.4681267770701736,
+            1.4763510726968057
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 220.502625,
+          "fixed_median_us": 204.729125,
+          "speedup": 1.0770457061251055,
+          "paired_bootstrap_95": [
+            1.0718381486118613,
+            1.0835525588057213
+          ],
+          "per_run_speedup": [
+            1.0773189980555873,
+            1.0799426100828886
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.055783000017981976,
+          0.057643250009277835
+        ],
+        "fixed": [
+          0.05641345801996067,
+          0.05647091698483564
+        ]
+      }
+    },
+    {
+      "id": "std-unequal-medium",
+      "kind": "std",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 52.041015625,
+          "fixed_median_us": 52.184234375,
+          "speedup": 0.9972555168871345,
+          "paired_bootstrap_95": [
+            0.9951617506149635,
+            0.9992769226624668
+          ],
+          "per_run_speedup": [
+            0.9986156032649487,
+            0.9976825885978428
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 234.640625,
+          "fixed_median_us": 232.4921875,
+          "speedup": 1.0092409019120265,
+          "paired_bootstrap_95": [
+            0.9945236001719503,
+            1.0190087731137805
+          ],
+          "per_run_speedup": [
+            1.0035956728350526,
+            1.0099819504383831
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.06257474998710677,
+          0.05795945800491609
+        ],
+        "fixed": [
+          0.05442654201760888,
+          0.060237291996600106
+        ]
+      }
+    },
+    {
+      "id": "var-equal-large",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            4096,
+            512
+          ],
+          [
+            4096,
+            512
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 580.770828125,
+          "fixed_median_us": 314.1875,
+          "speedup": 1.8484848319076983,
+          "paired_bootstrap_95": [
+            1.8475374358290155,
+            1.849697111926615
+          ],
+          "per_run_speedup": [
+            1.8424878529716964,
+            1.8514584697521552
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 824.7708124999999,
+          "fixed_median_us": 503.0806875,
+          "speedup": 1.6394404177958033,
+          "paired_bootstrap_95": [
+            1.6207687441241383,
+            1.6493524726899258
+          ],
+          "per_run_speedup": [
+            1.648657452007033,
+            1.624921310303823
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05791533301817253,
+          0.05840529201668687
+        ],
+        "fixed": [
+          0.05534341698512435,
+          0.0555387909989804
+        ]
+      }
+    },
+    {
+      "id": "var-equal-medium",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 42.1204375,
+          "fixed_median_us": 28.41278125,
+          "speedup": 1.4824468301567628,
+          "paired_bootstrap_95": [
+            1.4773406502949649,
+            1.4853077466650764
+          ],
+          "per_run_speedup": [
+            1.479686613532089,
+            1.4838795665382318
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 219.90106250000002,
+          "fixed_median_us": 203.09375,
+          "speedup": 1.082756424065241,
+          "paired_bootstrap_95": [
+            1.0718962020332592,
+            1.0896526242560098
+          ],
+          "per_run_speedup": [
+            1.081757108322781,
+            1.0819940652818991
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.051087458996335045,
+          0.0544784170051571
+        ],
+        "fixed": [
+          0.049312374991131946,
+          0.05360766698140651
+        ]
+      }
+    },
+    {
+      "id": "var-equal-small",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            17,
+            64
+          ],
+          [
+            17,
+            64
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 18.3235625,
+          "fixed_median_us": 16.361984375,
+          "speedup": 1.1198863218569723,
+          "paired_bootstrap_95": [
+            1.0244705733534445,
+            1.1524628228985376
+          ],
+          "per_run_speedup": [
+            1.1364766690595838,
+            1.0726025777462458
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 176.974,
+          "fixed_median_us": 176.502625,
+          "speedup": 1.002670640167533,
+          "paired_bootstrap_95": [
+            0.9872307073856891,
+            1.0166750844633154
+          ],
+          "per_run_speedup": [
+            1.0137069171546116,
+            0.9860631259244204
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.055562624998856336,
+          0.057740415999433026
+        ],
+        "fixed": [
+          0.05179633299121633,
+          0.05527379098930396
+        ]
+      }
+    },
+    {
+      "id": "var-equal-two-axis",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            512,
+            8,
+            32
+          ],
+          [
+            512,
+            8,
+            32
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 42.822921875,
+          "fixed_median_us": 30.055328125000003,
+          "speedup": 1.424803006538462,
+          "paired_bootstrap_95": [
+            1.421277006232866,
+            1.4277783276783962
+          ],
+          "per_run_speedup": [
+            1.4210780661241957,
+            1.4261919468877804
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 207.1796875,
+          "fixed_median_us": 199.7916875,
+          "speedup": 1.0369785154349829,
+          "paired_bootstrap_95": [
+            1.0196169404622635,
+            1.0493634095488602
+          ],
+          "per_run_speedup": [
+            1.0334467484511756,
+            1.0381282908159832
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.0652233750151936,
+          0.0686853330116719
+        ],
+        "fixed": [
+          0.06417562501155771,
+          0.07605424997746013
+        ]
+      }
+    },
+    {
+      "id": "var-mixed-axes-unequal-first",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            512,
+            8,
+            32
+          ],
+          [
+            512,
+            16,
+            16
+          ]
+        ],
+        [
+          [
+            512,
+            8,
+            32
+          ],
+          [
+            512,
+            8,
+            32
+          ]
+        ],
+        [
+          [
+            768,
+            6,
+            24
+          ],
+          [
+            768,
+            8,
+            24
+          ]
+        ],
+        [
+          [
+            768,
+            6,
+            24
+          ],
+          [
+            768,
+            6,
+            32
+          ]
+        ],
+        [
+          [
+            768,
+            6,
+            24
+          ],
+          [
+            768,
+            6,
+            24
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 43.23125,
+          "fixed_median_us": 38.04245,
+          "speedup": 1.1363950008477373,
+          "paired_bootstrap_95": [
+            1.129184344963503,
+            1.1422213391489748
+          ],
+          "per_run_speedup": [
+            1.1395533613788862,
+            1.1394347240915208
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 242.47605,
+          "fixed_median_us": 237.1640625,
+          "speedup": 1.022397944460915,
+          "paired_bootstrap_95": [
+            0.9940414850890371,
+            1.0437376561544287
+          ],
+          "per_run_speedup": [
+            1.0255655574364073,
+            1.0253062630021346
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 2
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2,
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.08341212596860714,
+          0.06481120601529256
+        ],
+        "fixed": [
+          0.1969342929951381,
+          0.12783962598768994
+        ]
+      }
+    },
+    {
+      "id": "var-mixed-widths",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ],
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ],
+        [
+          [
+            768,
+            128
+          ],
+          [
+            768,
+            128
+          ]
+        ],
+        [
+          [
+            512,
+            192
+          ],
+          [
+            512,
+            288
+          ]
+        ],
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 37.0078125,
+          "fixed_median_us": 28.668487499999998,
+          "speedup": 1.2908882095715724,
+          "paired_bootstrap_95": [
+            1.2892562605279894,
+            1.2919573804294755
+          ],
+          "per_run_speedup": [
+            1.290665273651475,
+            1.289554140002332
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 219.107825,
+          "fixed_median_us": 210.109375,
+          "speedup": 1.0428274559381274,
+          "paired_bootstrap_95": [
+            1.0384472706690464,
+            1.0483644397382152
+          ],
+          "per_run_speedup": [
+            1.0408840240023283,
+            1.041376119734746
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 2
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1,
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.054565667029237375,
+          0.05767995800124481
+        ],
+        "fixed": [
+          0.10646158398594707,
+          0.11151300003984943
+        ]
+      }
+    },
+    {
+      "id": "var-unequal-large",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            4096,
+            512
+          ],
+          [
+            4096,
+            768
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 754.98696875,
+          "fixed_median_us": 755.7011875000001,
+          "speedup": 0.9990548926456463,
+          "paired_bootstrap_95": [
+            0.9987016120055022,
+            1.000047606697283
+          ],
+          "per_run_speedup": [
+            1.0013658892053472,
+            0.9987869916176358
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 989.7291250000001,
+          "fixed_median_us": 995.5625,
+          "speedup": 0.9941406240190848,
+          "paired_bootstrap_95": [
+            0.9853087345240555,
+            1.0079460850591961
+          ],
+          "per_run_speedup": [
+            1.003898338711144,
+            0.9878497080796033
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.07444100000429899,
+          0.060019541007932276
+        ],
+        "fixed": [
+          0.07358191601815633,
+          0.05890112501219846
+        ]
+      }
+    },
+    {
+      "id": "var-unequal-medium",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 51.51171875,
+          "fixed_median_us": 51.71484375,
+          "speedup": 0.9960722108920613,
+          "paired_bootstrap_95": [
+            0.9945477071844073,
+            0.9979216667301596
+          ],
+          "per_run_speedup": [
+            0.995916516110627,
+            1.0006460030801427
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 225.6224375,
+          "fixed_median_us": 228.0676875,
+          "speedup": 0.9892784022725709,
+          "paired_bootstrap_95": [
+            0.9776870448958386,
+            1.012784829817757
+          ],
+          "per_run_speedup": [
+            0.9951336168648998,
+            1.0007761881145216
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.05620395898586139,
+          0.055225250020157546
+        ],
+        "fixed": [
+          0.05588091697427444,
+          0.05593950001639314
+        ]
+      }
+    },
+    {
+      "id": "var-unequal-small",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            17,
+            64
+          ],
+          [
+            17,
+            96
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 16.689453125,
+          "fixed_median_us": 16.3671875,
+          "speedup": 1.019689737470167,
+          "paired_bootstrap_95": [
+            0.9810686507678399,
+            1.057744705174503
+          ],
+          "per_run_speedup": [
+            0.9999202114876231,
+            1.0199531877307737
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 178.9739375,
+          "fixed_median_us": 177.101625,
+          "speedup": 1.0105719668015467,
+          "paired_bootstrap_95": [
+            0.9874152594206129,
+            1.028555965179405
+          ],
+          "per_run_speedup": [
+            1.005150679295805,
+            1.0204297618946252
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.04976770799839869,
+          0.0610904999775812
+        ],
+        "fixed": [
+          0.05263937500421889,
+          0.05721850000554696
+        ]
+      }
+    },
+    {
+      "id": "var-unequal-two-axis",
+      "kind": "var",
+      "shapes": [
+        [
+          [
+            512,
+            8,
+            32
+          ],
+          [
+            512,
+            16,
+            16
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 42.69465625,
+          "fixed_median_us": 42.62565625,
+          "speedup": 1.0016187434064432,
+          "paired_bootstrap_95": [
+            0.9998171770078289,
+            1.0038358200087578
+          ],
+          "per_run_speedup": [
+            1.004153846665089,
+            1.004174279171784
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 214.40625,
+          "fixed_median_us": 215.5625,
+          "speedup": 0.9946361264134532,
+          "paired_bootstrap_95": [
+            0.9831587145305188,
+            1.0194073750818242
+          ],
+          "per_run_speedup": [
+            1.0038913816381445,
+            1.013313388182498
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.06152187500265427,
+          0.06675279201590456
+        ],
+        "fixed": [
+          0.0644977499905508,
+          0.06774845797917806
+        ]
+      }
+    },
+    {
+      "id": "var_mean-equal-medium",
+      "kind": "var_mean",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            256
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 42.438140625,
+          "fixed_median_us": 28.462249999999997,
+          "speedup": 1.4910325299299951,
+          "paired_bootstrap_95": [
+            1.4849743270900284,
+            1.4967789177290112
+          ],
+          "per_run_speedup": [
+            1.491206443174627,
+            1.4963373213018354
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 220.84375,
+          "fixed_median_us": 205.0885625,
+          "speedup": 1.0768213853953947,
+          "paired_bootstrap_95": [
+            1.068689834893099,
+            1.0917628464095595
+          ],
+          "per_run_speedup": [
+            1.0743325215905202,
+            1.0832327981014553
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.06770929100457579,
+          0.06623629198293202
+        ],
+        "fixed": [
+          0.06220258300891146,
+          0.06535154097946361
+        ]
+      }
+    },
+    {
+      "id": "var_mean-equal-two-axis",
+      "kind": "var_mean",
+      "shapes": [
+        [
+          [
+            512,
+            8,
+            32
+          ],
+          [
+            512,
+            8,
+            32
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 42.8671875,
+          "fixed_median_us": 29.748046875,
+          "speedup": 1.441008469568643,
+          "paired_bootstrap_95": [
+            1.4359471675140678,
+            1.444246887748388
+          ],
+          "per_run_speedup": [
+            1.4437236382918508,
+            1.4394024561585823
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 220.23175,
+          "fixed_median_us": 206.078125,
+          "speedup": 1.0686808704223216,
+          "paired_bootstrap_95": [
+            1.0586169823405618,
+            1.0822998999493307
+          ],
+          "per_run_speedup": [
+            1.0745752506159518,
+            1.0799358573022946
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          1
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.08965937502216548,
+          0.07413391701993532
+        ],
+        "fixed": [
+          0.29274562498903833,
+          0.07290779199684039
+        ]
+      }
+    },
+    {
+      "id": "var_mean-unequal-medium",
+      "kind": "var_mean",
+      "shapes": [
+        [
+          [
+            512,
+            256
+          ],
+          [
+            512,
+            384
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 51.9264375,
+          "fixed_median_us": 51.959640625,
+          "speedup": 0.9993609823970948,
+          "paired_bootstrap_95": [
+            0.9967965580114877,
+            1.0025994454098688
+          ],
+          "per_run_speedup": [
+            0.9995627639198065,
+            0.9992206381534283
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 225.30725,
+          "fixed_median_us": 224.770875,
+          "speedup": 1.0023863189570268,
+          "paired_bootstrap_95": [
+            0.9934292857561705,
+            1.0146473592631848
+          ],
+          "per_run_speedup": [
+            1.0036565080488316,
+            1.0103499601924608
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.06612254201900214,
+          0.06455304200062528
+        ],
+        "fixed": [
+          0.0671360409760382,
+          0.06527275001280941
+        ]
+      }
+    },
+    {
+      "id": "var_mean-unequal-two-axis",
+      "kind": "var_mean",
+      "shapes": [
+        [
+          [
+            512,
+            8,
+            32
+          ],
+          [
+            512,
+            16,
+            16
+          ]
+        ]
+      ],
+      "timings": {
+        "queued_us": {
+          "baseline_median_us": 43.0013125,
+          "fixed_median_us": 43.022140625,
+          "speedup": 0.9995158742754912,
+          "paired_bootstrap_95": [
+            0.9983042185050945,
+            1.0012721535836326
+          ],
+          "per_run_speedup": [
+            0.9975107978340955,
+            0.9999996373308422
+          ]
+        },
+        "sync_us": {
+          "baseline_median_us": 216.7421875,
+          "fixed_median_us": 215.48175,
+          "speedup": 1.005849393278085,
+          "paired_bootstrap_95": [
+            0.9863799370480331,
+            1.023952945203091
+          ],
+          "per_run_speedup": [
+            0.9932795706517902,
+            1.007426068072041
+          ]
+        }
+      },
+      "graphs": {
+        "baseline": 1,
+        "fixed": 1
+      },
+      "metal_definitions": {
+        "baseline": [
+          2
+        ],
+        "fixed": [
+          2
+        ]
+      },
+      "setup_totals_s": {
+        "baseline": [
+          0.07221175002632663,
+          0.07913145801285282
+        ],
+        "fixed": [
+          0.07309970899950713,
+          0.07833270798437297
+        ]
+      }
+    }
+  ]
+}

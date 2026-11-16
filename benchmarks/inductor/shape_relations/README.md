@@ -20,7 +20,17 @@ runs against the published compiler source, raw timings and generated code.
 The new regression suite can also be run on CUDA as described in the usage
 notes; the matmul timing harness remains MPS-only.
 
-## Recorded results
+## Generalized reduction shape checks
+
+The MPS-only `reductions.py` runner compares the new tagged-reduction shape
+policy against the previous pass at `01d544c`, with the earlier project fixes
+retained in both variants. It covers eight operations, multiple sizes, unequal
+shapes, two-axis reductions and mixed streams. See the
+[usage and timing notes](../../../tools/inductor/general_shape_fusion.md) and
+[recorded battery-powered MPS results](results/reductions_mps_2026_11_16/README.md).
+The `summarize_reductions.py` companion validates and combines two runs.
+
+## Recorded original-fix results
 
 [Full report](results/mps_2026_11_15/report.txt) and
 [machine-readable summary](results/mps_2026_11_15/summary.json).

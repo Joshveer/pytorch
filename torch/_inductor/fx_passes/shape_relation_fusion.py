@@ -1,3 +1,5 @@
+import operator
+
 import sympy
 
 import torch
@@ -85,104 +87,115 @@ def guard_shape_compatibility(shapes, extra_condition, max_conditions):
     return guard_or_false(sym_and(True, *predicates))
 
 
-def guard_reduction_width_equality(graph: torch.fx.Graph) -> None:
-    """Specialize one row-reduction epilogue on a backed width equality.
-
-    Both equality and inequality are guarded: an unequal-first call must not
-    permanently hide the fused specialization. This only changes Dynamo's
-    specialization domain, never the accepted input domain. AOT exports have
-    no Dynamo guard dispatcher and must not acquire these assumptions.
-    """
-    context = TracingContext.try_get()
+def _reduction_shape(node):
+    """Find a kept prefix and a reduced suffix from operator metadata."""
     if (
-        V.aot_compilation
-        or CompileContext.try_get() is None
-        or context is None
-        or context.fake_mode is None
+        node.op != "call_function"
+        or not isinstance(node.target, torch._ops.OpOverload)
+        or torch.Tag.reduction not in node.target.tags
+        or node.target._schema.is_mutable
+        or not node.args
+        or not isinstance(node.args[0], torch.fx.Node)
     ):
-        return
-
-    for reduction in graph.nodes:
-        if reduction.op != "call_function" or reduction.target not in (
-            torch.ops.aten.mean.dim,
-            torch.ops.aten.sum.dim_IntList,
-        ):
-            continue
-        arg = reduction.args[0]
-        if not isinstance(arg, torch.fx.Node):
-            continue
-        source = arg.meta.get("val")
-        dims = (
-            reduction.args[1]
-            if len(reduction.args) > 1
-            else reduction.kwargs.get("dim")
-        )
-        keepdim = (
-            reduction.args[2]
-            if len(reduction.args) > 2
-            else reduction.kwargs.get("keepdim", False)
-        )
+        return None
+    source = node.args[0].meta.get("val")
+    if (
+        not isinstance(source, torch.Tensor)
+        or source.layout != torch.strided
+        or source.device.type not in ("cuda", "mps")
+        or not source.dtype.is_floating_point
+        or source.ndim < 2
+    ):
+        return None
+    value = node.meta.get("val")
+    roots = (
+        [node]
+        if isinstance(value, torch.Tensor)
+        else [
+            user
+            for user in node.users
+            if user.op == "call_function"
+            and user.target is operator.getitem
+            and len(user.args) == 2
+            and isinstance(user.args[1], int)
+        ]
+    )
+    for root in roots:
+        output = root.meta.get("val")
         if (
-            not isinstance(source, torch.Tensor)
-            or source.device.type not in ("cuda", "mps")
-            or not source.dtype.is_floating_point
-            or source.ndim < 2
-            or dims not in ([-1], [source.ndim - 1])
-            or keepdim is not True
+            not isinstance(output, torch.Tensor)
+            or output.ndim != source.ndim
+            or output.dtype != source.dtype
+            or output.device != source.device
         ):
             continue
+        axes = [
+            i
+            for i, (left, right) in enumerate(zip(source.shape, output.shape))
+            if not statically_known_true(left == right)
+        ]
+        if (
+            not axes
+            or axes[0] == 0
+            or axes != list(range(axes[0], source.ndim))
+            or not all(statically_known_true(output.shape[i] == 1) for i in axes)
+        ):
+            continue
+        return source, axes[0], roots
+    return None
 
-        # Follow only pointwise operations that still have the reduced shape.
-        # Stop at the first full-width consumer; bound exploration and guards.
-        pending = list(reduction.users)
+
+def guard_reduction_shape_equality(graph: torch.fx.Graph) -> None:
+    """Specialize one reduction epilogue on a joint iteration-shape guard.
+
+    Operator tags and tensor metadata describe the reduction, rather than an
+    operator-name list or a particular schema's dim/keepdim argument positions.
+    The shared guard helper preserves the unequal-shape fallback.
+    """
+    for reduction in graph.nodes:
+        candidate = _reduction_shape(reduction)
+        if candidate is None:
+            continue
+        source, prefix_rank, roots = candidate
+        pending = list(roots)
         seen = OrderedSet()
         while pending and len(seen) < 8:
-            user = pending.pop()
-            if user in seen:
+            current = pending.pop()
+            if current in seen:
                 continue
-            seen.add(user)
-            if (
-                user.op != "call_function"
-                or not isinstance(user.target, torch._ops.OpOverload)
-                or torch.Tag.pointwise not in user.target.tags
-            ):
-                continue
-            value = user.meta.get("val")
+            seen.add(current)
+            value = current.meta.get("val")
             if (
                 not isinstance(value, torch.Tensor)
                 or value.ndim != source.ndim
                 or value.device != source.device
                 or value.dtype != source.dtype
                 or not statically_known_true(
-                    sym_eq(value.shape[:-1], source.shape[:-1])
+                    sym_eq(value.shape[:prefix_rank], source.shape[:prefix_rank])
                 )
             ):
                 continue
-            if statically_known_true(value.shape[-1] == 1):
-                pending.extend(user.users)
+            if all(statically_known_true(d == 1) for d in value.shape[prefix_rank:]):
+                pending.extend(
+                    user
+                    for user in current.users
+                    if user.op == "call_function"
+                    and isinstance(user.target, torch._ops.OpOverload)
+                    and torch.Tag.pointwise in user.target.tags
+                    and not user.target._schema.is_mutable
+                )
                 continue
-            left, right = source.shape[-1], value.shape[-1]
-            if not isinstance(left, torch.SymInt) or not isinstance(
-                right, torch.SymInt
+            left, right = source.shape[prefix_rank:], value.shape[prefix_rank:]
+            unknown = [
+                (a, b) for a, b in zip(left, right) if not statically_known_true(a == b)
+            ]
+            if not unknown or any(
+                not isinstance(a, torch.SymInt)
+                or not isinstance(b, torch.SymInt)
+                or statically_known_true(a != b)
+                for a, b in unknown
             ):
                 continue
-            env = left.node.shape_env
-            if (
-                env is None
-                or env is not context.fake_mode.shape_env
-                or env is not right.node.shape_env
-                or env.frozen
-                or not isinstance(left.node.expr, sympy.Symbol)
-                or not isinstance(right.node.expr, sympy.Symbol)
-                or left.node.expr not in env.backed_var_to_val
-                or right.node.expr not in env.backed_var_to_val
-                or not statically_known_true(left > 1)
-                or not statically_known_true(right > 1)
-                or statically_known_true(left == right)
-                or statically_known_true(left != right)
-            ):
-                continue
-            # On equality ShapeEnv unifies the symbols before lowering. On
-            # inequality the ordinary unfused graph remains a valid fallback.
-            guard_shape_compatibility([(left,), (right,)], True, max_conditions=1)
+            # One conjunction covers different mismatch axes with one fallback.
+            guard_shape_compatibility([left, right], True, max_conditions=4)
             return

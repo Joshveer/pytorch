@@ -387,9 +387,9 @@ def post_grad_passes(gm: torch.fx.GraphModule, is_inference: bool):
         gm.graph.eliminate_dead_code()
 
     if config.guarded_shape_fusion:
-        from .shape_relation_fusion import guard_reduction_width_equality
+        from .shape_relation_fusion import guard_reduction_shape_equality
 
-        guard_reduction_width_equality(gm.graph)
+        guard_reduction_shape_equality(gm.graph)
 
     if config.reorder_for_locality and (
         is_inference or config.reorder_for_locality_in_training

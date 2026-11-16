@@ -14,7 +14,7 @@ from torch._inductor import config
 from torch._inductor.codegen.simd import CantSplit, SIMDKernel, SIMDScheduling
 from torch._inductor.dependencies import MemoryDep
 from torch._inductor.fx_passes.shape_relation_fusion import (
-    guard_reduction_width_equality,
+    guard_reduction_shape_equality,
 )
 from torch._inductor.graph import GraphLowering
 from torch._inductor.sizevars import SizeVarAllocator
@@ -422,7 +422,7 @@ class TestEqualityGuardPolicy(TestCase):
             ),
             tracing(TracingContext(fake_mode)),
         ):
-            guard_reduction_width_equality(graph)
+            guard_reduction_shape_equality(graph)
         self.assertEqual(
             len(env.guards) - before, int(scenario in ("equal", "unequal"))
         )

@@ -15,10 +15,13 @@ values as proof. Unknown divisibility remains unknown.
 
 ## Symbolic equality
 
-The post-grad pass `guard_reduction_width_equality` recognizes a last-dimension
-mean/sum with `keepdim=True`, followed by a short pointwise chain broadcasting
-the result over another width. It considers one pair of independent backed
-width symbols per graph, with already-equal outer dimensions.
+The post-grad pass `guard_reduction_shape_equality` recognizes tagged reductions
+whose metadata retains a prefix and reduces a trailing block to singleton
+dimensions, followed by a short pointwise broadcast chain. It considers one
+joint guard of up to four backed dimension equalities per graph, with
+already-equal retained dimensions. This includes the original mean/sum pattern
+and now also max/min, product, variance and other compatible tagged reductions.
+See the [generalization findings and tests](general_shape_fusion.md).
 
 For `y * rsqrt(mean(x**2, -1, keepdim=True) + eps)`, both equal and unequal
 widths are valid. The pass evaluates width equality using `guard_or_false`,
@@ -35,7 +38,7 @@ assertion is added to the workload. The scheduler's dependency and tiling checks
 are unchanged.
 
 The pass is enabled by `torch._inductor.config.guarded_shape_fusion` on this
-project branch; setting it to `False` restores the original equality behavior.
+project branch; setting it to `False` disables reduction equality speculation.
 It targets CUDA and MPS, skips CPU, and declines unbacked/compound widths,
 frozen ShapeEnvs, calls without an active guard-dispatching compilation context,
 and AOTInductor compilation. AOT exports cannot rely on

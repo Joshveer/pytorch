@@ -1,0 +1,38 @@
+Paired MPS reduction benchmarks (FP32 inference)
+Baseline reduction pass: 01d544c8af54330e035a2eaf38554b7efef3a274
+Speedup = baseline / fixed. Below 1 means slower.
+Case | synchronized speedup [95% interval] | queued speedup | baseline/fixed graphs
+amax-equal-large | 1.433 [1.252, 1.522] | 1.733 | 1/1
+amax-equal-medium | 1.112 [1.099, 1.122] | 1.796 | 1/1
+amax-equal-small | 1.012 [0.975, 1.319] | 1.052 | 1/1
+amax-equal-two-axis | 1.105 [1.084, 1.119] | 1.717 | 1/1
+amax-unequal-large | 1.007 [0.982, 1.032] | 1.001 | 1/1
+amax-unequal-medium | 1.003 [0.985, 1.019] | 1.006 | 1/1
+amax-unequal-small | 1.009 [0.983, 1.017] | 1.009 | 1/1
+amax-unequal-two-axis | 0.996 [0.980, 1.014] | 1.001 | 1/1
+amin-equal-medium | 1.110 [1.089, 1.125] | 1.795 | 1/1
+amin-unequal-medium | 0.995 [0.988, 1.005] | 0.998 | 1/1
+max-equal-medium | 1.073 [1.060, 1.094] | 1.754 | 1/1
+max-unequal-medium | 1.003 [0.992, 1.012] | 1.000 | 1/1
+mean-control | 1.010 [0.992, 1.028] | 1.000 | 1/1
+min-equal-medium | 1.114 [1.093, 1.122] | 1.805 | 1/1
+min-unequal-medium | 0.994 [0.986, 1.004] | 1.005 | 1/1
+norm-control | 0.993 [0.982, 1.006] | 1.001 | 1/1
+prod-equal-medium | 1.096 [1.086, 1.113] | 1.785 | 1/1
+prod-unequal-medium | 0.999 [0.989, 1.018] | 1.001 | 1/1
+std-equal-medium | 1.077 [1.072, 1.084] | 1.473 | 1/1
+std-unequal-medium | 1.009 [0.995, 1.019] | 0.997 | 1/1
+var-equal-large | 1.639 [1.621, 1.649] | 1.848 | 1/1
+var-equal-medium | 1.083 [1.072, 1.090] | 1.482 | 1/1
+var-equal-small | 1.003 [0.987, 1.017] | 1.120 | 1/1
+var-equal-two-axis | 1.037 [1.020, 1.049] | 1.425 | 1/1
+var-mixed-axes-unequal-first | 1.022 [0.994, 1.044] | 1.136 | 1/2
+var-mixed-widths | 1.043 [1.038, 1.048] | 1.291 | 1/2
+var-unequal-large | 0.994 [0.985, 1.008] | 0.999 | 1/1
+var-unequal-medium | 0.989 [0.978, 1.013] | 0.996 | 1/1
+var-unequal-small | 1.011 [0.987, 1.029] | 1.020 | 1/1
+var-unequal-two-axis | 0.995 [0.983, 1.019] | 1.002 | 1/1
+var_mean-equal-medium | 1.077 [1.069, 1.092] | 1.491 | 1/1
+var_mean-equal-two-axis | 1.069 [1.059, 1.082] | 1.441 | 1/1
+var_mean-unequal-medium | 1.002 [0.993, 1.015] | 0.999 | 1/1
+var_mean-unequal-two-axis | 1.006 [0.986, 1.024] | 1.000 | 1/1

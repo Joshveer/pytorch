@@ -336,8 +336,8 @@ epilogue_fusion_user_defined_triton_kernel = False
 # enable pattern match+replace optimizations
 pattern_matcher = True
 
-# Bound speculative fusion to one backed row-width equality per graph.
-# Dynamo retains an unequal-width fallback through its normal guard cache.
+# Bound speculative reduction fusion to one joint backed shape guard per graph.
+# Dynamo retains an unequal-shape fallback through its normal guard cache.
 guarded_shape_fusion = True
 
 # set to True to enable the back-to-back GEMM pass

@@ -1,0 +1,312 @@
+{
+  "torch": "2.16.0a0+git6345ea6",
+  "native_commit": "6345ea65549d76751f09501580074b700b7c56c6",
+  "device": "mps",
+  "parent_commit": "01d544c8af54330e035a2eaf38554b7efef3a274",
+  "source_sha256": "d0116b6253ba96690750df5340123869c3e6d5a85a4ec77fe96cd7d2570694d1",
+  "cases": [
+    {
+      "op": "amax",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "amin",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "prod",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "var",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "std",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "max",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "min",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "var_mean",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "mean",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "norm",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "logsumexp",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "softmax",
+      "dims": [
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "amax",
+      "dims": [
+        -2,
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "var",
+      "dims": [
+        -2,
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    },
+    {
+      "op": "var_mean",
+      "dims": [
+        -2,
+        -1
+      ],
+      "variants": {
+        "static": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        },
+        "original_dynamic": {
+          "metal_definitions": 2,
+          "correctness": "passed"
+        },
+        "fixed_dynamic": {
+          "metal_definitions": 1,
+          "correctness": "passed"
+        }
+      }
+    }
+  ]
+}
