@@ -1,0 +1,171 @@
+test_guard_policy_scenario_aot (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_aot) ... ok
+test_guard_policy_scenario_equal (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_equal) ... ok
+test_guard_policy_scenario_frozen (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_frozen) ... ok
+test_guard_policy_scenario_no_dispatcher (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_no_dispatcher) ... ok
+test_guard_policy_scenario_unbacked (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_unbacked) ... ok
+test_guard_policy_scenario_unequal (__main__.TestEqualityGuardPolicy.test_guard_policy_scenario_unequal) ... ok
+test_compiler_cache_preserves_equality_guards_cpu (__main__.TestGuardedShapeFusionCPU.test_compiler_cache_preserves_equality_guards_cpu) ... ok
+test_degenerate_dimensions_rows_0_left_8_right_8_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_0_left_8_right_8_cpu) ... ok
+test_degenerate_dimensions_rows_1_left_8_right_16_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_1_left_8_right_16_cpu) ... ok
+test_degenerate_dimensions_rows_3_left_1_right_1_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_3_left_1_right_1_cpu) ... ok
+test_degenerate_dimensions_rows_3_left_1_right_8_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_3_left_1_right_8_cpu) ... ok
+test_degenerate_dimensions_rows_3_left_8_right_1_cpu (__main__.TestGuardedShapeFusionCPU.test_degenerate_dimensions_rows_3_left_8_right_1_cpu) ... ok
+test_disabled_cpu (__main__.TestGuardedShapeFusionCPU.test_disabled_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_False_unequal_first_False_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_False_strided_False_unequal_first_False_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_False_unequal_first_True_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_False_strided_False_unequal_first_True_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_True_unequal_first_False_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_False_strided_True_unequal_first_False_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_True_unequal_first_True_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_False_strided_True_unequal_first_True_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_False_unequal_first_False_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_True_strided_False_unequal_first_False_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_False_unequal_first_True_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_True_strided_False_unequal_first_True_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_True_unequal_first_False_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_True_strided_True_unequal_first_False_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_True_unequal_first_True_cpu (__main__.TestGuardedShapeFusionCPU.test_equal_and_unequal_widths_training_True_strided_True_unequal_first_True_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_compiler_cache_preserves_equality_guards_mps (__main__.TestGuardedShapeFusionMPS.test_compiler_cache_preserves_equality_guards_mps) ... ok
+test_degenerate_dimensions_rows_0_left_8_right_8_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_0_left_8_right_8_mps) ... ok
+test_degenerate_dimensions_rows_1_left_8_right_16_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_1_left_8_right_16_mps) ... ok
+test_degenerate_dimensions_rows_3_left_1_right_1_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_3_left_1_right_1_mps) ... ok
+test_degenerate_dimensions_rows_3_left_1_right_8_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_3_left_1_right_8_mps) ... ok
+test_degenerate_dimensions_rows_3_left_8_right_1_mps (__main__.TestGuardedShapeFusionMPS.test_degenerate_dimensions_rows_3_left_8_right_1_mps) ... ok
+test_disabled_mps (__main__.TestGuardedShapeFusionMPS.test_disabled_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_False_unequal_first_False_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_False_strided_False_unequal_first_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_False_unequal_first_True_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_False_strided_False_unequal_first_True_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_True_unequal_first_False_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_False_strided_True_unequal_first_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_False_strided_True_unequal_first_True_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_False_strided_True_unequal_first_True_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_False_unequal_first_False_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_True_strided_False_unequal_first_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_False_unequal_first_True_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_True_strided_False_unequal_first_True_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_True_unequal_first_False_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_True_strided_True_unequal_first_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_equal_and_unequal_widths_training_True_strided_True_unequal_first_True_mps (__main__.TestGuardedShapeFusionMPS.test_equal_and_unequal_widths_training_True_strided_True_unequal_first_True_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_cache_tracks_new_divisibility_and_bounds (__main__.TestShapeRelationSimplify.test_cache_tracks_new_divisibility_and_bounds) ... ok
+test_do_not_cancel_partial_coefficient_or_unknown_symbol (__main__.TestShapeRelationSimplify.test_do_not_cancel_partial_coefficient_or_unknown_symbol) ... ok
+test_group_equality_and_dependency_normalization (__main__.TestShapeRelationSimplify.test_group_equality_and_dependency_normalization) ... ok
+test_missing_or_unrelated_fact_does_not_cancel (__main__.TestShapeRelationSimplify.test_missing_or_unrelated_fact_does_not_cancel) ... ok
+test_nested_products_and_nonmultiples (__main__.TestShapeRelationSimplify.test_nested_products_and_nonmultiples) ... ok
+test_proven_divisibility_cancels_product_divisor_16 (__main__.TestShapeRelationSimplify.test_proven_divisibility_cancels_product_divisor_16) ... ok
+test_proven_divisibility_cancels_product_divisor_2 (__main__.TestShapeRelationSimplify.test_proven_divisibility_cancels_product_divisor_2) ... ok
+test_proven_divisibility_cancels_product_divisor_4 (__main__.TestShapeRelationSimplify.test_proven_divisibility_cancels_product_divisor_4) ... ok
+test_proven_divisibility_cancels_product_divisor_8 (__main__.TestShapeRelationSimplify.test_proven_divisibility_cancels_product_divisor_8) ... ok
+test_scaled_divisibility_and_range_split (__main__.TestShapeRelationSimplify.test_scaled_divisibility_and_range_split) ... ok
+test_unit_max_uses_proof_lower_0_divisible_False (__main__.TestShapeRelationSimplify.test_unit_max_uses_proof_lower_0_divisible_False) ... ok
+test_unit_max_uses_proof_lower_0_divisible_True (__main__.TestShapeRelationSimplify.test_unit_max_uses_proof_lower_0_divisible_True) ... ok
+test_unit_max_uses_proof_lower_2_divisible_False (__main__.TestShapeRelationSimplify.test_unit_max_uses_proof_lower_2_divisible_False) ... ok
+test_unit_max_uses_proof_lower_2_divisible_True (__main__.TestShapeRelationSimplify.test_unit_max_uses_proof_lower_2_divisible_True) ... ok
+test_unit_max_uses_proof_lower_4_divisible_False (__main__.TestShapeRelationSimplify.test_unit_max_uses_proof_lower_4_divisible_False) ... ok
+test_unit_max_uses_proof_lower_4_divisible_True (__main__.TestShapeRelationSimplify.test_unit_max_uses_proof_lower_4_divisible_True) ... ok
+test_dynamic_split_forward_backward_kind_layernorm_cpu (__main__.TestSplitHeadFusionCPU.test_dynamic_split_forward_backward_kind_layernorm_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_dynamic_split_forward_backward_kind_rmsnorm_cpu (__main__.TestSplitHeadFusionCPU.test_dynamic_split_forward_backward_kind_rmsnorm_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_dynamic_split_forward_backward_kind_softmax_cpu (__main__.TestSplitHeadFusionCPU.test_dynamic_split_forward_backward_kind_softmax_cpu) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_one_dynamic_softmax_split_kernel_cpu (__main__.TestSplitHeadFusionCPU.test_one_dynamic_softmax_split_kernel_cpu) ... skipped 'Kernel-count regression is for SIMD GPU backends'
+test_dynamic_split_forward_backward_kind_layernorm_mps (__main__.TestSplitHeadFusionMPS.test_dynamic_split_forward_backward_kind_layernorm_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_dynamic_split_forward_backward_kind_rmsnorm_mps (__main__.TestSplitHeadFusionMPS.test_dynamic_split_forward_backward_kind_rmsnorm_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_dynamic_split_forward_backward_kind_softmax_mps (__main__.TestSplitHeadFusionMPS.test_dynamic_split_forward_backward_kind_softmax_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_one_dynamic_softmax_split_kernel_mps (__main__.TestSplitHeadFusionMPS.test_one_dynamic_softmax_split_kernel_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_original_reproduction_variant_expand_inference_False_mps_bfloat16 (__main__.TestXSAShapeFusionMPS.test_original_reproduction_variant_expand_inference_False_mps_bfloat16) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_original_reproduction_variant_expand_inference_False_mps_float32 (__main__.TestXSAShapeFusionMPS.test_original_reproduction_variant_expand_inference_False_mps_float32) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_original_reproduction_variant_expand_inference_True_mps_bfloat16 (__main__.TestXSAShapeFusionMPS.test_original_reproduction_variant_expand_inference_True_mps_bfloat16) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_original_reproduction_variant_expand_inference_True_mps_float32 (__main__.TestXSAShapeFusionMPS.test_original_reproduction_variant_expand_inference_True_mps_float32) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_original_reproduction_variant_unsqueeze_inference_False_mps_bfloat16 (__main__.TestXSAShapeFusionMPS.test_original_reproduction_variant_unsqueeze_inference_False_mps_bfloat16) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_original_reproduction_variant_unsqueeze_inference_False_mps_float32 (__main__.TestXSAShapeFusionMPS.test_original_reproduction_variant_unsqueeze_inference_False_mps_float32) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_original_reproduction_variant_unsqueeze_inference_True_mps_bfloat16 (__main__.TestXSAShapeFusionMPS.test_original_reproduction_variant_unsqueeze_inference_True_mps_bfloat16) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_original_reproduction_variant_unsqueeze_inference_True_mps_float32 (__main__.TestXSAShapeFusionMPS.test_original_reproduction_variant_unsqueeze_inference_True_mps_float32) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_shape_sweep_gradients_variant_expand_kv_2_strided_False_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_expand_kv_2_strided_False_mps) ... ok
+test_shape_sweep_gradients_variant_expand_kv_2_strided_True_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_expand_kv_2_strided_True_mps) ... ok
+test_shape_sweep_gradients_variant_expand_kv_4_strided_False_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_expand_kv_4_strided_False_mps) ... ok
+test_shape_sweep_gradients_variant_expand_kv_4_strided_True_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_expand_kv_4_strided_True_mps) ... ok
+test_shape_sweep_gradients_variant_expand_kv_8_strided_False_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_expand_kv_8_strided_False_mps) ... ok
+test_shape_sweep_gradients_variant_expand_kv_8_strided_True_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_expand_kv_8_strided_True_mps) ... ok
+test_shape_sweep_gradients_variant_unsqueeze_kv_2_strided_False_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_unsqueeze_kv_2_strided_False_mps) ... ok
+test_shape_sweep_gradients_variant_unsqueeze_kv_2_strided_True_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_unsqueeze_kv_2_strided_True_mps) ... ok
+test_shape_sweep_gradients_variant_unsqueeze_kv_4_strided_False_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_unsqueeze_kv_4_strided_False_mps) ... ok
+test_shape_sweep_gradients_variant_unsqueeze_kv_4_strided_True_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_unsqueeze_kv_4_strided_True_mps) ... ok
+test_shape_sweep_gradients_variant_unsqueeze_kv_8_strided_False_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_unsqueeze_kv_8_strided_False_mps) ... ok
+test_shape_sweep_gradients_variant_unsqueeze_kv_8_strided_True_mps (__main__.TestXSAShapeFusionMPS.test_shape_sweep_gradients_variant_unsqueeze_kv_8_strided_True_mps) ... ok
+
+----------------------------------------------------------------------
+Ran 80 tests in 46.538s
+
+OK (skipped=1)

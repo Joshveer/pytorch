@@ -1,0 +1,2762 @@
+{
+  "environment": {
+    "torch": "2.16.0a0+git6345ea6",
+    "commit": "6345ea65549d76751f09501580074b700b7c56c6",
+    "repository_head": "986da9d7deb1b44db0e6dbd7e938d7636fb26870",
+    "python": "3.12.12",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "device": "mps",
+    "cuda_runtime": null,
+    "native_extension": "/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/build/install/cp312-cp312-macosx_27_0_arm64/torch/_C.cpython-312-darwin.so",
+    "native_extension_sha256": "1cdde1d13ea1fa9b069a428c964f9492a87ef60628542701ccddd335003d2bc9",
+    "torch_path": "/Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/__init__.py",
+    "compiler_source_sha256": {
+      "torch/_inductor/sizevars.py": "57d4a2b2424477e9b7e4aecb6723216470ca43cf32d975efdbbf25ce3b87b386",
+      "torch/_inductor/config.py": "d083f1a180140f5c2a56a1bc3b431963aeeccbdf18cbe033e90d44376cf3da41",
+      "torch/_inductor/fx_passes/post_grad.py": "2fca22ccbec242670677446d18975380ade1ca32f1dc4063c1c36fd0c44f0ebe",
+      "torch/_inductor/fx_passes/shape_relation_fusion.py": "45f5f2aadf8cdac178af740d170ce938659fd5a3f8f10384508a1ffb5e4e2fcf"
+    },
+    "compiler_source_diff": "diff --git a/torch/_inductor/fx_passes/shape_relation_fusion.py b/torch/_inductor/fx_passes/shape_relation_fusion.py\nindex dc0978a..bbc7b29 100644\n--- a/torch/_inductor/fx_passes/shape_relation_fusion.py\n+++ b/torch/_inductor/fx_passes/shape_relation_fusion.py\n@@ -5,6 +5,7 @@ from torch._guards import CompileContext, TracingContext\n from torch.fx.experimental.symbolic_shapes import (\n     guard_or_false,\n     statically_known_true,\n+    sym_and,\n     sym_eq,\n )\n from torch.utils._ordered_set import OrderedSet\n@@ -12,6 +13,78 @@ from torch.utils._ordered_set import OrderedSet\n from ..virtualized import V\n \n \n+def canonical_shape_key(shape, allocators):\n+    \"\"\"Hashable dimensions using existing facts, without adding guards.\"\"\"\n+    from ..sizevars import SizeVarAllocator\n+\n+    result = []\n+    for dim in shape:\n+        if isinstance(dim, torch.SymInt):\n+            env = dim.node.shape_env\n+            if env is None:\n+                return None\n+            if env not in allocators:\n+                allocators[env] = SizeVarAllocator(env)\n+            expr = allocators[env].simplify(dim.node.expr)\n+            # Symbol names may repeat in distinct ShapeEnvs. Constants do not\n+            # need an environment identity; symbolic dimensions do.\n+            result.append(expr if expr.is_number else (env, expr))\n+        else:\n+            result.append(dim)\n+    return tuple(result)\n+\n+\n+def guard_shape_compatibility(shapes, extra_condition, max_conditions):\n+    \"\"\"Guard one conjunction so all incompatible shapes share its negation.\n+\n+    The caller owns candidate legality and profitability. Never speculate on\n+    unbacked sizes or when there is no Dynamo dispatcher for the fallback.\n+    \"\"\"\n+    context = TracingContext.try_get()\n+    if (\n+        V.aot_compilation\n+        or CompileContext.try_get() is None\n+        or context is None\n+        or context.fake_mode is None\n+        or context.fake_mode.shape_env is None\n+        or context.fake_mode.shape_env.frozen\n+    ):\n+        return False\n+    env = context.fake_mode.shape_env\n+    if not shapes or any(len(shape) != len(shapes[0]) for shape in shapes):\n+        return False\n+    for shape in shapes:\n+        for dim in shape:\n+            if isinstance(dim, torch.SymInt) and (\n+                dim.node.shape_env is not env\n+                or not isinstance(dim.node.expr, sympy.Symbol)\n+                or dim.node.expr not in env.backed_var_to_val\n+            ):\n+                return False\n+            if not statically_known_true(dim > 1):\n+                return False\n+    predicates = []\n+    seen = OrderedSet()\n+    for shape in shapes[1:]:\n+        for left, right in zip(shapes[0], shape):\n+            predicate = left == right\n+            if statically_known_true(predicate):\n+                continue\n+            key = (\n+                predicate.node.expr\n+                if isinstance(predicate, torch.SymBool)\n+                else predicate\n+            )\n+            if key not in seen:\n+                seen.add(key)\n+                predicates.append(predicate)\n+    if not statically_known_true(extra_condition):\n+        predicates.append(extra_condition)\n+    if len(predicates) > max_conditions:\n+        return False\n+    return guard_or_false(sym_and(True, *predicates))\n+\n+\n def guard_reduction_width_equality(graph: torch.fx.Graph) -> None:\n     \"\"\"Specialize one row-reduction epilogue on a backed width equality.\n \n@@ -111,5 +184,5 @@ def guard_reduction_width_equality(graph: torch.fx.Graph) -> None:\n                 continue\n             # On equality ShapeEnv unifies the symbols before lowering. On\n             # inequality the ordinary unfused graph remains a valid fallback.\n-            guard_or_false(left == right)\n+            guard_shape_compatibility([(left,), (right,)], True, max_conditions=1)\n             return",
+    "build_config": "PyTorch built with:\n  - C++ Version: 202002\n  - clang 21.0.0\n  - Intel(R) MKL-DNN v3.14.1 (Git Hash a190d4ab9b001e930d91a9c323089602b6c3d730)\n  - LAPACK is enabled (usually provided by MKL)\n  - CPU capability usage: DEFAULT\n  - Build settings: BLAS_INFO=accelerate, BUILD_TYPE=Release, COMMIT_SHA=6345ea65549d76751f09501580074b700b7c56c6, CUDA_FLAGS= -DLIBCUDACXX_ENABLE_SIMPLIFIED_COMPLEX_OPERATIONS -Xfatbin -compress-all  -Wno-deprecated-gpu-targets --expt-extended-lambda -DCUB_WRAPPED_NAMESPACE=at_cuda_detail -DDISABLE_CUSPARSE_DEPRECATED -DCUDA_HAS_FP16=1 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -DC10_NODEPRECATED, CXX_COMPILER=/usr/bin/c++, CXX_FLAGS= -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DUSE_PYTORCH_QNNPACK -DAT_BUILD_ARM_VEC256_WITH_SLEEF -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -DC10_NODEPRECATED -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=braced-scalar-init -Werror=range-loop-construct -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-unknown-pragmas -Wno-unused-parameter -Wno-strict-overflow -Wno-strict-aliasing -Wvla-extension -Wsuggest-override -Wnewline-eof -Winconsistent-missing-override -Winconsistent-missing-destructor-override -Wno-pass-failed -Wno-error=old-style-cast -Wconstant-conversion -Qunused-arguments -faligned-new -fno-math-errno -fno-trapping-math -Werror=format -fclang-abi-compat=17 -DUSE_MPS -Wno-missing-braces, LAPACK_INFO=accelerate, TORCH_VERSION=2.16.0, USE_CUDA=0, USE_CUDNN=OFF, USE_CUSPARSELT=OFF, USE_EIGEN_FOR_BLAS=ON, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_GLOO=OFF, USE_HIPSPARSELT=OFF, USE_MKL=OFF, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=OFF, USE_NNPACK=OFF, USE_OPENMP=OFF, USE_ROCM=OFF, USE_ROCM_KERNEL_ASSERT=OFF, USE_XCCL=OFF, USE_XPU=OFF, \n",
+    "cudagraphs": false,
+    "deterministic_algorithms": false,
+    "tf32_matmul": false,
+    "tf32_cudnn": true,
+    "triton": null,
+    "cpu": "Apple M5",
+    "battery": "Now drawing from 'Battery Power'\n -InternalBattery-0 (id=36241507)\t83%; discharging; 1:40 remaining present: true"
+  },
+  "original_batch_commit": "986da9d7deb1b44db0e6dbd7e938d7636fb26870",
+  "original_batch_source_sha256": "9ffa48afd1ed32f925cb7b3c0c884d733844adfe8259c65ae7a45b6e37b06ce8",
+  "fixed_batch_source_sha256": "cb2b22a52af24f03dd4b01b23bd9f15c00db624a35aa97ac82715b04229aa813",
+  "dtype": "float32",
+  "training": false,
+  "rounds": 16,
+  "seed": 51,
+  "cases": [
+    {
+      "case": "independent-large",
+      "mkn": [
+        256,
+        256,
+        256
+      ],
+      "unequal": false,
+      "estimated_working_set_bytes": 3932160,
+      "records": {
+        "original": {
+          "setup_seconds": 0.4022508329944685,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.3817202909995103,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        },
+        "known": {
+          "setup_seconds": 0.13271891600743402,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "guarded": {
+          "setup_seconds": 0.13656275000539608,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        }
+      },
+      "samples": [
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 176.2005,
+            "sync_us": 319.072875
+          },
+          "known": {
+            "queued_us": 173.32290625,
+            "sync_us": 317.510375
+          },
+          "guarded": {
+            "queued_us": 173.34375,
+            "sync_us": 313.109375
+          },
+          "large_budget": {
+            "queued_us": 131.91534375,
+            "sync_us": 298.916625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 131.221375,
+            "sync_us": 304.348875
+          },
+          "original": {
+            "queued_us": 173.82553125,
+            "sync_us": 318.072875
+          },
+          "known": {
+            "queued_us": 173.4895625,
+            "sync_us": 343.895875
+          },
+          "guarded": {
+            "queued_us": 175.01821875,
+            "sync_us": 326.239625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 131.8828125,
+            "sync_us": 304.182375
+          },
+          "original": {
+            "queued_us": 174.21353125,
+            "sync_us": 327.234375
+          },
+          "known": {
+            "queued_us": 173.040375,
+            "sync_us": 321.947875
+          },
+          "guarded": {
+            "queued_us": 175.38409375,
+            "sync_us": 309.599
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 183.91796875,
+            "sync_us": 312.0105
+          },
+          "large_budget": {
+            "queued_us": 131.2239375,
+            "sync_us": 305.520875
+          },
+          "original": {
+            "queued_us": 175.80728125,
+            "sync_us": 325.916625
+          },
+          "known": {
+            "queued_us": 172.5703125,
+            "sync_us": 321.60425
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 174.70571875,
+            "sync_us": 324.947875
+          },
+          "large_budget": {
+            "queued_us": 131.375,
+            "sync_us": 298.21875
+          },
+          "original": {
+            "queued_us": 174.1926875,
+            "sync_us": 315.1615
+          },
+          "known": {
+            "queued_us": 173.36846875,
+            "sync_us": 310.145875
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 171.5364375,
+            "sync_us": 309.677125
+          },
+          "guarded": {
+            "queued_us": 172.26953125,
+            "sync_us": 340.6615
+          },
+          "large_budget": {
+            "queued_us": 131.959625,
+            "sync_us": 295.4115
+          },
+          "original": {
+            "queued_us": 173.91928125,
+            "sync_us": 313.38025
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 176.35546875,
+            "sync_us": 443.734375
+          },
+          "known": {
+            "queued_us": 390.37240625,
+            "sync_us": 454.234375
+          },
+          "guarded": {
+            "queued_us": 187.153625,
+            "sync_us": 332.421875
+          },
+          "large_budget": {
+            "queued_us": 132.5078125,
+            "sync_us": 319.083375
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 177.07421875,
+            "sync_us": 328.323
+          },
+          "guarded": {
+            "queued_us": 174.0768125,
+            "sync_us": 337.802
+          },
+          "large_budget": {
+            "queued_us": 131.5,
+            "sync_us": 312.078125
+          },
+          "original": {
+            "queued_us": 175.3815,
+            "sync_us": 335.270875
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 175.29296875,
+            "sync_us": 331.50525
+          },
+          "known": {
+            "queued_us": 173.84765625,
+            "sync_us": 329.526125
+          },
+          "guarded": {
+            "queued_us": 174.08465625,
+            "sync_us": 338.9635
+          },
+          "large_budget": {
+            "queued_us": 131.865875,
+            "sync_us": 305.635375
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 131.4375,
+            "sync_us": 311.099
+          },
+          "original": {
+            "queued_us": 175.397125,
+            "sync_us": 327.75
+          },
+          "known": {
+            "queued_us": 174.00909375,
+            "sync_us": 323.13025
+          },
+          "guarded": {
+            "queued_us": 174.6419375,
+            "sync_us": 320.552125
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 173.40625,
+            "sync_us": 320.0625
+          },
+          "known": {
+            "queued_us": 173.01953125,
+            "sync_us": 323.395875
+          },
+          "guarded": {
+            "queued_us": 173.283875,
+            "sync_us": 323.30725
+          },
+          "large_budget": {
+            "queued_us": 131.727875,
+            "sync_us": 297.541625
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 174.56771875,
+            "sync_us": 323.494875
+          },
+          "large_budget": {
+            "queued_us": 131.41665625,
+            "sync_us": 312.671875
+          },
+          "original": {
+            "queued_us": 174.46353125,
+            "sync_us": 327.09375
+          },
+          "known": {
+            "queued_us": 173.21484375,
+            "sync_us": 324.697875
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 172.821625,
+            "sync_us": 328.770875
+          },
+          "guarded": {
+            "queued_us": 172.91275,
+            "sync_us": 314.84375
+          },
+          "large_budget": {
+            "queued_us": 131.125,
+            "sync_us": 298.99475
+          },
+          "original": {
+            "queued_us": 173.62240625,
+            "sync_us": 316.520875
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 131.01171875,
+            "sync_us": 299.18225
+          },
+          "original": {
+            "queued_us": 173.36328125,
+            "sync_us": 327.421875
+          },
+          "known": {
+            "queued_us": 180.45834375,
+            "sync_us": 306.177
+          },
+          "guarded": {
+            "queued_us": 178.65103125,
+            "sync_us": 325.255125
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 168.94140625,
+            "sync_us": 316.828125
+          },
+          "guarded": {
+            "queued_us": 174.765625,
+            "sync_us": 341.760375
+          },
+          "large_budget": {
+            "queued_us": 144.00128125,
+            "sync_us": 324.640625
+          },
+          "original": {
+            "queued_us": 183.95834375,
+            "sync_us": 328.16675
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 183.37109375,
+            "sync_us": 314.59375
+          },
+          "large_budget": {
+            "queued_us": 142.34246875,
+            "sync_us": 295.515625
+          },
+          "original": {
+            "queued_us": 180.24346875,
+            "sync_us": 324.69275
+          },
+          "known": {
+            "queued_us": 176.90753125,
+            "sync_us": 324.729125
+          }
+        }
+      ],
+      "median_us": {
+        "queued_us": {
+          "original": 174.87824999999998,
+          "known": 173.3456875,
+          "guarded": 174.673828125,
+          "large_budget": 131.61393750000002
+        },
+        "sync_us": {
+          "original": 326.50518750000003,
+          "known": 323.2630625,
+          "guarded": 324.22137499999997,
+          "large_budget": 304.265625
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 1.008841076591536,
+          "guarded": 1.0011703062627888,
+          "large_budget": 1.3287213597724021
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 1.01002937042954,
+          "guarded": 1.0070439911619031,
+          "large_budget": 1.0730925897396395
+        }
+      }
+    },
+    {
+      "case": "independent-medium",
+      "mkn": [
+        128,
+        64,
+        96
+      ],
+      "unequal": false,
+      "estimated_working_set_bytes": 532480,
+      "records": {
+        "original": {
+          "setup_seconds": 0.1333423330070218,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "known": {
+          "setup_seconds": 0.1345197500049835,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.29351049999240786,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        },
+        "guarded": {
+          "setup_seconds": 0.2735939580015838,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        }
+      },
+      "samples": [
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 143.6979375,
+            "sync_us": 421.354125
+          },
+          "guarded": {
+            "queued_us": 84.8450625,
+            "sync_us": 361.724
+          },
+          "large_budget": {
+            "queued_us": 80.02471875,
+            "sync_us": 385.265625
+          },
+          "original": {
+            "queued_us": 107.32421875,
+            "sync_us": 253.953125
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 46.466125,
+            "sync_us": 199.651125
+          },
+          "large_budget": {
+            "queued_us": 46.3515625,
+            "sync_us": 195.520875
+          },
+          "original": {
+            "queued_us": 106.65625,
+            "sync_us": 253.47925
+          },
+          "known": {
+            "queued_us": 105.852875,
+            "sync_us": 273.95825
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 108.19140625,
+            "sync_us": 256.239625
+          },
+          "known": {
+            "queued_us": 107.25390625,
+            "sync_us": 257.411375
+          },
+          "guarded": {
+            "queued_us": 47.48178125,
+            "sync_us": 199.68225
+          },
+          "large_budget": {
+            "queued_us": 45.98828125,
+            "sync_us": 196.682375
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 107.23959375,
+            "sync_us": 254.203125
+          },
+          "known": {
+            "queued_us": 105.93359375,
+            "sync_us": 255.11975
+          },
+          "guarded": {
+            "queued_us": 45.54296875,
+            "sync_us": 199.2605
+          },
+          "large_budget": {
+            "queued_us": 46.1861875,
+            "sync_us": 200.64575
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 107.31771875,
+            "sync_us": 256.291625
+          },
+          "guarded": {
+            "queued_us": 45.9140625,
+            "sync_us": 208.583375
+          },
+          "large_budget": {
+            "queued_us": 46.3203125,
+            "sync_us": 203.95825
+          },
+          "original": {
+            "queued_us": 107.45184375,
+            "sync_us": 267.484375
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 106.9205625,
+            "sync_us": 255.776
+          },
+          "guarded": {
+            "queued_us": 46.43621875,
+            "sync_us": 205.125
+          },
+          "large_budget": {
+            "queued_us": 46.97915625,
+            "sync_us": 198.552125
+          },
+          "original": {
+            "queued_us": 106.5325625,
+            "sync_us": 254.614625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 46.8046875,
+            "sync_us": 197.296875
+          },
+          "original": {
+            "queued_us": 106.306,
+            "sync_us": 253.869875
+          },
+          "known": {
+            "queued_us": 106.74609375,
+            "sync_us": 261.041625
+          },
+          "guarded": {
+            "queued_us": 46.91665625,
+            "sync_us": 199.953125
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 46.29815625,
+            "sync_us": 200.484375
+          },
+          "large_budget": {
+            "queued_us": 46.73178125,
+            "sync_us": 199.7135
+          },
+          "original": {
+            "queued_us": 109.2174375,
+            "sync_us": 257.901125
+          },
+          "known": {
+            "queued_us": 106.7890625,
+            "sync_us": 256.984375
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 46.453125,
+            "sync_us": 198.432375
+          },
+          "large_budget": {
+            "queued_us": 46.20053125,
+            "sync_us": 202.083375
+          },
+          "original": {
+            "queued_us": 106.66278125,
+            "sync_us": 245.27075
+          },
+          "known": {
+            "queued_us": 104.7421875,
+            "sync_us": 254.765625
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 106.73046875,
+            "sync_us": 255.239625
+          },
+          "known": {
+            "queued_us": 107.66278125,
+            "sync_us": 257.239625
+          },
+          "guarded": {
+            "queued_us": 46.2864375,
+            "sync_us": 198.15625
+          },
+          "large_budget": {
+            "queued_us": 46.78515625,
+            "sync_us": 200.510375
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 45.612,
+            "sync_us": 198.80725
+          },
+          "original": {
+            "queued_us": 107.5169375,
+            "sync_us": 254.901125
+          },
+          "known": {
+            "queued_us": 106.3255,
+            "sync_us": 254.203125
+          },
+          "guarded": {
+            "queued_us": 46.4895625,
+            "sync_us": 202.552125
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 45.5859375,
+            "sync_us": 203.1875
+          },
+          "large_budget": {
+            "queued_us": 46.3229375,
+            "sync_us": 200.375
+          },
+          "original": {
+            "queued_us": 106.48309375,
+            "sync_us": 256.203125
+          },
+          "known": {
+            "queued_us": 105.05728125,
+            "sync_us": 254.010375
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 106.02996875,
+            "sync_us": 256.401
+          },
+          "guarded": {
+            "queued_us": 46.00390625,
+            "sync_us": 202.546875
+          },
+          "large_budget": {
+            "queued_us": 46.18228125,
+            "sync_us": 200.692625
+          },
+          "original": {
+            "queued_us": 106.93490625,
+            "sync_us": 251.55725
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 105.52603125,
+            "sync_us": 250.5625
+          },
+          "known": {
+            "queued_us": 104.984375,
+            "sync_us": 253.97925
+          },
+          "guarded": {
+            "queued_us": 46.165375,
+            "sync_us": 202.140625
+          },
+          "large_budget": {
+            "queued_us": 45.07421875,
+            "sync_us": 199.015625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 45.6614375,
+            "sync_us": 198.276
+          },
+          "original": {
+            "queued_us": 106.04815625,
+            "sync_us": 249.114625
+          },
+          "known": {
+            "queued_us": 108.06509375,
+            "sync_us": 246.567625
+          },
+          "guarded": {
+            "queued_us": 47.0364375,
+            "sync_us": 200.43225
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 45.92578125,
+            "sync_us": 188.536375
+          },
+          "original": {
+            "queued_us": 107.29425,
+            "sync_us": 258.796875
+          },
+          "known": {
+            "queued_us": 107.62109375,
+            "sync_us": 253.13025
+          },
+          "guarded": {
+            "queued_us": 47.59765625,
+            "sync_us": 200.0
+          }
+        }
+      ],
+      "median_us": {
+        "queued_us": {
+          "original": 106.83268749999999,
+          "known": 106.767578125,
+          "guarded": 46.444671875,
+          "large_budget": 46.260421875
+        },
+        "sync_us": {
+          "original": 254.408875,
+          "known": 256.0338125,
+          "guarded": 200.4583125,
+          "large_budget": 199.3645625
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 1.0006098234702276,
+          "guarded": 2.3002140651897975,
+          "large_budget": 2.3093755562513447
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 0.9936534261465954,
+          "guarded": 1.2691360703737342,
+          "large_budget": 1.2760987800928763
+        }
+      }
+    },
+    {
+      "case": "shared-small",
+      "mkn": [
+        64,
+        32,
+        48
+      ],
+      "unequal": false,
+      "estimated_working_set_bytes": 133120,
+      "records": {
+        "original": {
+          "setup_seconds": 0.05797291699855123,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.1711589580081636,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 2
+        },
+        "guarded": {
+          "setup_seconds": 0.13975866700639017,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 2
+        },
+        "known": {
+          "setup_seconds": 0.13703333400189877,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 2
+        }
+      },
+      "samples": [
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 48.19140625,
+            "sync_us": 301.25
+          },
+          "large_budget": {
+            "queued_us": 41.444,
+            "sync_us": 305.18225
+          },
+          "original": {
+            "queued_us": 104.1888125,
+            "sync_us": 229.5885
+          },
+          "known": {
+            "queued_us": 35.740875,
+            "sync_us": 198.057375
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 35.821625,
+            "sync_us": 190.5625
+          },
+          "guarded": {
+            "queued_us": 39.02215625,
+            "sync_us": 184.3645
+          },
+          "large_budget": {
+            "queued_us": 37.71225,
+            "sync_us": 198.61975
+          },
+          "original": {
+            "queued_us": 95.57159375,
+            "sync_us": 217.119875
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 34.1328125,
+            "sync_us": 152.682375
+          },
+          "original": {
+            "queued_us": 94.4010625,
+            "sync_us": 223.401
+          },
+          "known": {
+            "queued_us": 34.3489375,
+            "sync_us": 158.9635
+          },
+          "guarded": {
+            "queued_us": 35.7578125,
+            "sync_us": 155.979125
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 94.28253125,
+            "sync_us": 222.052125
+          },
+          "known": {
+            "queued_us": 34.49346875,
+            "sync_us": 158.0105
+          },
+          "guarded": {
+            "queued_us": 34.24609375,
+            "sync_us": 163.81775
+          },
+          "large_budget": {
+            "queued_us": 35.01171875,
+            "sync_us": 163.515625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 34.04034375,
+            "sync_us": 178.29175
+          },
+          "original": {
+            "queued_us": 94.52084375,
+            "sync_us": 250.359375
+          },
+          "known": {
+            "queued_us": 35.06378125,
+            "sync_us": 163.53125
+          },
+          "guarded": {
+            "queued_us": 34.19009375,
+            "sync_us": 162.46875
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 96.3828125,
+            "sync_us": 237.046875
+          },
+          "known": {
+            "queued_us": 35.72396875,
+            "sync_us": 166.0
+          },
+          "guarded": {
+            "queued_us": 34.70440625,
+            "sync_us": 174.9635
+          },
+          "large_budget": {
+            "queued_us": 34.5625,
+            "sync_us": 171.90625
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 96.9765625,
+            "sync_us": 231.75525
+          },
+          "known": {
+            "queued_us": 34.928375,
+            "sync_us": 175.583375
+          },
+          "guarded": {
+            "queued_us": 34.48696875,
+            "sync_us": 160.791625
+          },
+          "large_budget": {
+            "queued_us": 33.51690625,
+            "sync_us": 160.364625
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 33.578125,
+            "sync_us": 152.0625
+          },
+          "large_budget": {
+            "queued_us": 34.72265625,
+            "sync_us": 157.421875
+          },
+          "original": {
+            "queued_us": 87.79425,
+            "sync_us": 217.224
+          },
+          "known": {
+            "queued_us": 34.10675,
+            "sync_us": 172.739625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 34.09765625,
+            "sync_us": 168.3125
+          },
+          "original": {
+            "queued_us": 94.23309375,
+            "sync_us": 209.25
+          },
+          "known": {
+            "queued_us": 34.20571875,
+            "sync_us": 161.04175
+          },
+          "guarded": {
+            "queued_us": 35.2955625,
+            "sync_us": 165.65625
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 33.56771875,
+            "sync_us": 160.16675
+          },
+          "guarded": {
+            "queued_us": 33.28515625,
+            "sync_us": 170.526
+          },
+          "large_budget": {
+            "queued_us": 33.931,
+            "sync_us": 167.875
+          },
+          "original": {
+            "queued_us": 93.74090625,
+            "sync_us": 236.56775
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 35.0546875,
+            "sync_us": 165.7135
+          },
+          "guarded": {
+            "queued_us": 34.2265625,
+            "sync_us": 161.885375
+          },
+          "large_budget": {
+            "queued_us": 33.84115625,
+            "sync_us": 158.890625
+          },
+          "original": {
+            "queued_us": 95.477875,
+            "sync_us": 229.0625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 34.03253125,
+            "sync_us": 164.56775
+          },
+          "original": {
+            "queued_us": 94.6484375,
+            "sync_us": 229.265625
+          },
+          "known": {
+            "queued_us": 34.2578125,
+            "sync_us": 174.802
+          },
+          "guarded": {
+            "queued_us": 35.68359375,
+            "sync_us": 173.307375
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 34.4765625,
+            "sync_us": 170.114625
+          },
+          "guarded": {
+            "queued_us": 34.341125,
+            "sync_us": 180.427125
+          },
+          "large_budget": {
+            "queued_us": 33.90625,
+            "sync_us": 170.599
+          },
+          "original": {
+            "queued_us": 95.65625,
+            "sync_us": 234.5365
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 34.466125,
+            "sync_us": 177.448
+          },
+          "large_budget": {
+            "queued_us": 34.22915625,
+            "sync_us": 174.328125
+          },
+          "original": {
+            "queued_us": 95.37890625,
+            "sync_us": 237.1145
+          },
+          "known": {
+            "queued_us": 34.97396875,
+            "sync_us": 175.08325
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 35.1315,
+            "sync_us": 166.270875
+          },
+          "large_budget": {
+            "queued_us": 34.37109375,
+            "sync_us": 168.54175
+          },
+          "original": {
+            "queued_us": 93.92709375,
+            "sync_us": 237.421875
+          },
+          "known": {
+            "queued_us": 34.29815625,
+            "sync_us": 172.838625
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 93.940125,
+            "sync_us": 235.375
+          },
+          "known": {
+            "queued_us": 33.9166875,
+            "sync_us": 163.244875
+          },
+          "guarded": {
+            "queued_us": 33.8606875,
+            "sync_us": 175.953125
+          },
+          "large_budget": {
+            "queued_us": 34.52084375,
+            "sync_us": 181.817625
+          }
+        }
+      ],
+      "median_us": {
+        "queued_us": {
+          "original": 94.58464062499999,
+          "known": 34.485015625,
+          "guarded": 34.476546875,
+          "large_budget": 34.180984375
+        },
+        "sync_us": {
+          "original": 230.671875,
+          "known": 168.0573125,
+          "guarded": 168.3984375,
+          "large_budget": 168.427125
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 2.7427750549264824,
+          "guarded": 2.743448784703732,
+          "large_budget": 2.7671713484699776
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 1.372578625520981,
+          "guarded": 1.3697981906750174,
+          "large_budget": 1.369564878578792
+        }
+      }
+    },
+    {
+      "case": "independent-unequal",
+      "mkn": [
+        64,
+        32,
+        48
+      ],
+      "unequal": true,
+      "estimated_working_set_bytes": 133120,
+      "records": {
+        "guarded": {
+          "setup_seconds": 0.16066875000251457,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.13732362500741147,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "known": {
+          "setup_seconds": 0.12022879200230818,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "original": {
+          "setup_seconds": 0.12296716700075194,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        }
+      },
+      "samples": [
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 128.9231875,
+            "sync_us": 297.213625
+          },
+          "original": {
+            "queued_us": 127.35415625,
+            "sync_us": 253.197875
+          },
+          "known": {
+            "queued_us": 103.94009375,
+            "sync_us": 238.1145
+          },
+          "guarded": {
+            "queued_us": 97.377625,
+            "sync_us": 254.00525
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 105.23828125,
+            "sync_us": 249.338625
+          },
+          "guarded": {
+            "queued_us": 111.11196875,
+            "sync_us": 242.265625
+          },
+          "large_budget": {
+            "queued_us": 97.44271875,
+            "sync_us": 244.4375
+          },
+          "original": {
+            "queued_us": 104.2135625,
+            "sync_us": 250.677
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 98.16665625,
+            "sync_us": 242.484375
+          },
+          "known": {
+            "queued_us": 103.20703125,
+            "sync_us": 240.4115
+          },
+          "guarded": {
+            "queued_us": 104.19921875,
+            "sync_us": 239.359375
+          },
+          "large_budget": {
+            "queued_us": 104.05078125,
+            "sync_us": 233.640625
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 97.727875,
+            "sync_us": 244.671875
+          },
+          "large_budget": {
+            "queued_us": 98.40496875,
+            "sync_us": 237.34375
+          },
+          "original": {
+            "queued_us": 105.72525,
+            "sync_us": 244.198
+          },
+          "known": {
+            "queued_us": 104.12628125,
+            "sync_us": 238.526
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 97.0546875,
+            "sync_us": 237.21875
+          },
+          "known": {
+            "queued_us": 103.16275,
+            "sync_us": 247.5625
+          },
+          "guarded": {
+            "queued_us": 97.22784375,
+            "sync_us": 235.1145
+          },
+          "large_budget": {
+            "queued_us": 104.0051875,
+            "sync_us": 250.0
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 106.803375,
+            "sync_us": 253.203125
+          },
+          "guarded": {
+            "queued_us": 106.2995,
+            "sync_us": 233.25
+          },
+          "large_budget": {
+            "queued_us": 106.04428125,
+            "sync_us": 254.671875
+          },
+          "original": {
+            "queued_us": 104.05728125,
+            "sync_us": 249.2605
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 103.67578125,
+            "sync_us": 252.80725
+          },
+          "large_budget": {
+            "queued_us": 106.64975,
+            "sync_us": 251.1615
+          },
+          "original": {
+            "queued_us": 103.634125,
+            "sync_us": 250.260375
+          },
+          "known": {
+            "queued_us": 106.11978125,
+            "sync_us": 248.6875
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 105.2825625,
+            "sync_us": 249.333375
+          },
+          "original": {
+            "queued_us": 104.9518125,
+            "sync_us": 240.984375
+          },
+          "known": {
+            "queued_us": 105.56640625,
+            "sync_us": 241.49475
+          },
+          "guarded": {
+            "queued_us": 104.5573125,
+            "sync_us": 239.432375
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 104.0859375,
+            "sync_us": 237.885375
+          },
+          "known": {
+            "queued_us": 104.4765625,
+            "sync_us": 244.276
+          },
+          "guarded": {
+            "queued_us": 104.4700625,
+            "sync_us": 248.328125
+          },
+          "large_budget": {
+            "queued_us": 103.569,
+            "sync_us": 245.239625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 103.92059375,
+            "sync_us": 242.739625
+          },
+          "original": {
+            "queued_us": 102.95440625,
+            "sync_us": 243.0885
+          },
+          "known": {
+            "queued_us": 104.0065,
+            "sync_us": 238.651
+          },
+          "guarded": {
+            "queued_us": 104.240875,
+            "sync_us": 253.041625
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 102.4453125,
+            "sync_us": 250.546875
+          },
+          "guarded": {
+            "queued_us": 104.6888125,
+            "sync_us": 241.203125
+          },
+          "large_budget": {
+            "queued_us": 103.24090625,
+            "sync_us": 245.234375
+          },
+          "original": {
+            "queued_us": 101.87890625,
+            "sync_us": 248.489625
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 102.25521875,
+            "sync_us": 229.00525
+          },
+          "guarded": {
+            "queued_us": 101.62240625,
+            "sync_us": 237.59375
+          },
+          "large_budget": {
+            "queued_us": 102.09246875,
+            "sync_us": 232.8125
+          },
+          "original": {
+            "queued_us": 102.8828125,
+            "sync_us": 232.2865
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 102.2565,
+            "sync_us": 239.49475
+          },
+          "large_budget": {
+            "queued_us": 102.69921875,
+            "sync_us": 241.427125
+          },
+          "original": {
+            "queued_us": 102.3893125,
+            "sync_us": 245.41675
+          },
+          "known": {
+            "queued_us": 101.8046875,
+            "sync_us": 233.802125
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 102.8671875,
+            "sync_us": 239.796875
+          },
+          "known": {
+            "queued_us": 102.571625,
+            "sync_us": 246.55725
+          },
+          "guarded": {
+            "queued_us": 102.88803125,
+            "sync_us": 237.724
+          },
+          "large_budget": {
+            "queued_us": 102.58853125,
+            "sync_us": 231.875
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 104.52215625,
+            "sync_us": 240.35425
+          },
+          "large_budget": {
+            "queued_us": 103.1171875,
+            "sync_us": 250.020875
+          },
+          "original": {
+            "queued_us": 103.4518125,
+            "sync_us": 243.739625
+          },
+          "known": {
+            "queued_us": 103.9166875,
+            "sync_us": 235.427
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 102.4453125,
+            "sync_us": 232.822875
+          },
+          "original": {
+            "queued_us": 102.41146875,
+            "sync_us": 235.822875
+          },
+          "known": {
+            "queued_us": 98.7734375,
+            "sync_us": 266.713625
+          },
+          "guarded": {
+            "queued_us": 143.77084375,
+            "sync_us": 862.6145
+          }
+        }
+      ],
+      "median_us": {
+        "queued_us": {
+          "original": 103.203109375,
+          "known": 103.92839062499999,
+          "guarded": 104.22004687500001,
+          "large_budget": 103.40495312499999
+        },
+        "sync_us": {
+          "original": 243.4140625,
+          "known": 242.885375,
+          "guarded": 240.7786875,
+          "large_budget": 244.8359375
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 0.993021336656535,
+          "guarded": 0.9902424002819754,
+          "large_budget": 0.9980480262898432
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 1.0021766954885611,
+          "guarded": 1.0109452170678521,
+          "large_budget": 0.9941925396470851
+        }
+      }
+    },
+    {
+      "case": "independent-skinny",
+      "mkn": [
+        16,
+        1024,
+        16
+      ],
+      "unequal": false,
+      "estimated_working_set_bytes": 660480,
+      "records": {
+        "original": {
+          "setup_seconds": 0.1297083749959711,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "known": {
+          "setup_seconds": 0.11830354201083537,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "guarded": {
+          "setup_seconds": 0.28298487499705516,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        },
+        "large_budget": {
+          "setup_seconds": 0.26413262498681433,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        }
+      },
+      "samples": [
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 190.828125,
+            "sync_us": 929.161375
+          },
+          "known": {
+            "queued_us": 180.4388125,
+            "sync_us": 360.255125
+          },
+          "guarded": {
+            "queued_us": 63.84634375,
+            "sync_us": 234.9895
+          },
+          "large_budget": {
+            "queued_us": 55.0,
+            "sync_us": 230.5105
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 121.397125,
+            "sync_us": 272.1875
+          },
+          "guarded": {
+            "queued_us": 54.83071875,
+            "sync_us": 236.630125
+          },
+          "large_budget": {
+            "queued_us": 54.21484375,
+            "sync_us": 240.317625
+          },
+          "original": {
+            "queued_us": 112.6484375,
+            "sync_us": 266.796875
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 51.93359375,
+            "sync_us": 218.40625
+          },
+          "large_budget": {
+            "queued_us": 51.80596875,
+            "sync_us": 203.63025
+          },
+          "original": {
+            "queued_us": 115.009125,
+            "sync_us": 256.104125
+          },
+          "known": {
+            "queued_us": 114.68490625,
+            "sync_us": 255.651
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 112.0078125,
+            "sync_us": 259.66675
+          },
+          "guarded": {
+            "queued_us": 50.58853125,
+            "sync_us": 211.4375
+          },
+          "large_budget": {
+            "queued_us": 50.12240625,
+            "sync_us": 213.0885
+          },
+          "original": {
+            "queued_us": 111.6549375,
+            "sync_us": 251.74475
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 51.5078125,
+            "sync_us": 206.786375
+          },
+          "large_budget": {
+            "queued_us": 54.819,
+            "sync_us": 208.474
+          },
+          "original": {
+            "queued_us": 112.05859375,
+            "sync_us": 251.4635
+          },
+          "known": {
+            "queued_us": 110.397125,
+            "sync_us": 237.6875
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 110.3489375,
+            "sync_us": 236.229125
+          },
+          "guarded": {
+            "queued_us": 49.5625,
+            "sync_us": 206.890625
+          },
+          "large_budget": {
+            "queued_us": 50.36328125,
+            "sync_us": 188.40625
+          },
+          "original": {
+            "queued_us": 110.34375,
+            "sync_us": 236.927
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 49.70703125,
+            "sync_us": 190.1615
+          },
+          "large_budget": {
+            "queued_us": 49.34375,
+            "sync_us": 202.3125
+          },
+          "original": {
+            "queued_us": 110.89190625,
+            "sync_us": 242.953125
+          },
+          "known": {
+            "queued_us": 109.9361875,
+            "sync_us": 260.9115
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 112.2435,
+            "sync_us": 252.916625
+          },
+          "known": {
+            "queued_us": 111.2174375,
+            "sync_us": 260.09375
+          },
+          "guarded": {
+            "queued_us": 51.1484375,
+            "sync_us": 205.864625
+          },
+          "large_budget": {
+            "queued_us": 48.83334375,
+            "sync_us": 201.010375
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 112.0078125,
+            "sync_us": 256.479125
+          },
+          "known": {
+            "queued_us": 111.421875,
+            "sync_us": 254.984375
+          },
+          "guarded": {
+            "queued_us": 51.515625,
+            "sync_us": 217.015625
+          },
+          "large_budget": {
+            "queued_us": 49.46221875,
+            "sync_us": 209.276125
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 47.69921875,
+            "sync_us": 212.276
+          },
+          "original": {
+            "queued_us": 111.6236875,
+            "sync_us": 253.828125
+          },
+          "known": {
+            "queued_us": 110.5455625,
+            "sync_us": 252.302
+          },
+          "guarded": {
+            "queued_us": 49.888,
+            "sync_us": 221.65625
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 113.490875,
+            "sync_us": 259.984375
+          },
+          "known": {
+            "queued_us": 113.10028125,
+            "sync_us": 265.5625
+          },
+          "guarded": {
+            "queued_us": 51.60678125,
+            "sync_us": 207.401
+          },
+          "large_budget": {
+            "queued_us": 51.38671875,
+            "sync_us": 211.078125
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 113.36978125,
+            "sync_us": 254.6875
+          },
+          "guarded": {
+            "queued_us": 49.703125,
+            "sync_us": 195.057375
+          },
+          "large_budget": {
+            "queued_us": 49.2565,
+            "sync_us": 198.948
+          },
+          "original": {
+            "queued_us": 111.57421875,
+            "sync_us": 240.901
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 49.11328125,
+            "sync_us": 204.56775
+          },
+          "original": {
+            "queued_us": 111.88540625,
+            "sync_us": 255.078125
+          },
+          "known": {
+            "queued_us": 111.52471875,
+            "sync_us": 254.182375
+          },
+          "guarded": {
+            "queued_us": 49.9479375,
+            "sync_us": 210.984375
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 51.70834375,
+            "sync_us": 207.5
+          },
+          "original": {
+            "queued_us": 112.79296875,
+            "sync_us": 259.349
+          },
+          "known": {
+            "queued_us": 112.23696875,
+            "sync_us": 258.5885
+          },
+          "guarded": {
+            "queued_us": 47.85025,
+            "sync_us": 206.6355
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 49.4140625,
+            "sync_us": 213.203125
+          },
+          "large_budget": {
+            "queued_us": 48.7109375,
+            "sync_us": 206.661375
+          },
+          "original": {
+            "queued_us": 111.97265625,
+            "sync_us": 258.302125
+          },
+          "known": {
+            "queued_us": 112.0924375,
+            "sync_us": 258.447875
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 49.7578125,
+            "sync_us": 210.35425
+          },
+          "original": {
+            "queued_us": 111.34765625,
+            "sync_us": 259.984375
+          },
+          "known": {
+            "queued_us": 111.23178125,
+            "sync_us": 255.609375
+          },
+          "guarded": {
+            "queued_us": 48.888,
+            "sync_us": 209.0
+          }
+        }
+      ],
+      "median_us": {
+        "queued_us": {
+          "original": 111.990234375,
+          "known": 111.766265625,
+          "guarded": 50.268234375000006,
+          "large_budget": 49.940109375
+        },
+        "sync_us": {
+          "original": 255.591125,
+          "known": 257.0494375,
+          "guarded": 209.9921875,
+          "large_budget": 207.987
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 1.0020039029554004,
+          "guarded": 2.227852952613277,
+          "large_budget": 2.2424907709766106
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 0.9943267236287961,
+          "guarded": 1.2171458759626474,
+          "large_budget": 1.2288802905950853
+        }
+      }
+    },
+    {
+      "case": "independent-small",
+      "mkn": [
+        64,
+        32,
+        48
+      ],
+      "unequal": false,
+      "estimated_working_set_bytes": 133120,
+      "records": {
+        "original": {
+          "setup_seconds": 0.13636687499820255,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.2650301249959739,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        },
+        "known": {
+          "setup_seconds": 0.13882504099456128,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "guarded": {
+          "setup_seconds": 0.2806786250002915,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        }
+      },
+      "samples": [
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 130.00128125,
+            "sync_us": 316.708375
+          },
+          "guarded": {
+            "queued_us": 53.6484375,
+            "sync_us": 307.375
+          },
+          "large_budget": {
+            "queued_us": 52.678375,
+            "sync_us": 302.994875
+          },
+          "original": {
+            "queued_us": 130.67578125,
+            "sync_us": 296.4375
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 54.7513125,
+            "sync_us": 306.19275
+          },
+          "large_budget": {
+            "queued_us": 52.01303125,
+            "sync_us": 208.849
+          },
+          "original": {
+            "queued_us": 106.77603125,
+            "sync_us": 238.0625
+          },
+          "known": {
+            "queued_us": 106.3828125,
+            "sync_us": 244.46875
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 45.90884375,
+            "sync_us": 176.291625
+          },
+          "original": {
+            "queued_us": 107.92446875,
+            "sync_us": 257.27075
+          },
+          "known": {
+            "queued_us": 105.30990625,
+            "sync_us": 250.447875
+          },
+          "guarded": {
+            "queued_us": 45.63021875,
+            "sync_us": 184.5365
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 45.95834375,
+            "sync_us": 193.77075
+          },
+          "original": {
+            "queued_us": 104.94009375,
+            "sync_us": 247.15625
+          },
+          "known": {
+            "queued_us": 104.747375,
+            "sync_us": 246.776
+          },
+          "guarded": {
+            "queued_us": 45.5573125,
+            "sync_us": 175.6355
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 104.3736875,
+            "sync_us": 237.635375
+          },
+          "guarded": {
+            "queued_us": 44.4140625,
+            "sync_us": 176.546875
+          },
+          "large_budget": {
+            "queued_us": 44.15496875,
+            "sync_us": 174.39575
+          },
+          "original": {
+            "queued_us": 105.50521875,
+            "sync_us": 231.44275
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 104.62890625,
+            "sync_us": 245.06775
+          },
+          "known": {
+            "queued_us": 104.8138125,
+            "sync_us": 243.989625
+          },
+          "guarded": {
+            "queued_us": 45.80209375,
+            "sync_us": 182.989625
+          },
+          "large_budget": {
+            "queued_us": 44.95703125,
+            "sync_us": 179.796875
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 104.48696875,
+            "sync_us": 242.25525
+          },
+          "guarded": {
+            "queued_us": 44.7734375,
+            "sync_us": 202.057375
+          },
+          "large_budget": {
+            "queued_us": 46.38540625,
+            "sync_us": 179.375
+          },
+          "original": {
+            "queued_us": 105.7200625,
+            "sync_us": 238.651125
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 105.93359375,
+            "sync_us": 243.20825
+          },
+          "known": {
+            "queued_us": 103.25128125,
+            "sync_us": 250.880125
+          },
+          "guarded": {
+            "queued_us": 46.52603125,
+            "sync_us": 176.8855
+          },
+          "large_budget": {
+            "queued_us": 45.30596875,
+            "sync_us": 184.66675
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 45.0390625,
+            "sync_us": 184.3645
+          },
+          "original": {
+            "queued_us": 109.16275,
+            "sync_us": 259.515625
+          },
+          "known": {
+            "queued_us": 105.54296875,
+            "sync_us": 248.802125
+          },
+          "guarded": {
+            "queued_us": 45.53515625,
+            "sync_us": 179.265625
+          }
+        },
+        {
+          "order": [
+            "large_budget",
+            "original",
+            "known",
+            "guarded"
+          ],
+          "large_budget": {
+            "queued_us": 44.6731875,
+            "sync_us": 188.7135
+          },
+          "original": {
+            "queued_us": 106.27475,
+            "sync_us": 248.208375
+          },
+          "known": {
+            "queued_us": 103.54296875,
+            "sync_us": 239.276125
+          },
+          "guarded": {
+            "queued_us": 46.9583125,
+            "sync_us": 181.973875
+          }
+        },
+        {
+          "order": [
+            "known",
+            "guarded",
+            "large_budget",
+            "original"
+          ],
+          "known": {
+            "queued_us": 104.09375,
+            "sync_us": 224.45825
+          },
+          "guarded": {
+            "queued_us": 44.79559375,
+            "sync_us": 186.5885
+          },
+          "large_budget": {
+            "queued_us": 44.46353125,
+            "sync_us": 177.322875
+          },
+          "original": {
+            "queued_us": 105.31640625,
+            "sync_us": 243.369875
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 109.77215625,
+            "sync_us": 184.95825
+          },
+          "large_budget": {
+            "queued_us": 238.740875,
+            "sync_us": 267.989625
+          },
+          "original": {
+            "queued_us": 155.05728125,
+            "sync_us": 350.515625
+          },
+          "known": {
+            "queued_us": 116.4609375,
+            "sync_us": 256.432375
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 48.8893125,
+            "sync_us": 196.916625
+          },
+          "large_budget": {
+            "queued_us": 46.384125,
+            "sync_us": 204.151
+          },
+          "original": {
+            "queued_us": 109.7864375,
+            "sync_us": 253.302125
+          },
+          "known": {
+            "queued_us": 105.8138125,
+            "sync_us": 249.36975
+          }
+        },
+        {
+          "order": [
+            "guarded",
+            "large_budget",
+            "original",
+            "known"
+          ],
+          "guarded": {
+            "queued_us": 46.147125,
+            "sync_us": 191.692625
+          },
+          "large_budget": {
+            "queued_us": 45.09765625,
+            "sync_us": 189.776
+          },
+          "original": {
+            "queued_us": 108.931,
+            "sync_us": 243.0625
+          },
+          "known": {
+            "queued_us": 105.7669375,
+            "sync_us": 263.526125
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 105.15884375,
+            "sync_us": 240.864625
+          },
+          "known": {
+            "queued_us": 106.09634375,
+            "sync_us": 244.578125
+          },
+          "guarded": {
+            "queued_us": 45.59765625,
+            "sync_us": 179.421875
+          },
+          "large_budget": {
+            "queued_us": 44.953125,
+            "sync_us": 187.651
+          }
+        },
+        {
+          "order": [
+            "original",
+            "known",
+            "guarded",
+            "large_budget"
+          ],
+          "original": {
+            "queued_us": 105.8125,
+            "sync_us": 241.546875
+          },
+          "known": {
+            "queued_us": 104.08465625,
+            "sync_us": 239.666625
+          },
+          "guarded": {
+            "queued_us": 44.765625,
+            "sync_us": 181.84375
+          },
+          "large_budget": {
+            "queued_us": 45.397125,
+            "sync_us": 199.020875
+          }
+        }
+      ],
+      "median_us": {
+        "queued_us": {
+          "original": 106.10417187499999,
+          "known": 105.061859375,
+          "guarded": 45.71615625,
+          "large_budget": 45.351546875
+        },
+        "sync_us": {
+          "original": 244.2188125,
+          "known": 245.6770625,
+          "guarded": 183.7630625,
+          "large_budget": 188.18225
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 1.0099209409218586,
+          "guarded": 2.3209337918692583,
+          "large_budget": 2.3395932263887085
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 0.9940643624392083,
+          "guarded": 1.3289874971473117,
+          "large_budget": 1.297778151233711
+        }
+      }
+    }
+  ]
+}

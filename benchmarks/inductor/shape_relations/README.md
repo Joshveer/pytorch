@@ -9,6 +9,17 @@ and inference. Workload functions in `workloads.py` are copied unchanged from
 [Cyrus's reproductions](https://github.com/CyrusD123/inductor-dynamic-fusion/tree/275f764ee84812a8db53ff93e915577f9b97b2bc).
 No workload equality check or branch is added.
 
+## Matmul batching
+
+The separate `matmul.py` harness compares the original batch-linear pass with
+proved-compatible and guarded symbolic batching, including a larger-budget
+control to expose packing costs. See the [implementation and usage notes](../../../tools/inductor/symbolic_batch_linear.md).
+It uses MPS and records its own baseline revision and compiler-source hashes.
+[Recorded matmul results](results/matmul_mps_2026_11_15/README.md) include two
+runs against the published compiler source, raw timings and generated code.
+The new regression suite can also be run on CUDA as described in the usage
+notes; the matmul timing harness remains MPS-only.
+
 ## Recorded results
 
 [Full report](results/mps_2026_11_15/report.txt) and

@@ -1,0 +1,129 @@
+# AOT ID: ['4_inference']
+import torch
+from torch import device, empty_strided
+from torch._inductor.select_algorithm import extern_kernels
+from torch._C._dynamo.guards import copy_if_misaligned
+
+assert_size_stride_grouped = torch._C._dynamo.guards.assert_size_stride_grouped
+reinterpret_tensor = torch._C._dynamo.guards._reinterpret_tensor
+
+class Runner:
+    def __init__(self, partitions):
+        self.partitions = partitions
+
+    def recursively_apply_fns(self, fns):
+        new_callables = []
+        for fn, c in zip(fns, self.partitions):
+            new_callables.append(fn(c))
+        self.partitions = new_callables
+
+    def call(self, args):
+        arg0_1, arg1_1, arg2_1, arg3_1, arg4_1, arg5_1, arg6_1, arg7_1, arg8_1, arg9_1, arg10_1, arg11_1, arg12_1, arg13_1, arg14_1, arg15_1, arg16_1, arg17_1, arg18_1, arg19_1, arg20_1, arg21_1, arg22_1, arg23_1, arg24_1 = args
+        args.clear()
+        s33 = arg0_1
+        s50 = arg1_1
+        s81 = s50
+        s6 = arg3_1
+        s21 = arg5_1
+        s7 = arg6_1
+        s95 = s7
+        s99 = arg8_1
+        s93 = arg10_1
+        s57 = arg11_1
+        s66 = s57
+        s51 = arg13_1
+        s40 = arg15_1
+        s10 = arg16_1
+        s48 = s10
+        s11 = arg18_1
+        s22 = arg20_1
+        s4 = arg21_1
+        s92 = s4
+        s91 = arg23_1
+        assert_size_stride_grouped((arg2_1, arg4_1), ((s33, s50), (s6, s50)), ((s50, 1), (s50, 1)), 'input')
+        arg2_1 = copy_if_misaligned(arg2_1)
+        arg4_1 = copy_if_misaligned(arg4_1)
+        buf0 = empty_strided((s33, s6), (s6, 1), device='mps', dtype=torch.float32)
+        # Topologically Sorted Source Nodes: [linear], Original ATen: [aten.linear]
+        extern_kernels.mm(arg2_1, reinterpret_tensor(arg4_1, (s50, s6), (1, s50), 0), out=buf0)
+        del arg2_1
+        del arg4_1
+        assert_size_stride_grouped((arg7_1, arg9_1), ((s21, s7), (s99, s7)), ((s7, 1), (s7, 1)), 'input')
+        arg7_1 = copy_if_misaligned(arg7_1)
+        arg9_1 = copy_if_misaligned(arg9_1)
+        buf1 = empty_strided((s21, s99), (s99, 1), device='mps', dtype=torch.float32)
+        # Topologically Sorted Source Nodes: [linear_1], Original ATen: [aten.linear]
+        extern_kernels.mm(arg7_1, reinterpret_tensor(arg9_1, (s7, s99), (1, s7), 0), out=buf1)
+        del arg7_1
+        del arg9_1
+        assert_size_stride_grouped((arg12_1, arg14_1), ((s93, s57), (s51, s57)), ((s57, 1), (s57, 1)), 'input')
+        arg12_1 = copy_if_misaligned(arg12_1)
+        arg14_1 = copy_if_misaligned(arg14_1)
+        buf2 = empty_strided((s93, s51), (s51, 1), device='mps', dtype=torch.float32)
+        # Topologically Sorted Source Nodes: [linear_2], Original ATen: [aten.linear]
+        extern_kernels.mm(arg12_1, reinterpret_tensor(arg14_1, (s57, s51), (1, s57), 0), out=buf2)
+        del arg12_1
+        del arg14_1
+        assert_size_stride_grouped((arg17_1, arg19_1), ((s40, s10), (s11, s10)), ((s10, 1), (s10, 1)), 'input')
+        arg17_1 = copy_if_misaligned(arg17_1)
+        arg19_1 = copy_if_misaligned(arg19_1)
+        buf3 = empty_strided((s40, s11), (s11, 1), device='mps', dtype=torch.float32)
+        # Topologically Sorted Source Nodes: [linear_3], Original ATen: [aten.linear]
+        extern_kernels.mm(arg17_1, reinterpret_tensor(arg19_1, (s10, s11), (1, s10), 0), out=buf3)
+        del arg17_1
+        del arg19_1
+        assert_size_stride_grouped((arg22_1, arg24_1), ((s22, s4), (s91, s4)), ((s4, 1), (s4, 1)), 'input')
+        arg22_1 = copy_if_misaligned(arg22_1)
+        arg24_1 = copy_if_misaligned(arg24_1)
+        buf4 = empty_strided((s22, s91), (s91, 1), device='mps', dtype=torch.float32)
+        # Topologically Sorted Source Nodes: [linear_4], Original ATen: [aten.linear]
+        extern_kernels.mm(arg22_1, reinterpret_tensor(arg24_1, (s4, s91), (1, s4), 0), out=buf4)
+        del arg22_1
+        del arg24_1
+        return (buf0, buf1, buf2, buf3, buf4, )
+
+runner = Runner(partitions=[])
+call = runner.call
+recursively_apply_fns = runner.recursively_apply_fns
+
+
+def get_args():
+    from torch._dynamo.testing import rand_strided
+    arg0_1 = 128
+    arg1_1 = 64
+    arg2_1 = rand_strided((128, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg3_1 = 96
+    arg4_1 = rand_strided((96, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg5_1 = 128
+    arg6_1 = 64
+    arg7_1 = rand_strided((128, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg8_1 = 96
+    arg9_1 = rand_strided((96, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg10_1 = 128
+    arg11_1 = 64
+    arg12_1 = rand_strided((128, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg13_1 = 96
+    arg14_1 = rand_strided((96, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg15_1 = 128
+    arg16_1 = 64
+    arg17_1 = rand_strided((128, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg18_1 = 96
+    arg19_1 = rand_strided((96, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg20_1 = 128
+    arg21_1 = 64
+    arg22_1 = rand_strided((128, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    arg23_1 = 96
+    arg24_1 = rand_strided((96, 64), (64, 1), device='mps:0', dtype=torch.float32)
+    return [arg0_1, arg1_1, arg2_1, arg3_1, arg4_1, arg5_1, arg6_1, arg7_1, arg8_1, arg9_1, arg10_1, arg11_1, arg12_1, arg13_1, arg14_1, arg15_1, arg16_1, arg17_1, arg18_1, arg19_1, arg20_1, arg21_1, arg22_1, arg23_1, arg24_1]
+
+
+def benchmark_compiled_module(args, times=10, repeat=10):
+    from torch._inductor.utils import print_performance
+    fn = lambda: call(list(args))
+    return print_performance(fn, times=times, repeat=repeat, device='mps')
+
+
+if __name__ == "__main__":
+    from torch._inductor.wrapper_benchmark import compiled_module_main
+    args = get_args()
+    compiled_module_main('None', lambda times, repeat: benchmark_compiled_module(args, times=times, repeat=repeat))

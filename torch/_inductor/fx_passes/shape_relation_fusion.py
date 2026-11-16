@@ -5,11 +5,84 @@ from torch._guards import CompileContext, TracingContext
 from torch.fx.experimental.symbolic_shapes import (
     guard_or_false,
     statically_known_true,
+    sym_and,
     sym_eq,
 )
 from torch.utils._ordered_set import OrderedSet
 
 from ..virtualized import V
+
+
+def canonical_shape_key(shape, allocators):
+    """Hashable dimensions using existing facts, without adding guards."""
+    from ..sizevars import SizeVarAllocator
+
+    result = []
+    for dim in shape:
+        if isinstance(dim, torch.SymInt):
+            env = dim.node.shape_env
+            if env is None:
+                return None
+            if env not in allocators:
+                allocators[env] = SizeVarAllocator(env)
+            expr = allocators[env].simplify(dim.node.expr)
+            # Symbol names may repeat in distinct ShapeEnvs. Constants do not
+            # need an environment identity; symbolic dimensions do.
+            result.append(expr if expr.is_number else (env, expr))
+        else:
+            result.append(dim)
+    return tuple(result)
+
+
+def guard_shape_compatibility(shapes, extra_condition, max_conditions):
+    """Guard one conjunction so all incompatible shapes share its negation.
+
+    The caller owns candidate legality and profitability. Never speculate on
+    unbacked sizes or when there is no Dynamo dispatcher for the fallback.
+    """
+    context = TracingContext.try_get()
+    if (
+        V.aot_compilation
+        or CompileContext.try_get() is None
+        or context is None
+        or context.fake_mode is None
+        or context.fake_mode.shape_env is None
+        or context.fake_mode.shape_env.frozen
+    ):
+        return False
+    env = context.fake_mode.shape_env
+    if not shapes or any(len(shape) != len(shapes[0]) for shape in shapes):
+        return False
+    for shape in shapes:
+        for dim in shape:
+            if isinstance(dim, torch.SymInt) and (
+                dim.node.shape_env is not env
+                or not isinstance(dim.node.expr, sympy.Symbol)
+                or dim.node.expr not in env.backed_var_to_val
+            ):
+                return False
+            if not statically_known_true(dim > 1):
+                return False
+    predicates = []
+    seen = OrderedSet()
+    for shape in shapes[1:]:
+        for left, right in zip(shapes[0], shape):
+            predicate = left == right
+            if statically_known_true(predicate):
+                continue
+            key = (
+                predicate.node.expr
+                if isinstance(predicate, torch.SymBool)
+                else predicate
+            )
+            if key not in seen:
+                seen.add(key)
+                predicates.append(predicate)
+    if not statically_known_true(extra_condition):
+        predicates.append(extra_condition)
+    if len(predicates) > max_conditions:
+        return False
+    return guard_or_false(sym_and(True, *predicates))
 
 
 def guard_reduction_width_equality(graph: torch.fx.Graph) -> None:
@@ -111,5 +184,5 @@ def guard_reduction_width_equality(graph: torch.fx.Graph) -> None:
                 continue
             # On equality ShapeEnv unifies the symbols before lowering. On
             # inequality the ordinary unfused graph remains a valid fallback.
-            guard_or_false(left == right)
+            guard_shape_compatibility([(left,), (right,)], True, max_conditions=1)
             return

@@ -1,0 +1,9 @@
+test_batch_linear_post_grad_fusion (__main__.TestPostGradBatchLinearFusion.test_batch_linear_post_grad_fusion) ... ok
+test_batch_linear_post_grad_fusion_mixed_dtype (__main__.TestPostGradBatchLinearFusion.test_batch_linear_post_grad_fusion_mixed_dtype) ... ok
+test_find_independent_subset_greedy (__main__.TestFindIndependentSubsetGreedy.test_find_independent_subset_greedy) ... ok
+test_find_independent_subset_greedy_fuse (__main__.TestFindIndependentSubsetGreedy.test_find_independent_subset_greedy_fuse) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.733s
+
+OK

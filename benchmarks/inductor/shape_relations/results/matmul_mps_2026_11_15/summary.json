@@ -1,0 +1,413 @@
+{
+  "device": "mps",
+  "dtype": "float32",
+  "inference_only": true,
+  "runs": 2,
+  "blocks_per_case": 32,
+  "baseline": "Original batch-linear rule at 986da9d; same native build and workload",
+  "aggregation": "Pool 32 block means per case/mode/metric; median; speedup = original median / mode median",
+  "cases": [
+    {
+      "case": "independent-large",
+      "mkn": [
+        256,
+        256,
+        256
+      ],
+      "working_set_bytes": 3932160,
+      "median_us": {
+        "queued_us": {
+          "original": 176.27798437500002,
+          "known": 176.99087500000002,
+          "guarded": 177.86978125000002,
+          "large_budget": 132.20573437500002
+        },
+        "sync_us": {
+          "original": 327.5859375,
+          "known": 325.992125,
+          "guarded": 330.890625,
+          "large_budget": 307.53125
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 0.9959721617004267,
+          "guarded": 0.9910507739773813,
+          "large_budget": 1.3333611072798823
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 1.0048891135023583,
+          "guarded": 0.990012749681258,
+          "large_budget": 1.0652118687125292
+        }
+      },
+      "call_counts": {
+        "original": {
+          "setup_seconds": 0.4022508329944685,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.3817202909995103,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        },
+        "known": {
+          "setup_seconds": 0.13271891600743402,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "guarded": {
+          "setup_seconds": 0.13656275000539608,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        }
+      }
+    },
+    {
+      "case": "independent-medium",
+      "mkn": [
+        128,
+        64,
+        96
+      ],
+      "working_set_bytes": 532480,
+      "median_us": {
+        "queued_us": {
+          "original": 106.76953125,
+          "known": 106.621734375,
+          "guarded": 47.00259375,
+          "large_budget": 46.674484375
+        },
+        "sync_us": {
+          "original": 254.90887500000002,
+          "known": 255.8150625,
+          "guarded": 200.716125,
+          "large_budget": 200.5780625
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 1.0013861796177521,
+          "guarded": 2.2715667951835106,
+          "large_budget": 2.287535313559637
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 0.9964576460387278,
+          "guarded": 1.2699969920204468,
+          "large_budget": 1.2708711601997853
+        }
+      },
+      "call_counts": {
+        "original": {
+          "setup_seconds": 0.1333423330070218,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "known": {
+          "setup_seconds": 0.1345197500049835,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.29351049999240786,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        },
+        "guarded": {
+          "setup_seconds": 0.2735939580015838,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        }
+      }
+    },
+    {
+      "case": "independent-skinny",
+      "mkn": [
+        16,
+        1024,
+        16
+      ],
+      "working_set_bytes": 660480,
+      "median_us": {
+        "queued_us": {
+          "original": 113.74478125,
+          "known": 113.371734375,
+          "guarded": 51.65690625,
+          "large_budget": 51.521484375
+        },
+        "sync_us": {
+          "original": 258.35418749999997,
+          "known": 259.19012499999997,
+          "guarded": 211.763,
+          "large_budget": 211.0703125
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 1.0032904751528813,
+          "guarded": 2.2019278641953126,
+          "large_budget": 2.2077155312938324
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 0.9967748096112844,
+          "guarded": 1.2200157133210239,
+          "large_budget": 1.2240195432505458
+        }
+      },
+      "call_counts": {
+        "original": {
+          "setup_seconds": 0.1297083749959711,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "known": {
+          "setup_seconds": 0.11830354201083537,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "guarded": {
+          "setup_seconds": 0.28298487499705516,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        },
+        "large_budget": {
+          "setup_seconds": 0.26413262498681433,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        }
+      }
+    },
+    {
+      "case": "independent-small",
+      "mkn": [
+        64,
+        32,
+        48
+      ],
+      "working_set_bytes": 133120,
+      "median_us": {
+        "queued_us": {
+          "original": 106.15104687499999,
+          "known": 105.42643749999999,
+          "guarded": 45.867828125,
+          "large_budget": 45.785140625
+        },
+        "sync_us": {
+          "original": 244.2188125,
+          "known": 244.5234375,
+          "guarded": 184.74737499999998,
+          "large_budget": 184.53125
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 1.0068731277674066,
+          "guarded": 2.314281081408844,
+          "large_budget": 2.318460649589847
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 0.9987542093996614,
+          "guarded": 1.321906806524315,
+          "large_budget": 1.3234550381033023
+        }
+      },
+      "call_counts": {
+        "original": {
+          "setup_seconds": 0.13636687499820255,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.2650301249959739,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        },
+        "known": {
+          "setup_seconds": 0.13882504099456128,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "guarded": {
+          "setup_seconds": 0.2806786250002915,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 1
+        }
+      }
+    },
+    {
+      "case": "independent-unequal",
+      "mkn": [
+        64,
+        32,
+        48
+      ],
+      "working_set_bytes": 133120,
+      "median_us": {
+        "queued_us": {
+          "original": 104.77734375,
+          "known": 105.21614062500001,
+          "guarded": 104.834625,
+          "large_budget": 105.156890625
+        },
+        "sync_us": {
+          "original": 242.8801875,
+          "known": 243.3020625,
+          "guarded": 241.4895625,
+          "large_budget": 243.966125
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 0.9958295669049113,
+          "guarded": 0.99945360371156,
+          "large_budget": 0.9963906609187076
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 0.9982660442921646,
+          "guarded": 1.0057585304540853,
+          "large_budget": 0.995548818509127
+        }
+      },
+      "call_counts": {
+        "guarded": {
+          "setup_seconds": 0.16066875000251457,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.13732362500741147,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "known": {
+          "setup_seconds": 0.12022879200230818,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "original": {
+          "setup_seconds": 0.12296716700075194,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        }
+      }
+    },
+    {
+      "case": "shared-small",
+      "mkn": [
+        64,
+        32,
+        48
+      ],
+      "working_set_bytes": 133120,
+      "median_us": {
+        "queued_us": {
+          "original": 99.357421875,
+          "known": 35.732421875,
+          "guarded": 35.587234375,
+          "large_budget": 35.046234375
+        },
+        "sync_us": {
+          "original": 242.497375,
+          "known": 175.3620625,
+          "guarded": 179.38543750000002,
+          "large_budget": 182.8619375
+        }
+      },
+      "speedup": {
+        "queued_us": {
+          "original": 1.0,
+          "known": 2.780595791199781,
+          "guarded": 2.791939964427202,
+          "large_budget": 2.835038446980083
+        },
+        "sync_us": {
+          "original": 1.0,
+          "known": 1.3828382920621727,
+          "guarded": 1.351823082071531,
+          "large_budget": 1.3261227476603763
+        }
+      },
+      "call_counts": {
+        "original": {
+          "setup_seconds": 0.05797291699855123,
+          "correctness": "passed",
+          "mm_calls": 5,
+          "bmm_calls": 0,
+          "metal_definitions": 0
+        },
+        "large_budget": {
+          "setup_seconds": 0.1711589580081636,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 2
+        },
+        "guarded": {
+          "setup_seconds": 0.13975866700639017,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 2
+        },
+        "known": {
+          "setup_seconds": 0.13703333400189877,
+          "correctness": "passed",
+          "mm_calls": 0,
+          "bmm_calls": 1,
+          "metal_definitions": 2
+        }
+      }
+    }
+  ]
+}

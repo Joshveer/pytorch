@@ -1,0 +1,102 @@
+test_canonical_keys_use_facts_and_environment (__main__.TestBatchShapeRelations.test_canonical_keys_use_facts_and_environment) ... ok
+test_device_keys_do_not_mix (__main__.TestBatchShapeRelations.test_device_keys_do_not_mix) ... ok
+test_joint_guard_and_refusal_scenario_aot (__main__.TestBatchShapeRelations.test_joint_guard_and_refusal_scenario_aot) ... ok
+test_joint_guard_and_refusal_scenario_budget (__main__.TestBatchShapeRelations.test_joint_guard_and_refusal_scenario_budget) ... ok
+test_joint_guard_and_refusal_scenario_equal (__main__.TestBatchShapeRelations.test_joint_guard_and_refusal_scenario_equal) ... ok
+test_joint_guard_and_refusal_scenario_frozen (__main__.TestBatchShapeRelations.test_joint_guard_and_refusal_scenario_frozen) ... ok
+test_joint_guard_and_refusal_scenario_no_dispatcher (__main__.TestBatchShapeRelations.test_joint_guard_and_refusal_scenario_no_dispatcher) ... ok
+test_joint_guard_and_refusal_scenario_oversize (__main__.TestBatchShapeRelations.test_joint_guard_and_refusal_scenario_oversize) ... ok
+test_joint_guard_and_refusal_scenario_unbacked (__main__.TestBatchShapeRelations.test_joint_guard_and_refusal_scenario_unbacked) ... ok
+test_joint_guard_and_refusal_scenario_unequal (__main__.TestBatchShapeRelations.test_joint_guard_and_refusal_scenario_unequal) ... ok
+test_degenerate_shapes_do_not_speculate_m_0_mps (__main__.TestSymbolicBatchLinearMPS.test_degenerate_shapes_do_not_speculate_m_0_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_degenerate_shapes_do_not_speculate_m_1_mps (__main__.TestSymbolicBatchLinearMPS.test_degenerate_shapes_do_not_speculate_m_1_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_dependent_matmuls_do_not_speculate_mps (__main__.TestSymbolicBatchLinearMPS.test_dependent_matmuls_do_not_speculate_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_False_strided_False_first_case_equal_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_False_strided_False_first_case_equal_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_False_strided_False_first_case_oversize_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_False_strided_False_first_case_oversize_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_False_strided_False_first_case_unequal_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_False_strided_False_first_case_unequal_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_False_strided_True_first_case_equal_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_False_strided_True_first_case_equal_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_False_strided_True_first_case_oversize_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_False_strided_True_first_case_oversize_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_False_strided_True_first_case_unequal_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_False_strided_True_first_case_unequal_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_True_strided_False_first_case_equal_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_True_strided_False_first_case_equal_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_True_strided_False_first_case_oversize_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_True_strided_False_first_case_oversize_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_True_strided_False_first_case_unequal_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_True_strided_False_first_case_unequal_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_True_strided_True_first_case_equal_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_True_strided_True_first_case_equal_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_True_strided_True_first_case_oversize_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_True_strided_True_first_case_oversize_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_fallback_and_working_set_training_True_strided_True_first_case_unequal_mps (__main__.TestSymbolicBatchLinearMPS.test_guarded_fallback_and_working_set_training_True_strided_True_first_case_unequal_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_low_precision_gradients_mps_bfloat16 (__main__.TestSymbolicBatchLinearMPS.test_guarded_low_precision_gradients_mps_bfloat16) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_guarded_low_precision_gradients_mps_float16 (__main__.TestSymbolicBatchLinearMPS.test_guarded_low_precision_gradients_mps_float16) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_known_addmm_and_mixed_dtype_mps (__main__.TestSymbolicBatchLinearMPS.test_known_addmm_and_mixed_dtype_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_one_guarded_group_budget_mps (__main__.TestSymbolicBatchLinearMPS.test_one_guarded_group_budget_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_opt_in_and_budgets_options0_expected_False_mps (__main__.TestSymbolicBatchLinearMPS.test_opt_in_and_budgets_options0_expected_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_opt_in_and_budgets_options1_expected_True_mps (__main__.TestSymbolicBatchLinearMPS.test_opt_in_and_budgets_options1_expected_True_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_opt_in_and_budgets_options2_expected_False_mps (__main__.TestSymbolicBatchLinearMPS.test_opt_in_and_budgets_options2_expected_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_opt_in_and_budgets_options3_expected_False_mps (__main__.TestSymbolicBatchLinearMPS.test_opt_in_and_budgets_options3_expected_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_opt_in_and_budgets_options4_expected_False_mps (__main__.TestSymbolicBatchLinearMPS.test_opt_in_and_budgets_options4_expected_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_opt_in_and_budgets_options5_expected_False_mps (__main__.TestSymbolicBatchLinearMPS.test_opt_in_and_budgets_options5_expected_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_opt_in_and_budgets_options6_expected_False_mps (__main__.TestSymbolicBatchLinearMPS.test_opt_in_and_budgets_options6_expected_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_raw_storage_users_do_not_speculate_mps (__main__.TestSymbolicBatchLinearMPS.test_raw_storage_users_do_not_speculate_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_shared_lhs_proved_equal_training_False_mps (__main__.TestSymbolicBatchLinearMPS.test_shared_lhs_proved_equal_training_False_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+test_shared_lhs_proved_equal_training_True_mps (__main__.TestSymbolicBatchLinearMPS.test_shared_lhs_proved_equal_training_True_mps) ... /Users/jvgrewal/Desktop/CSE583/project-research/shape-relations/pytorch-fork/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+
+----------------------------------------------------------------------
+Ran 39 tests in 13.355s
+
+OK

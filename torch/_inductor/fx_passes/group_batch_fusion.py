@@ -6,6 +6,8 @@ from collections import OrderedDict
 from collections.abc import Iterable, Iterator
 from typing import Any
 
+import sympy
+
 import torch
 from torch._dynamo.utils import counters, is_node_meta_valid
 from torch._logging import trace_structured, warning_once
@@ -24,6 +26,7 @@ from ..pattern_matcher import (
     stable_topological_sort,
 )
 from ..utils import is_bf16x9_matmul, OPTIMUS_EXCLUDE_POST_GRAD
+from .shape_relation_fusion import canonical_shape_key, guard_shape_compatibility
 
 
 try:
@@ -111,6 +114,15 @@ class GroupBatchFusionBase:
     def fuse(self, graph, subset):
         raise NotImplementedError("fuse called on base")
 
+    def guarded_candidates_enabled(self):
+        return False
+
+    def match_guarded(self, node):
+        return None
+
+    def guard_fusion(self, subset):
+        return False
+
 
 PRE_GRAD_FUSIONS: dict[str, GroupBatchFusionBase] = {}
 POST_GRAD_FUSIONS: dict[str, GroupBatchFusionBase] = {}
@@ -180,6 +192,11 @@ class PostGradBatchLinearFusion(BatchFusion):
     Fuse ops in a batch way in post grad (aten level).
     """
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._shape_allocators = {}
+        self._guard_attempted = False
+
     def _addmm_node_can_be_fused(self, node: torch.fx.Node) -> bool:
         # pyre-fixme[7]: Incompatible return type
         return (
@@ -189,16 +206,14 @@ class PostGradBatchLinearFusion(BatchFusion):
         )
 
     def _is_input_2d(self, input: torch.fx.Node) -> bool:
-        input_shapes = input.meta["val"].shape
+        value = input.meta.get("val")
         return (
-            len(input_shapes) == 2
-            and isinstance(input_shapes[0], int)
-            and isinstance(input_shapes[1], int)
+            isinstance(value, torch.Tensor)
+            and value.ndim == 2
+            and value.layout == torch.strided
         )
 
-    def match(
-        self, node: torch.fx.Node
-    ) -> tuple[str, int, int, int, bool, str, str] | None:
+    def match(self, node: torch.fx.Node) -> tuple[Any, ...] | None:
         if CallFunctionVarArgs(aten.mm).match(node):
             input_m, weight_m = node.args
             bias_m = None
@@ -219,18 +234,95 @@ class PostGradBatchLinearFusion(BatchFusion):
             return None
         m, k = input_m.meta["val"].shape  # type: ignore[union-attr]
         n = weight_m.meta["val"].shape[1]  # type: ignore[union-attr]
+        dimensions = canonical_shape_key((m, k, n), self._shape_allocators)
+        if dimensions is None:
+            return None
         batch_key = (
             "batch_linear_post_grad",
-            m,
-            k,
-            n,
+            *dimensions,
             bias_m is not None,
             str(users),
             # mm/addmm operands share a dtype, so mixing an autocast-exempt fp32
             # linear with bf16 ones would make the stack in fuse() fail.
             str(input_m.meta["val"].dtype),  # type: ignore[union-attr]
+            str(input_m.meta["val"].device),  # type: ignore[union-attr]
         )
         return batch_key
+
+    def guarded_candidates_enabled(self):
+        return (
+            self.graph_search_options.get("guarded_batching", False)
+            and not self._guard_attempted
+            and self.graph_search_options.get("max_guarded_group_size", 8)
+            >= max(1, self.graph_search_options["min_fuse_set_size"])
+            and self.graph_search_options.get("max_guarded_conditions", 32) > 0
+            and self.graph_search_options.get(
+                "max_guarded_working_set_bytes", 1024 * 1024
+            )
+            > 0
+        )
+
+    def match_guarded(self, node):
+        if not self.guarded_candidates_enabled() or node.target is not aten.mm.default:
+            return None
+        key = self.match(node)
+        if key is None:
+            return None
+        value = node.meta["val"]
+        if value.device.type not in ("mps", "cuda") or value.dtype not in (
+            torch.float32,
+            torch.float16,
+            torch.bfloat16,
+        ):
+            return None
+        if any(
+            _is_mutable_node(user.target) for user in node.users
+        ) or BatchLinearLHSFusion._reaches_raw_storage_op(node):
+            return None
+        # Do not turn a marked dynamic dimension into a constant specialization.
+        # Constants must already match; symbolic positions must align.
+        scheme = tuple(
+            None if not isinstance(d, (int, sympy.Integer)) else d for d in key[1:4]
+        )
+        if all(d is not None for d in scheme):
+            return None
+        orientations = tuple(
+            (
+                statically_known_true(arg.meta["val"].stride(0) == 1),
+                statically_known_true(arg.meta["val"].stride(1) == 1),
+            )
+            for arg in node.args[:2]
+        )
+        return (key[0], scheme, *key[4:], orientations)
+
+    def guard_fusion(self, subset):
+        if not self.guarded_candidates_enabled():
+            return False
+        max_nodes = self.graph_search_options.get("max_guarded_group_size", 8)
+        if len(subset) > max_nodes:
+            return False
+        self._guard_attempted = True
+        counters["inductor"]["guarded_batch_linear_attempts"] += 1
+        shapes = []
+        for node in subset:
+            left, right = (arg.meta["val"] for arg in node.args[:2])
+            shapes.append((*left.shape, *right.shape))
+        m, k = subset[0].args[0].meta["val"].shape
+        n = subset[0].args[1].meta["val"].shape[1]
+        itemsize = subset[0].meta["val"].dtype.itemsize
+        # Symmetric in M/K/N so the bound also applies to gradient matmuls.
+        working_set = len(subset) * itemsize * (m * k + k * n + m * n)
+        limit = self.graph_search_options.get(
+            "max_guarded_working_set_bytes", 1024 * 1024
+        )
+        accepted = guard_shape_compatibility(
+            shapes,
+            working_set <= limit,
+            self.graph_search_options.get("max_guarded_conditions", 32),
+        )
+        if accepted:
+            counters["inductor"]["guarded_batch_linear"] += 1
+        return accepted
 
     def fuse(self, graph: torch.fx.GraphModule, subset: list[torch.fx.Node]):
         batch_inputs = []
@@ -1741,6 +1833,7 @@ def get_fusion_candidates(
     rule: GroupBatchFusionBase,
     root_node: torch.fx.Node,
     fused_set: OrderedSet[torch.fx.Node],
+    guarded: bool = False,
 ) -> collections.defaultdict[Any, list[torch.fx.Node]]:
     """
     Search fusion candidates for a specific rule using BFS starting from the root node.
@@ -1767,7 +1860,7 @@ def get_fusion_candidates(
         if node in fused_set:
             continue
 
-        key = rule.match(node)
+        key = rule.match_guarded(node) if guarded else rule.match(node)
         if key is not None:
             candidate_nodes = candidate_dict[key]
             if node not in candidate_nodes:
@@ -1788,21 +1881,31 @@ def apply_group_batch_fusion(graph: torch.fx.GraphModule, rule: GroupBatchFusion
     log_to_scuba = False
 
     for node in reversed(graph.nodes):  # type: ignore[arg-type]
-        candidates = get_fusion_candidates(rule, node, fused_set)
-
-        for key, candidate_nodes in candidates.items():
-            if len(candidate_nodes) < rule.graph_search_options["min_fuse_set_size"]:
+        # Keep the ordinary, proof-only path first. Speculation considers only
+        # remaining candidates and uses the same independence checks.
+        for guarded in (False, True):
+            if guarded and not rule.guarded_candidates_enabled():
                 continue
-
-            for subset in find_independent_subset_greedy(
-                candidate_nodes, rule.graph_search_options
-            ):
-                rule.fuse(graph, subset)
-                fused_set.update(subset)
-                log.debug(
-                    f"{rule.__class__.__name__}: key = {key}; subset size = {len(list(subset))}"  # noqa: G004
+            candidates = get_fusion_candidates(rule, node, fused_set, guarded)
+            options = rule.graph_search_options
+            if guarded:
+                options = dict(options)
+                options["max_fuse_set_size"] = min(
+                    options["max_fuse_set_size"],
+                    options.get("max_guarded_group_size", 8),
                 )
-                log_to_scuba = True
+            for key, candidate_nodes in candidates.items():
+                if len(candidate_nodes) < options["min_fuse_set_size"]:
+                    continue
+                for subset in find_independent_subset_greedy(candidate_nodes, options):
+                    if guarded and not rule.guard_fusion(subset):
+                        continue
+                    rule.fuse(graph, subset)
+                    fused_set.update(subset)
+                    log.debug(
+                        f"{rule.__class__.__name__}: key = {key}; subset size = {len(list(subset))}"  # noqa: G004
+                    )
+                    log_to_scuba = True
     if log_to_scuba:
         from torch.fx._lazy_graph_module import _LazyGraphModule
 

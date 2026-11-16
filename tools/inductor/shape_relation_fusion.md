@@ -157,6 +157,14 @@ env -u PYTHONPATH TORCHINDUCTOR_COMPILE_THREADS=1 \
 The full command in the build-and-test section also runs the minimal regression
 tests and the symbolic proof/cache checks. CUDA/Triton has not been validated.
 
+## Matmul batching extension
+
+[Symbolic and guarded matmul batching](symbolic_batch_linear.md) extends the
+existing optional batch-linear pass using shared shape-key and guard helpers.
+Known compatible symbolic shapes need no extra guards. Independent shapes can
+use an explicit bounded guarded-batching option, retaining unequal/oversized
+fallbacks. This is horizontal matmul batching, not general matmul epilogue fusion.
+
 ## CUDA/Triton handoff
 
 The [GPU validation scripts and instructions](../../benchmarks/inductor/shape_relations/CUDA.md)
