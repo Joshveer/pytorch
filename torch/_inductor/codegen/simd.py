@@ -893,6 +893,11 @@ class SIMDKernel(Kernel[CSEVariableType], Generic[CSEVariableType]):
         return_getters_groups = []
         current_group = 0
         for length_group in lengths:
+            # Use the node's factorization when splitting this same flat domain.
+            if len(length_group) == 2 and current_group < len(remaining):
+                extent = sympy_product(length_group)
+                if sv.known_equal_shape_products(remaining[current_group], extent):
+                    remaining[current_group] = extent
             return_getters = []
             for size in length_group:
                 if sv.statically_known_equals(size, 1):  # type: ignore[arg-type]
@@ -3232,7 +3237,14 @@ class SIMDScheduling(BaseScheduling):
                     if not ordinary_fusion:
                         why("invalid tiling for reduction")
             else:
-                ordinary_fusion = numel1 == numel2
+                ordinary_fusion = numel1 == numel2 or (
+                    bool(node2.get_operation_names() & node1.ancestors)
+                    and V.graph.sizevars.known_equal_shape_products(numel1, numel2)
+                    and all(
+                        SIMDKernel.is_compatible((numel2,), n.get_ranges())
+                        for n in node1.get_nodes()
+                    )
+                )
                 if not ordinary_fusion:
                     why("nodes numel incompatibility")
 
@@ -3433,7 +3445,14 @@ class SIMDScheduling(BaseScheduling):
 
         def fits_outside_reduction(n):
             _, (node_numel, node_rnumel) = n.group
-            return node_numel == numel and node_rnumel == 1 and rnumel != 1
+            return (
+                node_rnumel == 1
+                and rnumel != 1
+                and (
+                    node_numel == numel
+                    or V.graph.sizevars.known_equal_shape_products(node_numel, numel)
+                )
+            )
 
         def expect_improved_memory_usage(n):
             for read in n.read_writes.reads:

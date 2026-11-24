@@ -11440,6 +11440,28 @@ class Scheduler:
         )
 
     # StarDep doesn't match MemoryDep, and indirect indexing is not fusible.
+    def _same_flat_reshape_access(self, read: Dep, write: Dep) -> bool:
+        if not isinstance(read, MemoryDep) or not isinstance(write, MemoryDep):
+            return False
+        if (
+            read.name != write.name
+            or read.mode is not None
+            or write.mode is not None
+            or len(read.size) != 2
+            or len(write.size) != 2
+            or read.size == write.size
+        ):
+            return False
+        # Both accesses must enumerate every element once in row-major order.
+        # Scaled, transposed, offset, indirect, and broadcast accesses fail here.
+        for dep in (read, write):
+            outer, inner = dep.var_names
+            if dep.index != outer * dep.size[1] + inner:
+                return False
+        return V.graph.sizevars.known_equal_shape_products(
+            read.size[0] * read.size[1], write.size[0] * write.size[1]
+        )
+
     def fusable_read_and_write(self, read: Dep, write: MemoryDep) -> bool:
         """Return whether a producer write can satisfy a consumer read."""
         if isinstance(read, MemoryDep):
@@ -11471,6 +11493,8 @@ class Scheduler:
 
             # Re-check dependencies that become exact after loop vars merge.
             if self._same_index_with_prefix_size(read, write):
+                return True
+            if self._same_flat_reshape_access(read, write):
                 return True
         elif isinstance(read, StarDep):
             if (
@@ -11799,6 +11823,16 @@ class Scheduler:
         score = sum(self.dep_size_hint(dep, count_bytes) for dep in common_memory_deps)
         if score:
             return _construct_return_value(score, 0, False)
+
+        if node1.is_reduction() and not node2.is_reduction():
+            for write in node1.read_writes.writes:
+                if any(
+                    self._same_flat_reshape_access(read, write)
+                    for read in node2.read_writes.reads
+                ):
+                    return _construct_return_value(
+                        self.dep_size_hint(write, count_bytes), 0, False
+                    )
 
         # This is a horizontal/common-read locality heuristic, not a
         # producer-consumer dependency match.

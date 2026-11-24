@@ -632,6 +632,17 @@ class SizeVarAllocator:
         """
         return statically_known_true(self.shape_env, expr)
 
+    def known_equal_shape_products(self, left: Expr, right: Expr) -> bool:
+        """Read an existing equality between differently factored 2-D extents."""
+        if not (
+            isinstance(left, sympy.Mul)
+            and isinstance(right, sympy.Mul)
+            and len(left.args) == len(right.args) == 2
+            and all(s.is_Symbol for s in (*left.args, *right.args))
+        ):
+            return False
+        return self.shape_env.axioms.get(sympy.Eq(left, right)) == sympy.true
+
     def statically_known_equals(self, left: Expr | int, right: Expr | int) -> bool:
         """
         Returns a bool indicating if it is sound to optimize as if left and right are equal.

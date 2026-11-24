@@ -235,6 +235,34 @@ class TestSplitHeadFusion(TestCase):
                 expected_grad = torch.autograd.grad(expected, x, weight)[0]
                 self.assertEqual(actual_grad, expected_grad, atol=2e-4, rtol=2e-4)
 
+    def test_dynamic_reshape_reduction_epilogue(self, device):
+        if torch.device(device).type != "mps":
+            self.skipTest("Metal kernel-count regression")
+
+        def fn(x, y):
+            return x.amax(-1).reshape(y.shape) + y
+
+        x = torch.randn(6, 10, 32, device=device)
+        y = torch.randn(4, 15, device=device)
+        for tensor in (x, y):
+            for dim in range(tensor.ndim):
+                torch._dynamo.mark_dynamic(tensor, dim)
+
+        torch._dynamo.reset()
+        with config.patch(force_disable_caches=True):
+            compiled = torch.compile(fn, fullgraph=True)
+            actual, codes = run_and_get_code(compiled, x, y)
+            self.assertEqual(actual, fn(x, y))
+            self.assertEqual(sum(c.count("= async_compile.metal(") for c in codes), 1)
+
+            # The backward graph may not receive all four outer shape symbols.
+            x.requires_grad_()
+            y.requires_grad_()
+            weights = torch.randn_like(y)
+            actual = torch.autograd.grad(compiled(x, y), (x, y), weights)
+            expected = torch.autograd.grad(fn(x, y), (x, y), weights)
+            self.assertEqual(actual, expected)
+
     def test_one_dynamic_softmax_split_kernel(self, device):
         if torch.device(device).type == "cpu":
             self.skipTest("Kernel-count regression is for SIMD GPU backends")
