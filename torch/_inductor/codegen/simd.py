@@ -894,7 +894,7 @@ class SIMDKernel(Kernel[CSEVariableType], Generic[CSEVariableType]):
         current_group = 0
         for length_group in lengths:
             # Use the node's factorization when splitting this same flat domain.
-            if len(length_group) == 2 and current_group < len(remaining):
+            if 2 <= len(length_group) <= 3 and current_group < len(remaining):
                 extent = sympy_product(length_group)
                 if sv.known_equal_shape_products(remaining[current_group], extent):
                     remaining[current_group] = extent

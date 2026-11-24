@@ -235,15 +235,24 @@ class TestSplitHeadFusion(TestCase):
                 expected_grad = torch.autograd.grad(expected, x, weight)[0]
                 self.assertEqual(actual_grad, expected_grad, atol=2e-4, rtol=2e-4)
 
-    def test_dynamic_reshape_reduction_epilogue(self, device):
+    @parametrize(
+        "source,target",
+        [
+            ((6, 10), (4, 15)),
+            ((6, 10), (3, 4, 5)),
+            ((3, 4, 5), (6, 10)),
+            ((3, 4, 10), (2, 5, 12)),
+        ],
+    )
+    def test_dynamic_reshape_reduction_epilogue(self, device, source, target):
         if torch.device(device).type != "mps":
             self.skipTest("Metal kernel-count regression")
 
         def fn(x, y):
             return x.amax(-1).reshape(y.shape) + y
 
-        x = torch.randn(6, 10, 32, device=device)
-        y = torch.randn(4, 15, device=device)
+        x = torch.randn(*source, 32, device=device)
+        y = torch.randn(*target, device=device)
         for tensor in (x, y):
             for dim in range(tensor.ndim):
                 torch._dynamo.mark_dynamic(tensor, dim)
@@ -255,7 +264,7 @@ class TestSplitHeadFusion(TestCase):
             self.assertEqual(actual, fn(x, y))
             self.assertEqual(sum(c.count("= async_compile.metal(") for c in codes), 1)
 
-            # The backward graph may not receive all four outer shape symbols.
+            # The backward graph may not receive all the outer shape symbols.
             x.requires_grad_()
             y.requires_grad_()
             weights = torch.randn_like(y)

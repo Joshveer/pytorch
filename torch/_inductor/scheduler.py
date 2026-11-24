@@ -11447,19 +11447,27 @@ class Scheduler:
             read.name != write.name
             or read.mode is not None
             or write.mode is not None
-            or len(read.size) != 2
-            or len(write.size) != 2
+            # Loop normalization can collapse a multidimensional access to one axis.
+            or not 1 <= len(read.size) <= 3
+            or not 1 <= len(write.size) <= 3
             or read.size == write.size
         ):
             return False
         # Both accesses must enumerate every element once in row-major order.
         # Scaled, transposed, offset, indirect, and broadcast accesses fail here.
         for dep in (read, write):
-            outer, inner = dep.var_names
-            if dep.index != outer * dep.size[1] + inner:
+            # Construct the expanded row-major index in the same form as MemoryDep.
+            stride = sympy.S.One
+            index = sympy.S.Zero
+            for var, size in zip(
+                reversed(dep.var_names), reversed(dep.size), strict=True
+            ):
+                index += var * stride
+                stride *= size
+            if dep.index != index:
                 return False
         return V.graph.sizevars.known_equal_shape_products(
-            read.size[0] * read.size[1], write.size[0] * write.size[1]
+            sympy_product(read.size), sympy_product(write.size)
         )
 
     def fusable_read_and_write(self, read: Dep, write: MemoryDep) -> bool:

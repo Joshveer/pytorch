@@ -633,11 +633,12 @@ class SizeVarAllocator:
         return statically_known_true(self.shape_env, expr)
 
     def known_equal_shape_products(self, left: Expr, right: Expr) -> bool:
-        """Read an existing equality between differently factored 2-D extents."""
+        """Read an existing equality between differently factored 2-D or 3-D extents."""
         if not (
             isinstance(left, sympy.Mul)
             and isinstance(right, sympy.Mul)
-            and len(left.args) == len(right.args) == 2
+            and 2 <= len(left.args) <= 3
+            and 2 <= len(right.args) <= 3
             and all(s.is_Symbol for s in (*left.args, *right.args))
         ):
             return False
